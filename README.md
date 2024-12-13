@@ -4,24 +4,22 @@ This repository contains my solutions to various programming problems from diffe
 
 ## Structure
 
-```
 📁 Project Structure:
-```
 
-* ├── leetcode/
-  │   ├── easy/
-  │   ├── medium/
-  │   └── hard/
-  ├── hackerrank/
-  └── others/
+├── leetcode/
+│   ├── easy/
+│   ├── medium/
+│   └── hard/
+├── hackerrank/
+└── others/
 
 ## Solutions
 
 ##### LeetCode
 
-| # | Title                     | Solution             | Difficulty | Notes       |
-| - | ------------------------- | -------------------- | ---------- | ----------- |
-| 1 | [Problem Name](problem_link) | [Python](solution_link) | Easy       | Brief notes |
+| #   | Title                                                                             | Solution                              | Difficulty | Notes                               |
+| --- | --------------------------------------------------------------------------------- | ------------------------------------- | ---------- | ----------------------------------- |
+| 125 | [Valid Palindrome](https://leetcode.com/problems/valid-palindrome/)              | [Python](leetcode/easy/valid_palindrome.py) | Easy       | Two-pointer or string reverse approach |
 
 ### HackerRank
 
