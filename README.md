@@ -20,6 +20,7 @@ This repository contains my solutions to various programming problems from diffe
 | #   | Title                                                                             | Solution                              | Difficulty | Notes                               |
 | --- | --------------------------------------------------------------------------------- | ------------------------------------- | ---------- | ----------------------------------- |
 | 125 | [Valid Palindrome](https://leetcode.com/problems/valid-palindrome/)              | [Python](leetcode/easy/valid_palindrome.py) | Easy       | Two-pointer or string reverse approach |
+| 392 | [Is Subsequence](https://leetcode.com/problems/is-subsequence/)                  | [Python](leetcode/easy/is_subsequence.py)   | Easy       | Two-pointer approach |
 
 ### HackerRank
 
