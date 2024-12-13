@@ -4,12 +4,16 @@ This repository contains my solutions to various programming problems from diffe
 
 ## Structure
 
-├── leetcode/
-│   ├── easy/
-│   ├── medium/
-│   └── hard/
-├── hackerrank/
-└── others/
+```
+📁 Project Structure:
+```
+
+* ├── leetcode/
+  │   ├── easy/
+  │   ├── medium/
+  │   └── hard/
+  ├── hackerrank/
+  └── others/
 
 ## Solutions
 
