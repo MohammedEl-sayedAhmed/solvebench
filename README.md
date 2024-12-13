@@ -23,6 +23,7 @@ This repository contains my solutions to various programming problems from diffe
 | 15  | [3Sum](https://leetcode.com/problems/3sum/)                                      | [Python](leetcode/medium/three_sum.py)      | Medium     | Two-pointer approach with sorting |
 | 125 | [Valid Palindrome](https://leetcode.com/problems/valid-palindrome/)              | [Python](leetcode/easy/valid_palindrome.py) | Easy       | Two-pointer or string reverse approach |
 | 167 | [Two Sum II](https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/)    | [Python](leetcode/medium/two_sum_ii.py)    | Medium     | Two-pointer approach with sorted array |
+| 169 | [Majority Element](https://leetcode.com/problems/majority-element/)              | [Python](leetcode/easy/majority_element.py) | Easy       | Boyer-Moore Voting Algorithm |
 | 392 | [Is Subsequence](https://leetcode.com/problems/is-subsequence/)                  | [Python](leetcode/easy/is_subsequence.py)   | Easy       | Two-pointer approach |
 
 ### HackerRank
