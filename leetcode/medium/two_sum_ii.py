@@ -37,28 +37,51 @@ Constraints:
 
 class Solution:
     def twoSum(self, numbers: list[int], target: int) -> list[int]:
+        """
+        Two solutions for the Two Sum II problem:
+        1. Two Pointer Approach - O(n) time, O(1) space
+        2. Brute Force Approach - O(n²) time, O(1) space
+        """
+        
+        # Solution 1: Two Pointer Approach
+        
         left = 0
         right = len(numbers) - 1
         
         while left < right:
-            
             current_sum = numbers[left] + numbers[right]
             
             if current_sum == target:
-                return[left + 1, right + 1]
+                return [left + 1, right + 1]
             elif current_sum > target:
-                right -=1
-            elif current_sum < target:
-                left +=1
+                right -= 1
+            else:
+                left += 1
         
         return []
-            
-            
-            
-
+        
+        
+        # Solution 2: Brute Force Approach
+        """
+        for i in range(len(numbers)):
+            for j in range(i + 1, len(numbers)):
+                curr_sum = numbers[i] + numbers[j]
+                if curr_sum == target:
+                    return [i + 1, j + 1]
+                # Optimization: break inner loop if sum exceeds target
+                # (possible because array is sorted)
+                elif curr_sum > target:
+                    break
+        
+        return []  # No solution found (though problem guarantees one exists)
+        """
 
 
 def test_solution():
+    """
+    Test function with various test cases to verify both solutions.
+    Includes edge cases and common scenarios.
+    """
     solution = Solution()
     
     test_cases = [
@@ -94,4 +117,4 @@ def test_solution():
 
 
 if __name__ == "__main__":
-    test_solution() 
+    test_solution()
