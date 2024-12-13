@@ -19,6 +19,7 @@ This repository contains my solutions to various programming problems from diffe
 
 | #   | Title                                                                             | Solution                              | Difficulty | Notes                               |
 | --- | --------------------------------------------------------------------------------- | ------------------------------------- | ---------- | ----------------------------------- |
+| 11  | [Container With Most Water](https://leetcode.com/problems/container-with-most-water/) | [Python](leetcode/medium/container_with_most_water.py) | Medium | Two-pointer approach |
 | 125 | [Valid Palindrome](https://leetcode.com/problems/valid-palindrome/)              | [Python](leetcode/easy/valid_palindrome.py) | Easy       | Two-pointer or string reverse approach |
 | 167 | [Two Sum II](https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/)    | [Python](leetcode/medium/two_sum_ii.py)    | Medium     | Two-pointer approach with sorted array |
 | 392 | [Is Subsequence](https://leetcode.com/problems/is-subsequence/)                  | [Python](leetcode/easy/is_subsequence.py)   | Easy       | Two-pointer approach |
@@ -59,7 +60,8 @@ If you have any questions or suggestions, feel free to reach out to me.
 
 ## Stats
 
-![LeetCode Stats](https://leetcard.jacoblin.cool/your-leetcode-username?theme=dark&font=Noto%20Sans)
+![LeetCode Stats](https://leetcard.jacoblin.cool/MohammedElsayed?theme=nord&font=Chakra%20Petch&animation=true&ext=activity)
+
 
 ---
 
