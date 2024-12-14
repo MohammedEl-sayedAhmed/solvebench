@@ -19,6 +19,7 @@ This repository contains my solutions to various programming problems from diffe
 
 | #   | Title                                                                             | Solution                              | Difficulty | Notes                               |
 | --- | --------------------------------------------------------------------------------- | ------------------------------------- | ---------- | ----------------------------------- |
+| 1   | [Two Sum](https://leetcode.com/problems/two-sum/)                               | [Python](leetcode/easy/two_sum.py)   | Easy       | Hash map approach |
 | 11  | [Container With Most Water](https://leetcode.com/problems/container-with-most-water/) | [Python](leetcode/medium/container_with_most_water.py) | Medium | Two-pointer approach |
 | 15  | [3Sum](https://leetcode.com/problems/3sum/)                                      | [Python](leetcode/medium/three_sum.py)      | Medium     | Two-pointer approach with sorting |
 | 20  | [Valid Parentheses](https://leetcode.com/problems/valid-parentheses/)            | [Python](leetcode/easy/valid_parentheses.py) | Easy       | Stack approach |
