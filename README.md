@@ -4,13 +4,14 @@ This repository contains my solutions to various programming problems from diffe
 
 ## Structure
 
-.
-├── leetcode/                # Solutions to LeetCode problems
-│   ├── easy/                # Easy level problems
-│   ├── medium/              # Medium level problems
-│   └── hard/                # Hard level problems
-├── hackerrank/              # Solutions to HackerRank problems
-└── others/                  # Solutions to problems from other platforms
+```
+├── leetcode                # Solutions to LeetCode problems
+│   ├── easy                # Easy level problems
+│   ├── medium              # Medium level problems
+│   └── hard                # Hard level problems
+├── hackerrank              # Solutions to HackerRank problems
+└── others                  # Solutions to problems from other platforms
+```
 
 ## Solutions
 
