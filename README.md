@@ -28,6 +28,7 @@ This repository contains my solutions to various programming problems from diffe
 | 169 | [Majority Element](https://leetcode.com/problems/majority-element/)              | [Python](leetcode/easy/majority_element.py) | Easy       | Boyer-Moore Voting Algorithm |
 | 392 | [Is Subsequence](https://leetcode.com/problems/is-subsequence/)                  | [Python](leetcode/easy/is_subsequence.py)   | Easy       | Two-pointer approach |
 | 412 | [Fizz Buzz](https://leetcode.com/problems/fizz-buzz/)                           | [Python](leetcode/easy/fizz_buzz.py) | Easy       | String array based on divisibility |
+| 888 | [Fair Candy Swap](https://leetcode.com/problems/fair-candy-swap/)               | [Python](leetcode/easy/fair_candy_swap.py) | Easy       | Exchange candy boxes to equalize total |
 
 ### HackerRank
 
