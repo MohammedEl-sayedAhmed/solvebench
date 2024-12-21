@@ -30,6 +30,12 @@ This repository contains my solutions to various programming problems from diffe
 | 412 | [Fizz Buzz](https://leetcode.com/problems/fizz-buzz/)                           | [Python](leetcode/easy/fizz_buzz.py) | Easy       | String array based on divisibility |
 | 888 | [Fair Candy Swap](https://leetcode.com/problems/fair-candy-swap/)               | [Python](leetcode/easy/fair_candy_swap.py) | Easy       | Exchange candy boxes to equalize total |
 
+##### Codewars
+
+| #   | Title                                                                             | Solution                              | Difficulty | Notes                               |
+| --- | --------------------------------------------------------------------------------- | ------------------------------------- | ---------- | ----------------------------------- |
+| 2   | [Weight for Weight](https://www.codewars.com/kata/weight-for-weight)            | [Python](codewars/weight_for_weight.py) | 5 kyu      | Sort numbers by the sum of their digits, use lambda function |
+
 ### HackerRank
 
 | Challenge                     | Solution             | Difficulty | Notes       |
