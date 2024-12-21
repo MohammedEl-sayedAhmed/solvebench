@@ -12,7 +12,6 @@ import leetcode.easy.is_subsequence
 import leetcode.easy.majority_element
 import leetcode.medium.three_sum
 import leetcode.medium.two_sum_ii
-import leetcode.medium.two_sum_ii
 
 if __name__ == "__main__":
     # Run all tests and generate an HTML report

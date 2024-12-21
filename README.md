@@ -39,6 +39,7 @@ This repository contains my solutions to various programming problems from diffe
 | 5   | [Count IP Addresses](https://www.codewars.com/kata/count-ip-addresses)         | [Python](codewars/count_ip_addresses.py) | 5 kyu      | Converts IP addresses to integers to calculate the number of addresses between two given IPv4 addresses. |
 | 5   | [Flatten](https://www.codewars.com/kata/flatten)                               | [Python](codewars/flatten.py)        | 5 kyu      | The algorithm recursively traverses elements, flattening lists and appending non-list items to the result. |
 | 7   | [Your Order, Please](https://www.codewars.com/kata/your-order-please)           | [Python](codewars/your_order_please.py) | 6 kyu      | Sorts words in a string based on the number contained in each word, returning them in the correct order. |
+| 5   | [Luck Check](https://www.codewars.com/kata/luck-check)                         | [Python](codewars/luck_check.py)     | 5 kyu      | Checks if a ticket number is lucky by comparing the sums of the digits on the left and right halves, with input validation for non-numeric strings. |
 
 ### HackerRank
 
