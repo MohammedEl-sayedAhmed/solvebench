@@ -37,15 +37,24 @@ def test_solution():
        ({"apples": 3, "flour": 300, "sugar": 150, "milk": 100, "oil": 100}, {"sugar": 500, "flour": 2000, "milk": 2000, "apples": 15, "oil": 20}, 0, "Test Case 6")  
    ]
     
+    passed_tests = 0
+    total_tests = len(test_cases)
+    
     for recipe, available, expected, test_name in test_cases:
         result = cakes(recipe, available)
         if result == expected:
+            passed_tests += 1
             print(f"✅ {test_name} passed")
         else:
             print(f"❌ {test_name} failed")
             print(f"   Input: recipe = {recipe}, available = {available}")
             print(f"   Expected: {expected}")
             print(f"   Got: {result}\n")
+
+    # Print metrics
+    print(f"\nTest Results: {passed_tests}/{total_tests} passed")
+    if passed_tests == total_tests:
+        print("All tests passed! 🎉")
 
 if __name__ == "__main__":
     test_solution() 

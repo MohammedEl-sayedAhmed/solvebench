@@ -64,15 +64,24 @@ def test_solution():
         ("255.255.255.255", "255.255.255.255", 0, "Test Case 6"),  # Edge case, same IP
     ]
     
+    passed_tests = 0
+    total_tests = len(test_cases)
+    
     for start, end, expected, test_name in test_cases:
         result = ips_between(start, end)
         if result == expected:
+            passed_tests += 1
             print(f"✅ {test_name} passed")
         else:
             print(f"❌ {test_name} failed")
             print(f"   Input: start = \"{start}\", end = \"{end}\"")
             print(f"   Expected: {expected}")
             print(f"   Got: {result}\n")
+
+    # Print metrics
+    print(f"\nTest Results: {passed_tests}/{total_tests} passed")
+    if passed_tests == total_tests:
+        print("All tests passed! 🎉")
 
 if __name__ == "__main__":
     test_solution() 

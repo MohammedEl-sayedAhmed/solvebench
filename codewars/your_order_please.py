@@ -50,15 +50,24 @@ def test_solution():
         ("word1 word2 word3", "word1 word2 word3"),  # Already sorted
     ]
     
+    passed_tests = 0
+    total_tests = len(test_cases)
+    
     for args, expected in test_cases:
         result = order(args)
         if result == expected:
+            passed_tests += 1
             print(f"✅ Test Case passed")
         else:
             print(f"❌ Test Case failed")
             print(f"   Input: {args}")
             print(f"   Expected: {expected}")
             print(f"   Got: {result}\n")
+
+    # Print metrics
+    print(f"\nTest Results: {passed_tests}/{total_tests} passed")
+    if passed_tests == total_tests:
+        print("All tests passed! 🎉")
 
 if __name__ == "__main__":
     test_solution() 
