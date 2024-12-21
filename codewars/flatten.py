@@ -10,14 +10,32 @@ flatten('a', ['b', 2], 3, None, [[4], ['c']]) # returns ['a', 'b', 2, 3, None, 4
 """
 
 def flatten(*args):
-    result = []
-    for arg in args:
-        if isinstance(arg, list):
-            result.extend(flatten(*arg))
-        else:
-            result.append(arg)
+    # Solution 1: Using recursive function
+    # result = []
+    # for arg in args:
+    #     if isinstance(arg, list):
+    #         result.extend(flatten(*arg))
+    #     else:
+    #         result.append(arg)
                 
+    # return result
+    
+    # Solution 2 using iteration:
+    result = []
+    stack = list(args)  # Start with the arguments as a list
+
+    while stack:
+        current = stack.pop(0)  # Take the first item from the stack
+        if isinstance(current, list):
+            # If the current item is a list, push all its elements to the stack
+            stack = current + stack
+        else:
+            # Otherwise, append the current item to the result list
+            result.append(current)
+    
     return result
+            
+            
 
 
 
