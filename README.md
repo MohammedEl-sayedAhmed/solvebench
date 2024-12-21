@@ -38,6 +38,7 @@ This repository contains my solutions to various programming problems from diffe
 | 5   | [Pete, the Baker](https://www.codewars.com/kata/pete-the-baker)                 | [Python](codewars/pete_the_baker.py) | 5 kyu      | Uses a greedy approach to calculate the maximum number of cakes by determining the limiting ingredient based on the recipe. |
 | 5   | [Count IP Addresses](https://www.codewars.com/kata/count-ip-addresses)         | [Python](codewars/count_ip_addresses.py) | 5 kyu      | Converts IP addresses to integers to calculate the number of addresses between two given IPv4 addresses. |
 | 5   | [Flatten](https://www.codewars.com/kata/flatten)                               | [Python](codewars/flatten.py)        | 5 kyu      | The algorithm recursively traverses elements, flattening lists and appending non-list items to the result. |
+| 7   | [Your Order, Please](https://www.codewars.com/kata/your-order-please)           | [Python](codewars/your_order_please.py) | 6 kyu      | Sorts words in a string based on the number contained in each word, returning them in the correct order. |
 
 ### HackerRank
 
