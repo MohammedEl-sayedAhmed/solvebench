@@ -23,6 +23,14 @@ Constraints:
 Follow-up: Could you solve the problem in linear time and in O(1) space?
 """
 
+import sys
+import os
+
+# Add the root directory to the Python path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+
+from common.test_framework import run_tests
+
 class Solution:
     def majorityElement(self, nums: list[int]) -> int:
         """
@@ -68,42 +76,19 @@ class Solution:
 
 
 def test_solution():
-    """
-    Test function with various test cases to verify the solution.
-    """
     solution = Solution()
-    
     test_cases = [
-        ([3,2,3], 3, "Example 1"),
-        ([2,2,1,1,1,2,2], 2, "Example 2"),
-        ([1], 1, "Single element"),
-        ([1,1,1,1,2,2,2], 1, "Clear majority"),
-        ([1,2,1,2,1], 1, "Alternating with majority"),
-        ([6,5,5], 5, "Small array"),
-        ([1,1,2,1,2,2,1], 1, "Complex case"),
-        ([-1,-1,-1,1,1,1,-1], -1, "Negative numbers")
+        (solution.majorityElement, [[3, 2, 3]], 3, "Example 1"),
+        (solution.majorityElement, [[2, 2, 1, 1, 1, 2, 2]], 2, "Example 2"),
+        (solution.majorityElement, [[1]], 1, "Single element"),
+        (solution.majorityElement, [[1, 1, 1, 1, 2, 2, 2]], 1, "Clear majority"),
+        (solution.majorityElement, [[1, 2, 1, 2, 1]], 1, "Alternating with majority"),
+        (solution.majorityElement, [[6, 5, 5]], 5, "Small array"),
+        (solution.majorityElement, [[1, 1, 2, 1, 2, 2, 1]], 1, "Complex case"),
+        (solution.majorityElement, [[-1, -1, -1, 1, 1, 1, -1]], -1, "Negative numbers"),
     ]
     
-    total_tests = len(test_cases)
-    passed_tests = 0
-    
-    for nums, expected, test_name in test_cases:
-        result = solution.majorityElement(nums)
-        if result == expected:
-            print(f"✅ {test_name} passed")
-            passed_tests += 1
-        else:
-            print(f"\n❌ {test_name} failed")
-            print(f"   Input: nums = {nums}")
-            print(f"   Expected: {expected}")
-            print(f"   Got: {result}\n")
-    
-    print(f"\nTest Results: {passed_tests}/{total_tests} passed")
-    if passed_tests == total_tests:
-        print("All tests passed! 🎉")
-    else:
-        print(f"Failed {total_tests - passed_tests} tests")
-
+    run_tests(test_cases)
 
 if __name__ == "__main__":
     test_solution() 

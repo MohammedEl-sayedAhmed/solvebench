@@ -26,6 +26,14 @@ and you want to check one by one to see if t has its subsequence. In this scenar
 how would you change your code?
 """
 
+import sys
+import os
+
+# Add the root directory to the Python path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+
+from common.test_framework import run_tests
+
 class Solution:
     def isSubsequence(self, s: str, t: str) -> bool:
         if len(s) == 0: return True
@@ -45,46 +53,23 @@ class Solution:
             
         
 
-                    
-        
-
-
 def test_solution():
     solution = Solution()
     
     test_cases = [
-        ("abc", "ahbgdc", True, "Example 1"),
-        ("axc", "ahbgdc", False, "Example 2"),
-        ("", "ahbgdc", True, "Empty source string"),
-        ("abc", "", False, "Empty target string"),
-        ("abc", "abc", True, "Exact match"),
-        ("abc", "abcde", True, "Subsequence at start"),
-        ("abc", "deabc", True, "Subsequence at end"),
-        ("abc", "ac", False, "Target shorter than source"),
-        ("abcde", "ace", False, "Source longer than target"),
-        ("", "", True, "Both empty strings")
+        (solution.isSubsequence, ["abc", "ahbgdc"], True, "Example 1"),
+        (solution.isSubsequence, ["axc", "ahbgdc"], False, "Example 2"),
+        (solution.isSubsequence, ["", "ahbgdc"], True, "Empty source string"),
+        (solution.isSubsequence, ["abc", ""], False, "Empty target string"),
+        (solution.isSubsequence, ["abc", "abc"], True, "Exact match"),
+        (solution.isSubsequence, ["abc", "abcde"], True, "Subsequence at start"),
+        (solution.isSubsequence, ["abc", "deabc"], True, "Subsequence at end"),
+        (solution.isSubsequence, ["abc", "ac"], False, "Target shorter than source"),
+        (solution.isSubsequence, ["abcde", "ace"], False, "Source longer than target"),
+        (solution.isSubsequence, ["", ""], True, "Both empty strings")
     ]
     
-    total_tests = len(test_cases)
-    passed_tests = 0
-    
-    for s, t, expected, test_name in test_cases:
-        result = solution.isSubsequence(s, t)
-        if result == expected:
-            print(f"✅ {test_name} passed")
-            passed_tests += 1
-        else:
-            print(f"\n❌ {test_name} failed")
-            print(f"   Input: s = \"{s}\", t = \"{t}\"")
-            print(f"   Expected: {expected}")
-            print(f"   Got: {result}\n")
-    
-    print(f"\nTest Results: {passed_tests}/{total_tests} passed")
-    if passed_tests == total_tests:
-        print("All tests passed! 🎉")
-    else:
-        print(f"Failed {total_tests - passed_tests} tests")
-
+    run_tests(test_cases)
 
 if __name__ == "__main__":
     test_solution() 

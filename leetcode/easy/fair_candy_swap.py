@@ -26,7 +26,13 @@ Constraints:
 Alice and Bob have a different total number of candies.
 There will be at least one valid answer for the given input.
 """
+import sys
+import os
 
+# Add the root directory to the Python path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+
+from common.test_framework import run_tests
 class Solution:
     def fairCandySwap(self, aliceSizes: list[int], bobSizes: list[int]) -> list[int]:
         
@@ -63,46 +69,17 @@ class Solution:
         return result
             
         
-        
-
-            
-            
-        
-
-                    
-        
-
-
 def test_solution():
     solution = Solution()
     
     test_cases = [
-        ([1, 1], [2, 2], [1, 2], "Example 1"),
-        ([1, 2], [2, 3], [1, 2], "Example 2"),
-        ([2], [1, 3], [2, 3], "Example 3"),
-        ([1, 3, 5], [2, 4, 6], [1, 2], "Additional Test 1")
+        (solution.fairCandySwap, [[1, 1], [2, 2]], [1, 2], "Example 1"),
+        (solution.fairCandySwap, [[1, 2], [2, 3]], [1, 2], "Example 2"),
+        (solution.fairCandySwap, [[2], [1, 3]], [2, 3], "Example 3"),
+        (solution.fairCandySwap, [[1, 3, 5], [2, 4, 6]], [1, 2], "Additional Test 1")
     ]
     
-    total_tests = len(test_cases)
-    passed_tests = 0
-    
-    for aliceSizes, bobSizes, expected, test_name in test_cases:
-        result = solution.fairCandySwap(aliceSizes, bobSizes)
-        if result == expected:
-            print(f"✅ {test_name} passed")
-            passed_tests += 1
-        else:
-            print(f"\n❌ {test_name} failed")
-            print(f"   Input: aliceSizes = {aliceSizes}, bobSizes = {bobSizes}")
-            print(f"   Expected: {expected}")
-            print(f"   Got: {result}\n")
-    
-    print(f"\nTest Results: {passed_tests}/{total_tests} passed")
-    if passed_tests == total_tests:
-        print("All tests passed! 🎉")
-    else:
-        print(f"Failed {total_tests - passed_tests} tests")
-
+    run_tests(test_cases)
 
 if __name__ == "__main__":
     test_solution() 
