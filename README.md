@@ -35,6 +35,7 @@ This repository contains my solutions to various programming problems from diffe
 | #   | Title                                                                             | Solution                              | Difficulty | Notes                               |
 | --- | --------------------------------------------------------------------------------- | ------------------------------------- | ---------- | ----------------------------------- |
 | 2   | [Weight for Weight](https://www.codewars.com/kata/weight-for-weight)            | [Python](codewars/weight_for_weight.py) | 5 kyu      | Sort numbers by the sum of their digits, use lambda function |
+| 5   | [Pete, the Baker](https://www.codewars.com/kata/pete-the-baker)                 | [Python](codewars/pete_the_baker.py) | 5 kyu      | Uses a greedy approach to calculate the maximum number of cakes by determining the limiting ingredient based on the recipe. |
 
 ### HackerRank
 
