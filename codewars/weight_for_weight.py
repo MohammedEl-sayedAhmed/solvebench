@@ -19,7 +19,12 @@ Notes:
 - All numbers in the list are positive numbers and the list can be empty.
 - The input string may have leading, trailing whitespaces and more than a unique whitespace between two consecutive numbers.
 """
+import sys
+import os
 
+# Add the root directory to the Python path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from common.test_framework import run_tests
 class Solution:
     def order_weight(self, strng: str) -> str:
         
@@ -47,43 +52,21 @@ class Solution:
 
 
 def test_solution():
-    """
-    Test function with various test cases to verify the solution.
-    """
     solution = Solution()
     
     test_cases = [
-        ("103 123 4444 99 2000", "2000 103 123 4444 99", "Test Case 1"),
-        ("2000 10003 1234000 44444444 9999 11 11 22 123", "11 11 2000 10003 22 123 1234000 44444444 9999", "Test Case 2"),
-        ("", "", "Test Case 3 - Empty input"),
-        ("56 65 74 100 99 68 86 180 90", "100 180 90 56 65 74 68 86 99", "Example 1"),
-        ("100 99", "100 99", "Two numbers with different weights"),
-        ("99 100", "100 99", "Two numbers with different weights"),
-        ("56 65 74 68 86 99", "56 65 74 68 86 99", "No 100 or 180"),
-        ("  56  65  74  100  99  ", "100 56 65 74 99", "Leading and trailing spaces"),
-        ("56 65 74 100 99 68 86 180 90 90", "100 180 90 90 56 65 74 68 86 99", "Duplicate numbers"),
+        (solution.order_weight, ["103 123 4444 99 2000"], "2000 103 123 4444 99", "Test Case 1"),
+        (solution.order_weight, ["2000 10003 1234000 44444444 9999 11 11 22 123"], "11 11 2000 10003 22 123 1234000 44444444 9999", "Test Case 2"),
+        (solution.order_weight, [""], "", "Test Case 3 - Empty input"),
+        (solution.order_weight, ["56 65 74 100 99 68 86 180 90"], "100 180 90 56 65 74 68 86 99", "Example 1"),
+        (solution.order_weight, ["100 99"], "100 99", "Two numbers with different weights"),
+        (solution.order_weight, ["99 100"], "100 99", "Two numbers with different weights"),
+        (solution.order_weight, ["56 65 74 68 86 99"], "56 65 74 68 86 99", "No 100 or 180"),
+        (solution.order_weight, ["  56  65  74  100  99  "], "100 56 65 74 99", "Leading and trailing spaces"),
+        (solution.order_weight, ["56 65 74 100 99 68 86 180 90 90"], "100 180 90 90 56 65 74 68 86 99", "Duplicate numbers"),
     ]
     
-    total_tests = len(test_cases)
-    passed_tests = 0
-    
-    for input_str, expected, test_name in test_cases:
-        result = solution.order_weight(input_str)
-        if result == expected:
-            print(f"✅ {test_name} passed")
-            passed_tests += 1
-        else:
-            print(f"\n❌ {test_name} failed")
-            print(f"   Input: \"{input_str}\"")
-            print(f"   Expected: \"{expected}\"")
-            print(f"   Got: \"{result}\"\n")
-    
-    print(f"\nTest Results: {passed_tests}/{total_tests} passed")
-    if passed_tests == total_tests:
-        print("All tests passed! 🎉")
-    else:
-        print(f"Failed {total_tests - passed_tests} tests")
-
+    run_tests(test_cases)
 
 if __name__ == "__main__":
     test_solution() 

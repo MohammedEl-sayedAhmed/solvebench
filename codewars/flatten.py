@@ -9,6 +9,14 @@ flatten(1, [2, 3], 4, 5, [6, [7]]) # returns [1, 2, 3, 4, 5, 6, 7]
 flatten('a', ['b', 2], 3, None, [[4], ['c']]) # returns ['a', 'b', 2, 3, None, 4, 'c']
 """
 
+import sys
+import os
+
+# Add the root directory to the Python path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from common.test_framework import run_tests
+
 def flatten(*args):
     # Solution 1: Using recursive function
     # result = []
@@ -42,36 +50,15 @@ def flatten(*args):
 
 
 def test_solution():
-    """
-    Test function with various test cases to verify the solution.
-    """
     test_cases = [
-        ([], []),  # flatten() should return []
-        ([1, 2, 3], [1, 2, 3]),  # flatten(1, 2, 3) should return [1, 2, 3]
-        ([1, 2], [3, 4, 5], [6, [7], [[8]]], [1, 2, 3, 4, 5, 6, 7, 8]),  # flatten([1, 2], [3, 4, 5], [6, [7], [[8]]]) should return [1, 2, 3, 4, 5, 6, 7, 8]
-        ([1, 2, ['9', [], []], None], [1, 2, '9', None]),  # flatten(1, 2, ['9', [], []], None) should return [1, 2, '9', None]
-        ([['hello', 2, ['text', [4, 5]]], [[]], '[list]'], ['hello', 2, 'text', 4, 5, '[list]']),  # flatten(['hello', 2, ['text', [4, 5]]], [[]], '[list]') should return ['hello', 2, 'text', 4, 5, '[list]']
+        (flatten, [[], []], [], "flatten() should return []"),
+        (flatten, [[1, 2, 3]], [1, 2, 3], "flatten(1, 2, 3) should return [1, 2, 3]"),
+        (flatten, [[1, 2], [3, 4, 5], [6, [7], [[8]]]], [1, 2, 3, 4, 5, 6, 7, 8], "flatten([1, 2], [3, 4, 5], [6, [7], [[8]]]) should return [1, 2, 3, 4, 5, 6, 7, 8]"),
+        (flatten, [[1, 2, ['9', [], []], None]], [1, 2, '9', None], "flatten(1, 2, ['9', [], []], None) should return [1, 2, '9', None]"),
+        (flatten, [[['hello', 2, ['text', [4, 5]]], [[]], '[list]']], ['hello', 2, 'text', 4, 5, '[list]'], "flatten(['hello', 2, ['text', [4, 5]]], [[]], '[list]') should return ['hello', 2, 'text', 4, 5, '[list]']"),
     ]
     
-    passed_tests = 0
-    total_tests = len(test_cases)
-    
-    for case in test_cases:
-        args, expected = case[:-1], case[-1]  # Separate the last element as expected output
-        result = flatten(*args)
-        if result == expected:
-            passed_tests += 1
-            print(f"✅ Test Case passed")
-        else:
-            print(f"❌ Test Case failed")
-            print(f"   Input: {args}")
-            print(f"   Expected: {expected}")
-            print(f"   Got: {result}\n")
-
-    # Print metrics
-    print(f"\nTest Results: {passed_tests}/{total_tests} passed")
-    if passed_tests == total_tests:
-        print("All tests passed! 🎉")
+    run_tests(test_cases)
 
 if __name__ == "__main__":
     test_solution()

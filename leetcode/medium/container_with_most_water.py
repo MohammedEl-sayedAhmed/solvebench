@@ -25,6 +25,15 @@ Constraints:
 - 2 <= n <= 10^5
 - 0 <= height[i] <= 10^4
 """
+
+import sys
+import os
+
+# Add the root directory to the Python path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+
+from common.test_framework import run_tests
+
 class Solution:
     def maxArea(self, height: list[int]) -> int:
         """
@@ -61,44 +70,20 @@ class Solution:
                 
         return max_area
     
-    
 def test_solution():
-    """
-    Test function with various test cases to verify the solution.
-    """
     solution = Solution()
-    
+
     test_cases = [
-        ([1,8,6,2,5,4,8,3,7], 49, "Example 1"),
-        ([1,1], 1, "Example 2"),
-        ([4,3,2,1,4], 16, "Equal heights at ends"),
-        ([1,2,4,3], 4, "Small array"),
-        ([1,8,6,2,5,4,8,25,7], 49, "Large height in middle"),
-        ([1,1,1,1], 3, "Equal heights"),
-        ([1,2,3,4,5], 6, "Increasing heights"),
-        ([5,4,3,2,1], 6, "Decreasing heights")
+        (solution.maxArea, [[1, 8, 6, 2, 5, 4, 8, 3, 7]], 49, "Example 1"),
+        (solution.maxArea, [[1, 1]], 1, "Example 2"),
+        (solution.maxArea, [[4, 3, 2, 1, 4]], 16, "Equal heights at ends"),
+        (solution.maxArea, [[1, 2, 4, 3]], 4, "Small array"),
+        (solution.maxArea, [[1, 8, 6, 2, 5, 4, 8, 25, 7]], 49, "Large height in middle"),
+        (solution.maxArea, [[1, 1, 1, 1]], 3, "Equal heights"),
+        (solution.maxArea, [[1, 2, 3, 4, 5]], 6, "Increasing heights"),
+        (solution.maxArea, [[5, 4, 3, 2, 1]], 6, "Decreasing heights")
     ]
-    
-    total_tests = len(test_cases)
-    passed_tests = 0
-    
-    for height, expected, test_name in test_cases:
-        result = solution.maxArea(height)
-        if result == expected:
-            print(f"✅ {test_name} passed")
-            passed_tests += 1
-        else:
-            print(f"\n❌ {test_name} failed")
-            print(f"   Input: height = {height}")
-            print(f"   Expected: {expected}")
-            print(f"   Got: {result}\n")
-    
-    print(f"\nTest Results: {passed_tests}/{total_tests} passed")
-    if passed_tests == total_tests:
-        print("All tests passed! 🎉")
-    else:
-        print(f"Failed {total_tests - passed_tests} tests")
 
-
+    run_tests(test_cases)
 if __name__ == "__main__":
-    test_solution() 
+    test_solution()

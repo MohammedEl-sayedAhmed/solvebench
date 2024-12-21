@@ -29,6 +29,15 @@ Constraints:
 - s consists only of printable ASCII characters.
 """
 
+import sys
+import os
+
+# Add the root directory to the Python path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+
+from common.test_framework import run_tests
+
+
 class Solution:
     def isAlphaNum(self,c):
             return_val = False
@@ -74,42 +83,22 @@ class Solution:
             
         return True
 
-
 def test_solution():
     solution = Solution()
     
     test_cases = [
-        ("A man, a plan, a canal: Panama", True, "Example 1"),
-        ("race a car", False, "Example 2"),
-        (" ", True, "Example 3"),
-        ("12321", True, "Numeric palindrome"),
-        ("0P", False, "Mixed alphanumeric"),
-        ("ab_a", True, "String with underscore"),
-        ("", True, "Empty string"),
-        ("!@#$", True, "Special characters only"),
-        ("Race a Car", False, "Case sensitivity test")
+        (solution.isPalindrome, ["A man, a plan, a canal: Panama"], True, "Example 1"),
+        (solution.isPalindrome, ["race a car"], False, "Example 2"),
+        (solution.isPalindrome, [" "], True, "Example 3"),
+        (solution.isPalindrome, ["12321"], True, "Numeric palindrome"),
+        (solution.isPalindrome, ["0P"], False, "Mixed alphanumeric"),
+        (solution.isPalindrome, ["ab_a"], True, "String with underscore"),
+        (solution.isPalindrome, [""], True, "Empty string"),
+        (solution.isPalindrome, ["!@#$"], True, "Special characters only"),
+        (solution.isPalindrome, ["Race a Car"], False, "Case sensitivity test")
     ]
     
-    total_tests = len(test_cases)
-    passed_tests = 0
-    
-    for input_str, expected, test_name in test_cases:
-        result = solution.isPalindrome(input_str)
-        if result == expected:
-            print(f"✅ {test_name} passed")
-            passed_tests += 1
-        else:
-            print(f"\n❌ {test_name} failed")
-            print(f"   Input string: \"{input_str}\"")
-            print(f"   Expected: {expected}")
-            print(f"   Got: {result}\n")
-    
-    print(f"\nTest Results: {passed_tests}/{total_tests} passed")
-    if passed_tests == total_tests:
-        print("All tests passed! 🎉")
-    else:
-        print(f"Failed {total_tests - passed_tests} tests")
-
+    run_tests(test_cases)
 
 if __name__ == "__main__":
     test_solution()

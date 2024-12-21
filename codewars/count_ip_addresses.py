@@ -11,7 +11,13 @@ Examples:
 * With input "10.0.0.0", "10.0.1.0"   => return  256 
 * With input "20.0.0.10", "20.0.1.0"  => return  246
 """
+import sys
+import os
 
+# Add the root directory to the Python path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from common.test_framework import run_tests
 def ips_between(start, end):
     # convert ip to int [use reverse in loop]
     # startList = start.split('.')
@@ -52,36 +58,16 @@ def ips_between(start, end):
     
 
 def test_solution():
-    """
-    Test function with various test cases to verify the solution.
-    """
     test_cases = [
-        ("10.0.0.0", "10.0.0.50", 50, "Test Case 1"),
-        ("10.0.0.0", "10.0.1.0", 256, "Test Case 2"),
-        ("20.0.0.10", "20.0.1.0", 246, "Test Case 3"),
-        ("192.168.1.1", "192.168.1.10", 9, "Test Case 4"),
-        ("0.0.0.0", "0.0.0.1", 1, "Test Case 5"),
-        ("255.255.255.255", "255.255.255.255", 0, "Test Case 6"),  # Edge case, same IP
+        (ips_between, ["10.0.0.0", "10.0.0.50"], 50, "Test Case 1"),
+        (ips_between, ["10.0.0.0", "10.0.1.0"], 256, "Test Case 2"),
+        (ips_between, ["20.0.0.10", "20.0.1.0"], 246, "Test Case 3"),
+        (ips_between, ["192.168.1.1", "192.168.1.10"], 9, "Test Case 4"),
+        (ips_between, ["0.0.0.0", "0.0.0.1"], 1, "Test Case 5"),
+        (ips_between, ["255.255.255.255", "255.255.255.255"], 0, "Test Case 6"),  # Edge case, same IP
     ]
     
-    passed_tests = 0
-    total_tests = len(test_cases)
-    
-    for start, end, expected, test_name in test_cases:
-        result = ips_between(start, end)
-        if result == expected:
-            passed_tests += 1
-            print(f"✅ {test_name} passed")
-        else:
-            print(f"❌ {test_name} failed")
-            print(f"   Input: start = \"{start}\", end = \"{end}\"")
-            print(f"   Expected: {expected}")
-            print(f"   Got: {result}\n")
-
-    # Print metrics
-    print(f"\nTest Results: {passed_tests}/{total_tests} passed")
-    if passed_tests == total_tests:
-        print("All tests passed! 🎉")
+    run_tests(test_cases)
 
 if __name__ == "__main__":
     test_solution() 

@@ -32,6 +32,14 @@ Constraints:
 - -105 <= nums[i] <= 105
 """
 
+import sys
+import os
+
+# Add the root directory to the Python path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+
+from common.test_framework import run_tests
+
 class Solution:
     def threeSum(self, nums: list[int]) -> list[list[int]]:
         """
@@ -86,44 +94,18 @@ class Solution:
         
 
 def test_solution():
-    """
-    Test function with various test cases to verify the solution.
-    """
-    solution = Solution()
-    
-    test_cases = [
-        ([-1,0,1,2,-1,-4], [[-1,-1,2],[-1,0,1]], "Example 1"),
-        ([0,1,1], [], "Example 2"),
-        ([0,0,0], [[0,0,0]], "Example 3"),
-        ([-2,0,1,1,2], [[-2,0,2],[-2,1,1]], "Multiple valid triplets"),
-        ([1,2,3,4,5], [], "No valid triplets"),
-        ([-1,-1,-1,2,2,2], [[-1,-1,2]], "Duplicate numbers"),
-        ([0,0,0,0], [[0,0,0]], "Multiple zeros")
-    ]
-    
-    total_tests = len(test_cases)
-    passed_tests = 0
-    
-    for nums, expected, test_name in test_cases:
-        result = solution.threeSum(nums)
-        # Sort the lists for comparison
-        result = sorted([sorted(x) for x in result])
-        expected = sorted([sorted(x) for x in expected])
-        if result == expected:
-            print(f"✅ {test_name} passed")
-            passed_tests += 1
-        else:
-            print(f"\n❌ {test_name} failed")
-            print(f"   Input: nums = {nums}")
-            print(f"   Expected: {expected}")
-            print(f"   Got: {result}\n")
-    
-    print(f"\nTest Results: {passed_tests}/{total_tests} passed")
-    if passed_tests == total_tests:
-        print("All tests passed! 🎉")
-    else:
-        print(f"Failed {total_tests - passed_tests} tests")
-
-
+   solution = Solution()
+   
+   test_cases = [
+       (solution.threeSum, [[-1, 0, 1, 2, -1, -4]], [[-1, -1, 2], [-1, 0, 1]], "Example 1"),
+       (solution.threeSum, [[0, 1, 1]], [], "Example 2"),
+       (solution.threeSum, [[0, 0, 0]], [[0, 0, 0]], "Example 3"),
+       (solution.threeSum, [[-2, 0, 1, 1, 2]], [[-2, 0, 2], [-2, 1, 1]], "Multiple valid triplets"),
+       (solution.threeSum, [[1, 2, 3, 4, 5]], [], "No valid triplets"),
+       (solution.threeSum, [[-1, -1, -1, 2, 2, 2]], [[-1, -1, 2]], "Duplicate numbers"),
+       (solution.threeSum, [[0, 0, 0, 0]], [[0, 0, 0]], "Multiple zeros")
+   ]
+   
+   run_tests(test_cases)
 if __name__ == "__main__":
-    test_solution() 
+   test_solution()

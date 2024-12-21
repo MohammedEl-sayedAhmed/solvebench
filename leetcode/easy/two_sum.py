@@ -28,6 +28,14 @@ Constraints:
 - Only one valid answer exists.
 """
 
+import sys
+import os
+
+# Add the root directory to the Python path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+
+from common.test_framework import run_tests
+
 class Solution:
     def twoSum(self, nums: list[int], target: int) -> list[int]:
         """
@@ -50,42 +58,20 @@ class Solution:
 
 
 def test_solution():
-    """
-    Test function with various test cases to verify the solution.
-    """
     solution = Solution()
     
     test_cases = [
-        ([2,7,11,15], 9, [0,1], "Example 1"),
-        ([3,2,4], 6, [1,2], "Example 2"),
-        ([3,3], 6, [0,1], "Example 3"),
-        ([1,2,3,4,5], 9, [3,4], "Sum at end"),
-        ([1,2,3,4,5], 3, [0,1], "Sum at start"),
-        ([1,2,3,4], 7, [2,3], "Middle numbers"),
-        ([0,0,3,4], 0, [0,1], "Zeroes"),
-        ([1,5,5,11], 10, [1,2], "Duplicate numbers")
+        (solution.twoSum, [[2, 7, 11, 15], 9], [0, 1], "Example 1"),
+        (solution.twoSum, [[3, 2, 4], 6], [1, 2], "Example 2"),
+        (solution.twoSum, [[3, 3], 6], [0, 1], "Example 3"),
+        (solution.twoSum, [[1, 2, 3, 4, 5], 9], [3, 4], "Sum at end"),
+        (solution.twoSum, [[1, 2, 3, 4, 5], 3], [0, 1], "Sum at start"),
+        (solution.twoSum, [[1, 2, 3, 4], 7], [2, 3], "Middle numbers"),
+        (solution.twoSum, [[0, 0, 3, 4], 0], [0, 1], "Zeroes"),
+        (solution.twoSum, [[1, 5, 5, 11], 10], [1, 2], "Duplicate numbers")
     ]
     
-    total_tests = len(test_cases)
-    passed_tests = 0
-    
-    for nums, target, expected, test_name in test_cases:
-        result = solution.twoSum(nums, target)
-        if result == expected:
-            print(f"✅ {test_name} passed")
-            passed_tests += 1
-        else:
-            print(f"\n❌ {test_name} failed")
-            print(f"   Input: nums = {nums}, target = {target}")
-            print(f"   Expected: {expected}")
-            print(f"   Got: {result}\n")
-    
-    print(f"\nTest Results: {passed_tests}/{total_tests} passed")
-    if passed_tests == total_tests:
-        print("All tests passed! 🎉")
-    else:
-        print(f"Failed {total_tests - passed_tests} tests")
-
+    run_tests(test_cases)
 
 if __name__ == "__main__":
     test_solution() 

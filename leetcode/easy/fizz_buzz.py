@@ -24,7 +24,13 @@ Output: ["1","2","Fizz","4","Buzz","Fizz","7","8","Fizz","Buzz","11","Fizz","13"
 Constraints:
 1 <= n <= 10^4
 """
+import sys
+import os
 
+# Add the root directory to the Python path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+
+from common.test_framework import run_tests
 class Solution:
     def fizzBuzz(self, n: int) -> list[str]:
         result = []
@@ -45,34 +51,15 @@ def test_solution():
     solution = Solution()
     
     test_cases = [
-        (3, ["1", "2", "Fizz"], "Example 1"),
-        (5, ["1", "2", "Fizz", "4", "Buzz"], "Example 2"),
-        (15, ["1", "2", "Fizz", "4", "Buzz", "Fizz", "7", "8", "Fizz", "Buzz", "11", "Fizz", "13", "14", "FizzBuzz"], "Example 3"),
-        (1, ["1"], "Single number"),
-        (2, ["1", "2"], "Two numbers"),
-        (30, ["1", "2", "Fizz", "4", "Buzz", "Fizz", "7", "8", "Fizz", "Buzz", "11", "Fizz", "13", "14", "FizzBuzz", "16", "17", "Fizz", "19", "Buzz", "Fizz", "22", "23", "Fizz", "Buzz", "26", "Fizz", "28", "29", "FizzBuzz"], "Up to 30")
+        (solution.fizzBuzz, [3], ["1", "2", "Fizz"], "Example 1"),
+        (solution.fizzBuzz, [5], ["1", "2", "Fizz", "4", "Buzz"], "Example 2"),
+        (solution.fizzBuzz, [15], ["1", "2", "Fizz", "4", "Buzz", "Fizz", "7", "8", "Fizz", "Buzz", "11", "Fizz", "13", "14", "FizzBuzz"], "Example 3"),
+        (solution.fizzBuzz, [1], ["1"], "Single number"),
+        (solution.fizzBuzz, [2], ["1", "2"], "Two numbers"),
+        (solution.fizzBuzz, [30], ["1", "2", "Fizz", "4", "Buzz", "Fizz", "7", "8", "Fizz", "Buzz", "11", "Fizz", "13", "14", "FizzBuzz", "16", "17", "Fizz", "19", "Buzz", "Fizz", "22", "23", "Fizz", "Buzz", "26", "Fizz", "28", "29", "FizzBuzz"], "Up to 30")
     ]
     
-    total_tests = len(test_cases)
-    passed_tests = 0
-    
-    for n, expected, test_name in test_cases:
-        result = solution.fizzBuzz(n)
-        if result == expected:
-            print(f"✅ {test_name} passed")
-            passed_tests += 1
-        else:
-            print(f"\n❌ {test_name} failed")
-            print(f"   Input: n = {n}")
-            print(f"   Expected: {expected}")
-            print(f"   Got: {result}\n")
-    
-    print(f"\nTest Results: {passed_tests}/{total_tests} passed")
-    if passed_tests == total_tests:
-        print("All tests passed! 🎉")
-    else:
-        print(f"Failed {total_tests - passed_tests} tests")
-
+    run_tests(test_cases)
 
 if __name__ == "__main__":
     test_solution() 

@@ -30,6 +30,14 @@ Constraints:
 - s consists of parentheses only '()[]{}'.
 """
 
+import sys
+import os
+
+# Add the root directory to the Python path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+
+from common.test_framework import run_tests
+
 class Solution:
     def isValid(self, s: str) -> bool:
         """
@@ -67,45 +75,22 @@ class Solution:
 
 
 def test_solution():
-    """
-    Test function with various test cases to verify the solution.
-    """
-    solution = Solution()
-    
-    test_cases = [
-        ("()", True, "Example 1"),
-        ("()[]{}", True, "Example 2"),
-        ("(]", False, "Example 3"),
-        ("([])", True, "Example 4"),
-        ("()))", False, "Example 5"),
-        ("{[()]}", True, "Nested brackets"),
-        ("{[(])}", False, "Incorrect order"),
-        ("", True, "Empty string"),
-        ("((((()))))", True, "Deep nesting"),
-        ("]", False, "Single closing bracket"),
-        ("[({})]", True, "Mixed brackets")
-    ]
-    
-    total_tests = len(test_cases)
-    passed_tests = 0
-    
-    for s, expected, test_name in test_cases:
-        result = solution.isValid(s)
-        if result == expected:
-            print(f"✅ {test_name} passed")
-            passed_tests += 1
-        else:
-            print(f"\n❌ {test_name} failed")
-            print(f"   Input: s = \"{s}\"")
-            print(f"   Expected: {expected}")
-            print(f"   Got: {result}\n")
-    
-    print(f"\nTest Results: {passed_tests}/{total_tests} passed")
-    if passed_tests == total_tests:
-        print("All tests passed! 🎉")
-    else:
-        print(f"Failed {total_tests - passed_tests} tests")
-
-
+   solution = Solution()
+   
+   test_cases = [
+       (solution.isValid, ["()"], True, "Example 1"),
+       (solution.isValid, ["()[]{}"], True, "Example 2"),
+       (solution.isValid, ["(]"], False, "Example 3"),
+       (solution.isValid, ["([])"], True, "Example 4"),
+       (solution.isValid, ["()))"], False, "Example 5"),
+       (solution.isValid, ["{[()]}"], True, "Nested brackets"),
+       (solution.isValid, ["{[(])}"], False, "Incorrect order"),
+       (solution.isValid, [""], True, "Empty string"),
+       (solution.isValid, ["((((()))))"], True, "Deep nesting"),
+       (solution.isValid, ["]"], False, "Single closing bracket"),
+       (solution.isValid, ["[({})]"], True, "Mixed brackets")
+   ]
+   
+   run_tests(test_cases)
 if __name__ == "__main__":
-    test_solution() 
+   test_solution()
