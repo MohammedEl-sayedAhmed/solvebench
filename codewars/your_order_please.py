@@ -14,6 +14,14 @@ Examples:
 ""  -->  ""
 """
 
+import sys
+import os
+
+# Add the root directory to the Python path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from common.test_framework import run_tests
+
 def order(sentence):
     # words = sentence.split()
     # num_to_word = {}
@@ -39,35 +47,15 @@ def order(sentence):
                 
 
 def test_solution():
-    """
-    Test function with various test cases to verify the solution.
-    """
     test_cases = [
-        ("is2 Thi1s T4est 3a", "Thi1s is2 3a T4est"),  # Example 1
-        ("4of Fo1r pe6ople g3ood th5e the2", "Fo1r the2 g3ood 4of th5e pe6ople"),  # Example 2
-        ("", ""),  # Example 3
-        ("3word 1word 2word", "1word 2word 3word"),  # Additional test case
-        ("word1 word2 word3", "word1 word2 word3"),  # Already sorted
+        (order, ["is2 Thi1s T4est 3a"], "Thi1s is2 3a T4est", "Example 1"),
+        (order, ["4of Fo1r pe6ople g3ood th5e the2"], "Fo1r the2 g3ood 4of th5e pe6ople", "Example 2"),
+        (order, [""], "", "Example 3"),
+        (order, ["3word 1word 2word"], "1word 2word 3word", "Additional test case"),
+        (order, ["word1 word2 word3"], "word1 word2 word3", "Already sorted"),
     ]
     
-    passed_tests = 0
-    total_tests = len(test_cases)
-    
-    for args, expected in test_cases:
-        result = order(args)
-        if result == expected:
-            passed_tests += 1
-            print(f"✅ Test Case passed")
-        else:
-            print(f"❌ Test Case failed")
-            print(f"   Input: {args}")
-            print(f"   Expected: {expected}")
-            print(f"   Got: {result}\n")
-
-    # Print metrics
-    print(f"\nTest Results: {passed_tests}/{total_tests} passed")
-    if passed_tests == total_tests:
-        print("All tests passed! 🎉")
+    run_tests(test_cases)
 
 if __name__ == "__main__":
     test_solution() 

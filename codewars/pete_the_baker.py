@@ -13,6 +13,14 @@ cakes({'flour': 500, 'sugar': 200, 'eggs': 1}, {'flour': 1200, 'sugar': 1200, 'e
 cakes({'apples': 3, 'flour': 300, 'sugar': 150, 'milk': 100, 'oil': 100}, {'sugar': 500, 'flour': 2000, 'milk': 2000})
 """
 
+import sys
+import os
+
+# Add the root directory to the Python path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from common.test_framework import run_tests
+
 def cakes(recipe, available):
     maxCake = float('inf')
     for ingredient, amount in recipe.items():
@@ -25,36 +33,16 @@ def cakes(recipe, available):
     return maxCake 
 
 def test_solution():
-    """
-    Test function with various test cases to verify the solution.
-    """
     test_cases = [
-       ({"flour": 500, "sugar": 200, "eggs": 1}, {"flour": 1200, "sugar": 1200, "eggs": 5, "milk": 200}, 2, "Test Case 1"),
-       ({"apples": 3, "flour": 300, "sugar": 150, "milk": 100, "oil": 100}, {"sugar": 500, "flour": 2000, "milk": 2000}, 0, "Test Case 2"),
-       ({"flour": 100, "sugar": 100}, {"flour": 300, "sugar": 300, "eggs": 5}, 3, "Test Case 3"),
-       ({"flour": 1, "sugar": 1}, {"flour": 1, "sugar": 1}, 1, "Test Case 4"),
-       ({"flour": 1}, {"sugar": 1}, 0, "Test Case 5"),
-       ({"apples": 3, "flour": 300, "sugar": 150, "milk": 100, "oil": 100}, {"sugar": 500, "flour": 2000, "milk": 2000, "apples": 15, "oil": 20}, 0, "Test Case 6")  
-   ]
+        (cakes, [{"flour": 500, "sugar": 200, "eggs": 1}, {"flour": 1200, "sugar": 1200, "eggs": 5, "milk": 200}], 2, "Test Case 1"),
+        (cakes, [{"apples": 3, "flour": 300, "sugar": 150, "milk": 100, "oil": 100}, {"sugar": 500, "flour": 2000, "milk": 2000}], 0, "Test Case 2"),
+        (cakes, [{"flour": 100, "sugar": 100}, {"flour": 300, "sugar": 300, "eggs": 5}], 3, "Test Case 3"),
+        (cakes, [{"flour": 1, "sugar": 1}, {"flour": 1, "sugar": 1}], 1, "Test Case 4"),
+        (cakes, [{"flour": 1}, {"sugar": 1}], 0, "Test Case 5"),
+        (cakes, [{"apples": 3, "flour": 300, "sugar": 150, "milk": 100, "oil": 100}, {"sugar": 500, "flour": 2000, "milk": 2000, "apples": 15, "oil": 20}], 0, "Test Case 6"),
+    ]
     
-    passed_tests = 0
-    total_tests = len(test_cases)
-    
-    for recipe, available, expected, test_name in test_cases:
-        result = cakes(recipe, available)
-        if result == expected:
-            passed_tests += 1
-            print(f"✅ {test_name} passed")
-        else:
-            print(f"❌ {test_name} failed")
-            print(f"   Input: recipe = {recipe}, available = {available}")
-            print(f"   Expected: {expected}")
-            print(f"   Got: {result}\n")
-
-    # Print metrics
-    print(f"\nTest Results: {passed_tests}/{total_tests} passed")
-    if passed_tests == total_tests:
-        print("All tests passed! 🎉")
+    run_tests(test_cases)
 
 if __name__ == "__main__":
     test_solution() 
