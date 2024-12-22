@@ -17,35 +17,41 @@ This repository contains my solutions to various programming problems from diffe
 
 ##### LeetCode
 
-| #   | Title                                                                             | Solution                              | Difficulty | Notes                               |
-| --- | --------------------------------------------------------------------------------- | ------------------------------------- | ---------- | ----------------------------------- |
-| 1   | [Two Sum](https://leetcode.com/problems/two-sum/)                               | [Python](leetcode/easy/two_sum.py)   | Easy       | Hash map approach |
-| 11  | [Container With Most Water](https://leetcode.com/problems/container-with-most-water/) | [Python](leetcode/medium/container_with_most_water.py) | Medium | Two-pointer approach |
-| 15  | [3Sum](https://leetcode.com/problems/3sum/)                                      | [Python](leetcode/medium/three_sum.py)      | Medium     | Two-pointer approach with sorting |
-| 20  | [Valid Parentheses](https://leetcode.com/problems/valid-parentheses/)            | [Python](leetcode/easy/valid_parentheses.py) | Easy       | Stack approach |
-| 125 | [Valid Palindrome](https://leetcode.com/problems/valid-palindrome/)              | [Python](leetcode/easy/valid_palindrome.py) | Easy       | Two-pointer or string reverse approach |
-| 167 | [Two Sum II](https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/)    | [Python](leetcode/medium/two_sum_ii.py)    | Medium     | Two-pointer approach with sorted array |
-| 169 | [Majority Element](https://leetcode.com/problems/majority-element/)              | [Python](leetcode/easy/majority_element.py) | Easy       | Boyer-Moore Voting Algorithm |
-| 392 | [Is Subsequence](https://leetcode.com/problems/is-subsequence/)                  | [Python](leetcode/easy/is_subsequence.py)   | Easy       | Two-pointer approach |
-| 412 | [Fizz Buzz](https://leetcode.com/problems/fizz-buzz/)                           | [Python](leetcode/easy/fizz_buzz.py) | Easy       | String array based on divisibility |
-| 888 | [Fair Candy Swap](https://leetcode.com/problems/fair-candy-swap/)               | [Python](leetcode/easy/fair_candy_swap.py) | Easy       | Exchange candy boxes to equalize total |
+| #   | Title                                                                              | Solution                                            | Difficulty | Notes                                  |
+| --- | ---------------------------------------------------------------------------------- | --------------------------------------------------- | ---------- | -------------------------------------- |
+| 1   | [Two Sum](https://leetcode.com/problems/two-sum/)                                     | [Python](leetcode/easy/two_sum.py)                     | Easy       | Hash map approach                      |
+| 11  | [Container With Most Water](https://leetcode.com/problems/container-with-most-water/) | [Python](leetcode/medium/container_with_most_water.py) | Medium     | Two-pointer approach                   |
+| 15  | [3Sum](https://leetcode.com/problems/3sum/)                                           | [Python](leetcode/medium/three_sum.py)                 | Medium     | Two-pointer approach with sorting      |
+| 20  | [Valid Parentheses](https://leetcode.com/problems/valid-parentheses/)                 | [Python](leetcode/easy/valid_parentheses.py)           | Easy       | Stack approach                         |
+| 125 | [Valid Palindrome](https://leetcode.com/problems/valid-palindrome/)                   | [Python](leetcode/easy/valid_palindrome.py)            | Easy       | Two-pointer or string reverse approach |
+| 167 | [Two Sum II](https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/)         | [Python](leetcode/medium/two_sum_ii.py)                | Medium     | Two-pointer approach with sorted array |
+| 169 | [Majority Element](https://leetcode.com/problems/majority-element/)                   | [Python](leetcode/easy/majority_element.py)            | Easy       | Boyer-Moore Voting Algorithm           |
+| 392 | [Is Subsequence](https://leetcode.com/problems/is-subsequence/)                       | [Python](leetcode/easy/is_subsequence.py)              | Easy       | Two-pointer approach                   |
+| 412 | [Fizz Buzz](https://leetcode.com/problems/fizz-buzz/)                                 | [Python](leetcode/easy/fizz_buzz.py)                   | Easy       | String array based on divisibility     |
+| 888 | [Fair Candy Swap](https://leetcode.com/problems/fair-candy-swap/)                     | [Python](leetcode/easy/fair_candy_swap.py)             | Easy       | Exchange candy boxes to equalize total |
 
 ##### Codewars
 
-| #   | Title                                                                             | Solution                              | Difficulty | Notes                               |
-| --- | --------------------------------------------------------------------------------- | ------------------------------------- | ---------- | ----------------------------------- |
-| 2   | [Weight for Weight](https://www.codewars.com/kata/weight-for-weight)            | [Python](codewars/weight_for_weight.py) | 5 kyu      | Sort numbers by the sum of their digits, use lambda function |
-| 5   | [Pete, the Baker](https://www.codewars.com/kata/pete-the-baker)                 | [Python](codewars/pete_the_baker.py) | 5 kyu      | Uses a greedy approach to calculate the maximum number of cakes by determining the limiting ingredient based on the recipe. |
-| 5   | [Count IP Addresses](https://www.codewars.com/kata/count-ip-addresses)         | [Python](codewars/count_ip_addresses.py) | 5 kyu      | Converts IP addresses to integers to calculate the number of addresses between two given IPv4 addresses. |
-| 5   | [Flatten](https://www.codewars.com/kata/flatten)                               | [Python](codewars/flatten.py)        | 5 kyu      | The algorithm recursively traverses elements, flattening lists and appending non-list items to the result. |
-| 7   | [Your Order, Please](https://www.codewars.com/kata/your-order-please)           | [Python](codewars/your_order_please.py) | 6 kyu      | Sorts words in a string based on the number contained in each word, returning them in the correct order. |
-| 5   | [Luck Check](https://www.codewars.com/kata/luck-check)                         | [Python](codewars/luck_check.py)     | 5 kyu      | Checks if a ticket number is lucky by comparing the sums of the digits on the left and right halves, with input validation for non-numeric strings. |
+| # | Title                                                               | Solution                              | Difficulty | Notes                                                                                                                                              |
+| - | ------------------------------------------------------------------- | ------------------------------------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2 | [Weight for Weight](https://www.codewars.com/kata/weight-for-weight)   | [Python](codewars/weight_for_weight.py)  | 5 kyu      | Sort numbers by the sum of their digits use lambda function                                                                                        |
+| 5 | [Pete, the Baker](https://www.codewars.com/kata/pete-the-baker)        | [Python](codewars/pete_the_baker.py)     | 5 kyu      | It uses a greedy approach to calculate the maximum number of cakes by determining the limiting ingredient based on the recipe.                     |
+| 5 | [Count IP Addresses](https://www.codewars.com/kata/count-ip-addresses) | [Python](codewars/count_ip_addresses.py) | 5 kyu      | Converts IP addresses to integers to calculate the number of addresses between two given IPv4 addresses.                                           |
+| 5 | [Flatten](https://www.codewars.com/kata/flatten)                       | [Python](codewars/flatten.py)            | 5 kyu      | The algorithm recursively traverses elements, flattening lists and appending non-list items to the result.                                         |
+| 7 | [Your Order, Please](https://www.codewars.com/kata/your-order-please)  | [Python](codewars/your_order_please.py)  | 6 kyu      | Sort words in a string based on the number in each word, returning them in the correct order.                                                      |
+| 5 | [Luck Check](https://www.codewars.com/kata/luck-check)                 | [Python](codewars/luck_check.py)         | 5 kyu      | Check if a ticket number is lucky by comparing the sums of the digits on the left and right halves, with input validation for non-numeric strings. |
 
 ### HackerRank
 
 | Challenge                     | Solution             | Difficulty | Notes       |
 | ----------------------------- | -------------------- | ---------- | ----------- |
 | [Challenge Name](challenge_link) | [Python](solution_link) | Easy       | Brief notes |
+
+### Others
+
+| Platform    | Challenge                                                                    | Solution                             | Difficulty | Notes                                                                                   |
+| ----------- | ---------------------------------------------------------------------------- | ------------------------------------ | ---------- | --------------------------------------------------------------------------------------- |
+| Coding Game | [Rectangle Partition](https://www.codingame.com/ide/puzzle/rectangle-partition) | [Python](others/rectangle_partition.py) | Hard       | Brute force is not optimized, An improved version using length_freq counting dictionary |
 
 ## How to Use
 
@@ -78,7 +84,6 @@ If you have any questions or suggestions, feel free to reach out to me.
 ## Stats
 
 ![LeetCode Stats](https://leetcard.jacoblin.cool/MohammedElsayed?theme=nord&font=Chakra%20Petch&animation=true&ext=activity)
-
 
 ---
 
