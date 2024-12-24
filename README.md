@@ -55,7 +55,7 @@ This repository contains my solutions to various programming problems from diffe
 
 | Challenge                                                      | Solution                                                 | Difficulty | Notes                                                                                                            | Year  | Day |
 | ---                                                            | ---                                                      | ---        | ---                                                                                                              | ---   | --- |
-| [Day 10: Syntax Scoring](https://adventofcode.com/2021/day/10) | [Python](AdventOfCode\2021\10\2021_10_Syntax_Scoring.py) | Medium     | Stack based approach with dicts for opening, closing, errors calculations  similar to valid parenthesis problem. | 2021  | 10  |
+| [Day 10: Syntax Scoring](https://adventofcode.com/2021/day/10) | [Python](AdventOfCode/2021/10/2021_10_Syntax_Scoring.py) | Medium     | Stack based approach with dicts for opening, closing, errors calculations  similar to valid parenthesis problem. | 2021  | 10  |
 
 ##### Others
 
