@@ -10,6 +10,7 @@ This repository contains my solutions to various programming problems from diffe
 │   ├── medium              # Medium level problems
 │   └── hard                # Hard level problems
 ├── hackerrank              # Solutions to HackerRank problems
+├── AdventOfCode            # Solutions to Advent Of Code problems
 └── others                  # Solutions to problems from other platforms
 ```
 
@@ -48,6 +49,13 @@ This repository contains my solutions to various programming problems from diffe
 | Challenge                        | Solution                | Difficulty | Notes       |
 | -----------------------------    | --------------------    | ---------- | ----------- |
 | [Challenge Name](challenge_link) | [Python](solution_link) | Easy       | Brief notes |
+
+
+### Advent Of Code
+
+| Challenge                                                      | Solution                                                 | Difficulty | Notes                                                                                                            | Year  | Day |
+| ---                                                            | ---                                                      | ---        | ---                                                                                                              | ---   | --- |
+| [Day 10: Syntax Scoring](https://adventofcode.com/2021/day/10) | [Python](AdventOfCode\2021\10\2021_10_Syntax_Scoring.py) | Medium     | Stack based approach with dicts for opening, closing, errors calculations  similar to valid parenthesis problem. | 2021  | 10  |
 
 ### Others
 
