@@ -44,20 +44,20 @@ This repository contains my solutions to various programming problems from diffe
 | 7 | [Your Order, Please](https://www.codewars.com/kata/your-order-please)  | [Python](codewars/your_order_please.py)  | 6 kyu      | Sort words in a string based on the number in each word, returning them in the correct order                                              |
 | 5 | [Luck Check](https://www.codewars.com/kata/luck-check)                 | [Python](codewars/luck_check.py)         | 5 kyu      | Check if a ticket number is lucky by comparing sums of digits on the left and right halves, with input validation for non-numeric strings |
 
-### HackerRank
+##### HackerRank
 
 | Challenge                        | Solution                | Difficulty | Notes       |
 | -----------------------------    | --------------------    | ---------- | ----------- |
 | [Challenge Name](challenge_link) | [Python](solution_link) | Easy       | Brief notes |
 
 
-### Advent Of Code
+##### Advent Of Code
 
 | Challenge                                                      | Solution                                                 | Difficulty | Notes                                                                                                            | Year  | Day |
 | ---                                                            | ---                                                      | ---        | ---                                                                                                              | ---   | --- |
 | [Day 10: Syntax Scoring](https://adventofcode.com/2021/day/10) | [Python](AdventOfCode\2021\10\2021_10_Syntax_Scoring.py) | Medium     | Stack based approach with dicts for opening, closing, errors calculations  similar to valid parenthesis problem. | 2021  | 10  |
 
-### Others
+##### Others
 
 | Platform    | Challenge                                                                       | Solution                                | Difficulty | Notes                                                                                   |
 | ----------- | ----------------------------------------------------------------------------    | ------------------------------------    | ---------- | --------------------------------------------------------------------------------------- |
