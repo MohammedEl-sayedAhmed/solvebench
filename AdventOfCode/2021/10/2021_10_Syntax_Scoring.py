@@ -59,7 +59,7 @@ Explanation:
 """
 
 class Solution:
-    def part_1(self, lines):
+    def syntax_error_score_1(self, lines):
         """
         Function to calculate the total syntax error score for the corrupted lines.
 
@@ -92,7 +92,7 @@ class Solution:
         return total_score
     
     
-    def part_2(self, lines):
+    def syntax_error_score_2(self, lines):
         """
         Function to calculate the middle score of the completion strings for incomplete lines.
         """
@@ -146,40 +146,40 @@ def solve_from_file(file_path):
 def test_solution():
     solution = Solution()
     
-    # # Test cases for checking the syntax error score calculation
-    # test_cases = [
-    #     # # Test case format: (function, [args], expected_output, test_name)
-    #     # (solution.part_2, [INPUT HERE], OUTPUT, "Part 2 Example input") Template, our case the input is list of str ["", "", ""]
+    # Test cases for checking the syntax error score calculation
+    test_cases = [
+        # # Test case format: (function, [args], expected_output, test_name)
+        # (solution.part_2, [INPUT HERE], OUTPUT, "Part 2 Example input") Template, our case the input is list of str ["", "", ""]
         
-    #     (solution.part_1, [["[({(<(())[]>[[{[]{<()<>", 
-    #                                    "[(()[<>])]({[<{<<[]>>(", 
-    #                                    "{([(<{}[<>[]}>{[]{[(<()>", 
-    #                                    "[[<[([]))<([[{}[[()]]]", 
-    #                                    "[{[{({}]{}}([{[{{{}}([]", 
-    #                                    "{<[[]]>}<{[{[{[]{()[[[]", 
-    #                                    "[<(<(<(<{}))><([]([]()", 
-    #                                    "<{([([[(<>()){}]>(<<{{", 
-    #                                    "<{([{{}}[<[[[<>{}]]]>[]]"]], 26397, "Part 1 Example input"),
-    #     # Additional test case for edge case scenarios
-    #     (solution.part_2, [["[({(<(())[]>[[{[]{<()<>>",
-    #                         "[(()[<>])]({[<{<<[]>>(",
-    #                         "(((({<>}<{<{<>}{[]{[]{}",
-    #                         "{<[[]]>}<{[{[{[]{()[[[]",
-    #                         "<{([{{}}[<[[[<>{}]]]>[]]"]], 288957, "Part 2 Example input")
+        (solution.syntax_error_score_1, [["[({(<(())[]>[[{[]{<()<>", 
+                                       "[(()[<>])]({[<{<<[]>>(", 
+                                       "{([(<{}[<>[]}>{[]{[(<()>", 
+                                       "[[<[([]))<([[{}[[()]]]", 
+                                       "[{[{({}]{}}([{[{{{}}([]", 
+                                       "{<[[]]>}<{[{[{[]{()[[[]", 
+                                       "[<(<(<(<{}))><([]([]()", 
+                                       "<{([([[(<>()){}]>(<<{{", 
+                                       "<{([{{}}[<[[[<>{}]]]>[]]"]], 26397, "Part 1 Example input"),
+        # Additional test case for edge case scenarios
+        (solution.syntax_error_score_2, [["[({(<(())[]>[[{[]{<()<>>",
+                            "[(()[<>])]({[<{<<[]>>(",
+                            "(((({<>}<{<{<>}{[]{[]{}",
+                            "{<[[]]>}<{[{[{[]{()[[[]",
+                            "<{([{{}}[<[[[<>{}]]]>[]]"]], 288957, "Part 2 Example input")
 
-    # ]
-    # run_tests(test_cases)
+    ]
+    run_tests(test_cases)
     
     # Read input from the input.txt file
     file_path = "input.txt"  # Ensure this matches the file name in your directory
     lines = solve_from_file(file_path)
     
     # Part 1 - Calculate the syntax error score for corrupted lines
-    part_1_result = solution.part_1(lines)
+    part_1_result = solution.syntax_error_score_1(lines)
     print(f"Part 1: Total syntax error score: {part_1_result}")
 
     # Part 2 - Calculate the middle score for autocomplete strings
-    part_2_result = solution.part_2(lines)
+    part_2_result = solution.syntax_error_score_2(lines)
     print(f"Part 2: Middle autocomplete score: {part_2_result}")
 
 
