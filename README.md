@@ -49,6 +49,7 @@ This repository contains my solutions to various programming problems from diffe
 | Year  | Day  | Title                                                                                                   | Solution                                                   | Notes                                                                                                                                           |
 | ----- | ---- | --------------------------------------------------------------------------------------------------------| -----------------------------------------------------------| ------------------------------------------------------------------------------------------------------------------------------------------------|
 | 2021  | 10   | [Syntax Scoring](https://adventofcode.com/2021/day/10)                                                  | [Python](AdventOfCode/2021/10/2021_10_Syntax_Scoring.py)   | Calculate syntax error score for corrupted lines                                                                                                |
+| 2021  | 11   | [Dumbo Octopus](https://adventofcode.com/2021/day/11)                                                   | [Python](AdventOfCode/2021/11/dumbo_octopus.py)            | Simulate energy levels and flashes of dumbo octopuses using 2D arrays to model the grid and recursive function to handle flashes                |
 | 2021  | 14   | [Extended Polymerization](https://adventofcode.com/2021/day/14)                                         | [Python](AdventOfCode/2021/14/extended_polymerization.py)  | Apply pair insertion rules to a polymer template and find the most and least common elements, using default dict and counter                    |
 
 ##### Others
@@ -92,3 +93,4 @@ If you have any questions or suggestions, feel free to reach out to me.
 ---
 
 ⭐ Star this repository if you find it helpful!
+````
