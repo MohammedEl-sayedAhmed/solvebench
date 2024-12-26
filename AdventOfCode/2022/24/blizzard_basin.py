@@ -380,25 +380,26 @@ def blizzard_basin_1(lines):
     time = find_shortest_path_1(walls, blizzards, height, width, start, end)
     return time
 
-def find_shortest_path_2(walls, blizzards, height, width, start, end, start_time):
+def find_shortest_path_2(walls, blizzards, height, width, start, end):
     """Find shortest path from start to end avoiding blizzards."""
-    queue = deque([(start, start_time)])
-    seen = {(start, start_time)}
+    queue = deque([(start, 0)])
+    seen = {(start, 0)}
     
     # Cache blizzard positions for each minute
     blizzard_cache = {}
+    current_blizzards = blizzards.copy()  # Create a copy of initial blizzards
     
     while queue:
         pos, time = queue.popleft()
         
         if pos == end:
-            return time, blizzards
+            return time, current_blizzards  # Return time taken for this specific journey
         
         # Get or calculate blizzard positions for next minute
         next_time = time + 1
         if next_time not in blizzard_cache:
-            blizzards = move_blizzards(blizzards, height, width)
-            blizzard_cache[next_time] = get_blizzard_positions(blizzards)
+            current_blizzards = move_blizzards(current_blizzards, height, width)
+            blizzard_cache[next_time] = get_blizzard_positions(current_blizzards)
         blizzard_positions = blizzard_cache[next_time]
         
         # Try all possible moves including waiting
@@ -415,27 +416,37 @@ def find_shortest_path_2(walls, blizzards, height, width, start, end, start_time
                     queue.append((new_pos, next_time))
                     seen.add((new_pos, next_time))
     
-    return float('inf'), blizzards
+    return float('inf'), current_blizzards
+
 
 def blizzard_basin_2(lines):
     """Main function to solve Part Two of the puzzle."""
     # Parse input
-    walls, blizzards, height, width = parse_input(lines)
+    walls, initial_blizzards, height, width = parse_input(lines)
     
     # Find start and end positions
     start = (lines[0].index('.'), 0)
     end = (lines[-1].index('.'), len(lines) - 1)
     
-    # Find shortest path from start to end
-    time_to_goal, blizzards = find_shortest_path_2(walls, blizzards, height, width, start, end, start_time=0)
+    # First journey: Start to Goal
+    time_to_goal, blizzards_after_first = find_shortest_path_2(walls, initial_blizzards, height, width, start, end)
     
-    # Find shortest path from end back to start
-    time_back_to_start, blizzards = find_shortest_path_2(walls, blizzards, height, width, end, start, start_time=1)
+    # Move blizzards to their positions after first journey
+    for _ in range(time_to_goal):
+        initial_blizzards = move_blizzards(initial_blizzards, height, width)
     
-    # Find shortest path from start to end again
-    time_back_to_goal, _ = find_shortest_path_2(walls, blizzards, height, width, start, end, start_time=1)
+    # Second journey: Goal to Start
+    time_back_to_start, blizzards_after_second = find_shortest_path_2(walls, initial_blizzards, height, width, end, start)
     
-    return time_to_goal + time_back_to_start + time_back_to_goal 
+    # Move blizzards to their positions after second journey
+    for _ in range(time_back_to_start):
+        initial_blizzards = move_blizzards(initial_blizzards, height, width)
+    
+    # Third journey: Start to Goal again
+    time_back_to_goal, _ = find_shortest_path_2(walls, initial_blizzards, height, width, start, end)
+    
+    # Return sum of all three journey times
+    return time_to_goal + time_back_to_start + time_back_to_goal
 
 def test_solution():
     """Test the solution with the example input."""
