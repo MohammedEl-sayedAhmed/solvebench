@@ -63,8 +63,10 @@ This repository contains my solutions to various programming problems from diffe
 | 2021  | 10   | [Syntax Scoring](https://adventofcode.com/2021/day/10)                                                  | [Python](AdventOfCode/2021/10/2021_10_Syntax_Scoring.py)   | Calculate syntax error score for corrupted lines                                                                                                |
 | 2021  | 11   | [Dumbo Octopus](https://adventofcode.com/2021/day/11)                                                   | [Python](AdventOfCode/2021/11/dumbo_octopus.py)            | Simulate energy levels and flashes of dumbo octopuses using 2D arrays to model the grid and recursive function to handle flashes                |
 | 2021  | 14   | [Extended Polymerization](https://adventofcode.com/2021/day/14)                                         | [Python](AdventOfCode/2021/14/extended_polymerization.py)  | Apply pair insertion rules to a polymer template and find the most and least common elements, using default dict and counter                    |
+| 2022  | 7    | [No Space Left On Device](https://adventofcode.com/2022/day/7)                                          | [Python](AdventOfCode/2022/7/no_space_left_on_device.py)   | Calculate directory sizes, {'direc': size} and find the smallest directory to delete to free up enough space                                    |
 | 2022  | 14   | [Regolith Reservoir](https://adventofcode.com/2022/day/14)                                              | [Python](AdventOfCode/2022/14/regolith_reservoir.py)       | Simulate falling sand using a set-based approach for efficient lookup, handling both an abyss and an infinite floor scenario                    |
- 2022   | 24   | [Blizzard Basin](https://adventofcode.com/2022/day/24)                                                  | [Python](AdventOfCode/2022/24/blizzard_basin.py)           | BFS approach with blizzard position caching and multiple trips handling                                    |
+| 2022  | 24   | [Blizzard Basin](https://adventofcode.com/2022/day/24)                                                  | [Python](AdventOfCode/2022/24/blizzard_basin.py)           | BFS approach with blizzard position caching and multiple trips handling                                                                         |
+
 
 ##### Others
 
@@ -107,4 +109,4 @@ If you have any questions or suggestions, feel free to reach out to me.
 ---
 
 ⭐ Star this repository if you find it helpful!
-`````
+
