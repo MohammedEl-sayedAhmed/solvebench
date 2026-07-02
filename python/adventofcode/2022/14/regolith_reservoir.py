@@ -75,11 +75,7 @@ To find somewhere safe to stand, you'll need to simulate falling sand until a un
 Using your scan, simulate the falling sand until the source of the sand becomes blocked. How many units of sand come to rest?
 """
 
-import sys
-import os
-
-# Add the root directory to the Python path (for testing purposes)
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
+from common.aoc import input_path
 
 from common.test_framework import run_tests
 
@@ -218,8 +214,7 @@ def solve_from_file(file_path, part=1):
     """
     Reads the input lines from a file and returns the result of the puzzle.
     """
-    script_dir = os.path.dirname(os.path.realpath(__file__))
-    full_file_path = os.path.join(script_dir, file_path)
+    full_file_path = input_path(__file__, file_path)
     
     with open(full_file_path, 'r') as file:
         lines = file.readlines()

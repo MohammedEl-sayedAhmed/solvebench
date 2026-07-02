@@ -247,12 +247,8 @@ In the above example, the first trip to the goal takes 18 minutes, the trip back
 What is the fewest number of minutes required to reach the goal, go back to the start, then reach the goal again?
 """
 
-import sys
-import os
+from common.aoc import input_path
 from collections import deque
-
-# Add the root directory to the Python path (for testing purposes)
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
 
 from common.test_framework import run_tests
 
@@ -366,7 +362,6 @@ def find_shortest_path_1(walls, blizzards, height, width, start, end):
     
     return float('inf')
 
-
 def blizzard_basin_1(lines):
     """Main function to solve the puzzle."""
     # Parse input
@@ -417,7 +412,6 @@ def find_shortest_path_2(walls, blizzards, height, width, start, end):
                     seen.add((new_pos, next_time))
     
     return float('inf'), current_blizzards
-
 
 def blizzard_basin_2(lines):
     """Main function to solve Part Two of the puzzle."""
@@ -473,8 +467,7 @@ def test_solution():
 def solve_from_file(file_path, part=1):
     """Read input from file and solve the puzzle."""
     
-    script_dir = os.path.dirname(os.path.realpath(__file__))
-    full_file_path = os.path.join(script_dir, file_path)
+    full_file_path = input_path(__file__, file_path)
     
     with open(full_file_path, 'r') as file:
         lines = [line.strip() for line in file.readlines()]
@@ -487,5 +480,4 @@ def solve_from_file(file_path, part=1):
 if __name__ == "__main__":
     # Run test with example input
     test_solution()
-    
     

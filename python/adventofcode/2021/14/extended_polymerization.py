@@ -62,7 +62,7 @@ Apply 10 steps of pair insertion to the polymer template and find the most and l
 if you take the quantity of the most common element and subtract the quantity of the least common element?
 """
 
-import os
+from common.aoc import input_path
 from collections import Counter, defaultdict
 
 def polymerization_1(template, rules, steps):
@@ -167,8 +167,7 @@ def polymerization_2(template, rules, steps):
 
 def solve_from_file(file_path):
     """Reads the input from a file and returns the template and rules."""
-    script_dir = os.path.dirname(os.path.realpath(__file__))
-    full_file_path = os.path.join(script_dir, file_path)
+    full_file_path = input_path(__file__, file_path)
     
     with open(full_file_path, 'r') as file:
         lines = [line.strip() for line in file.readlines()]

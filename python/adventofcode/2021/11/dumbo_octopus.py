@@ -307,11 +307,7 @@ In the example above, the first time all octopuses flash simultaneously is step 
 If you can calculate the exact moments when the octopuses will all flash simultaneously, you should be able to navigate through the cavern. What is the first step during which all octopuses flash?
 """
 
-import sys
-import os
-
-# Add the root directory to the Python path (for testing purposes)
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
+from common.aoc import input_path
 
 from common.test_framework import run_tests
 
@@ -360,7 +356,6 @@ def simulate_octopus_flashes_1(grid, steps):
             for dr, dc in directions:
                 increase_energy(r + dr, c + dc, flashed)
         
-
     for i in range(steps):
         flashed = set()
         
@@ -434,13 +429,11 @@ def simulate_octopus_flashes_2(grid):
         if len(flashed) == rows * cols:
             return sync_step
 
-
 def solve_from_file(file_path):
     """
     Reads the input grid from a file and returns it as a 2D list of integers.
     """
-    script_dir = os.path.dirname(os.path.realpath(__file__))
-    full_file_path = os.path.join(script_dir, file_path)
+    full_file_path = input_path(__file__, file_path)
     
     with open(full_file_path, 'r') as file:
         grid = []

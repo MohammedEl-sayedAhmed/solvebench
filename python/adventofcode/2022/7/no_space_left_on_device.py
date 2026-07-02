@@ -96,11 +96,7 @@ Directories e and a are both too small; deleting them would not free up enough s
 Find the smallest directory that, if deleted, would free up enough space on the filesystem to run the update. What is the total size of that directory?
 """
 
-import sys
-import os
-
-# Add the root directory to the Python path (for testing purposes)
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
+from common.aoc import input_path
 
 from common.test_framework import run_tests
 
@@ -227,8 +223,7 @@ def test_solution():
 
 def solve_from_file(file_path, part=1):
     """Read input from file and solve the puzzle."""
-    script_dir = os.path.dirname(os.path.realpath(__file__))
-    full_file_path = os.path.join(script_dir, file_path)
+    full_file_path = input_path(__file__, file_path)
     
     with open(full_file_path, 'r') as file:
         lines = [line.strip() for line in file.readlines()]

@@ -35,11 +35,7 @@ Solution:
 We need to calculate the total syntax error score for the corrupted lines.
 """
 
-import sys
-import os
-
-# Add the root directory to the Python path (for testing purposes)
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
+from common.aoc import input_path
 
 from common.test_framework import run_tests
 
@@ -91,7 +87,6 @@ class Solution:
                     stack.pop()  # If the character is valid, pop the stack
         return total_score
     
-    
     def syntax_error_score_2(self, lines):
         """
         Function to calculate the middle score of the completion strings for incomplete lines.
@@ -132,12 +127,10 @@ class Solution:
         scores.sort()
         return scores[len(scores) // 2]
 
-
 def solve_from_file(file_path):
     """Reads the input from a file and returns the lines."""
     # Ensure the correct file path based on the script's location
-    script_dir = os.path.dirname(os.path.realpath(__file__))
-    full_file_path = os.path.join(script_dir, file_path)
+    full_file_path = input_path(__file__, file_path)
     
     with open(full_file_path, 'r') as file:
         lines = [line.strip() for line in file.readlines()]
@@ -182,9 +175,5 @@ def test_solution():
     part_2_result = solution.syntax_error_score_2(lines)
     print(f"Part 2: Middle autocomplete score: {part_2_result}")
 
-
 if __name__ == "__main__":
     test_solution()
-
-
-
