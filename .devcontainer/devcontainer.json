@@ -1,0 +1,22 @@
+{
+  "name": "problem-solving-training",
+  "build": { "dockerfile": "../Dockerfile" },
+  "workspaceFolder": "/repo",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/repo,type=bind",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.debugpy",
+        "ms-vscode.cpptools",
+        "redhat.java",
+        "vscjava.vscode-java-debug"
+      ],
+      "settings": {
+        "python.analysis.extraPaths": ["python"],
+        "java.project.sourcePaths": ["java"]
+      }
+    }
+  },
+  "postCreateCommand": "python3 run.py --stats || true"
+}

@@ -137,7 +137,19 @@ else
   skip "no docker/podman — use PST_NATIVE=1 ./run.sh with local tools"
 fi
 
-# 4) Toolchain summary -------------------------------------------------------
+# 4) Git hooks (optional) ----------------------------------------------------
+step "Git hooks (optional)"
+if [ -d .git ] && [ -d .githooks ]; then
+  if ask "Enable the pre-commit hook? (runs changed solutions + refreshes stats)" N; then
+    git config core.hooksPath .githooks && ok "enabled (core.hooksPath=.githooks)"
+  else
+    skip "skipped — enable later with: git config core.hooksPath .githooks"
+  fi
+else
+  skip "no .git / .githooks here"
+fi
+
+# 5) Toolchain summary -------------------------------------------------------
 step "Toolchain check"
 for t in python3 g++ javac java docker; do
   if command -v "$t" >/dev/null 2>&1; then ok "$t"; else skip "$t (optional)"; fi

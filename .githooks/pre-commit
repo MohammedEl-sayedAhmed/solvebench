@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# Pre-commit hook: run only the solutions you changed, then refresh README stats.
+# Enable with:  git config core.hooksPath .githooks   (setup.sh offers to do this)
+set -uo pipefail
+cd "$(git rev-parse --show-toplevel)"
+
+if command -v python3 >/dev/null 2>&1; then
+  if ! python3 run.py --changed -q; then
+    echo "pre-commit: changed solutions failed — commit aborted (use 'git commit --no-verify' to skip)" >&2
+    exit 1
+  fi
+  # Keep the README progress block / PROGRESS.md in sync with what's committed.
+  python3 scripts/gen_stats.py >/dev/null 2>&1 && git add README.md PROGRESS.md 2>/dev/null || true
+fi
