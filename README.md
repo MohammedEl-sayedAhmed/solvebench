@@ -1,8 +1,17 @@
 # Problem Solving Training
 
+[![tests](https://github.com/MohammedEl-sayedAhmed/problem-solving-training/actions/workflows/ci.yml/badge.svg)](https://github.com/MohammedEl-sayedAhmed/problem-solving-training/actions/workflows/ci.yml)
+[![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![stars](https://img.shields.io/github/stars/MohammedEl-sayedAhmed/problem-solving-training?style=social)](https://github.com/MohammedEl-sayedAhmed/problem-solving-training/stargazers)
+[![forks](https://img.shields.io/github/forks/MohammedEl-sayedAhmed/problem-solving-training?style=social)](https://github.com/MohammedEl-sayedAhmed/problem-solving-training/network/members)
+
 My solutions to programming problems from LeetCode, Codewars, Advent of Code, and
 other platforms — solvable in **multiple languages** and runnable **anywhere** via
 a single containerized test runner (no local toolchain required).
+
+> **Want your own?** ⭐ Star it, then **Fork** — it doubles as a ready-made
+> polyglot practice framework. After forking, run `./init.sh` to make it yours
+> (see [Fork & make it yours](#fork--make-it-yours)).
 
 ## Highlights
 
@@ -14,6 +23,23 @@ a single containerized test runner (no local toolchain required).
   inside Docker, so you don't need Python/g++/JDK installed.
 - 🪟🐧 **Cross-platform** — works on Ubuntu, KDE/other Linux, macOS, and Windows.
 - 🏗️ **Scaffolder** — `new.py` starts a new solution in any language from a template.
+
+## Fork & make it yours
+
+⭐ **Star** the repo, then **Fork** it (forking keeps it linked in the network
+graph — that's the point). After cloning your fork:
+
+```bash
+./init.sh     # clean slate: clears the example solutions/inputs, sets your handles,
+              # resets the solutions index, and (optionally) starts fresh git history
+./setup.sh    # optional: repo-local VS Code extensions + venv
+./run.sh new leetcode/easy/two_sum --lang py
+```
+
+`init.sh` keeps the whole framework (runner, helpers, templates, CI, setup) and
+only removes the example solutions. Your profile links live in
+[profile.json](profile.json) — edit it and run `python scripts/apply_profile.py`
+to refresh the README. PRs that improve the framework are welcome.
 
 ## Structure
 
@@ -140,6 +166,8 @@ if any case fails (this is what the runner keys on):
 
 ## Solutions
 
+<!-- solutions:start -->
+
 ##### LeetCode &nbsp;·&nbsp; profile: [@MohammedElsayed](https://leetcode.com/u/MohammedElsayed/)
 
 | #    | Title                                                                                                   | Solution                                                              | Difficulty | Notes                                                                                                      |
@@ -190,19 +218,23 @@ if any case fails (this is what the runner keys on):
 | ----------- | ------------------------------------------------------------------------------- | ---------------------------------------------- | ---------- | ----------------------------------------------------------------- |
 | CodinGame   | [Rectangle Partition](https://www.codingame.com/ide/puzzle/rectangle-partition) | [Python](python/others/rectangle_partition.py) | Hard       | Brute-force + optimized length-frequency counting (both tested)   |
 
+<!-- solutions:end -->
+
 ## License
 
 Licensed under the MIT License — see [LICENSE](LICENSE).
 
-## Author
+## Profiles
 
+<!-- profile:start -->
 - **Mohammed El-sayed Ahmed**
 - GitHub: [@MohammedEl-sayedAhmed](https://github.com/MohammedEl-sayedAhmed)
 - LeetCode: [@MohammedElsayed](https://leetcode.com/u/MohammedElsayed/)
 
-## Stats
-
 ![LeetCode Stats](https://leetcard.jacoblin.cool/MohammedElsayed?theme=nord&font=Chakra%20Petch&animation=true&ext=activity)
+<!-- profile:end -->
+
+> Generated from [profile.json](profile.json) — edit it and run `python scripts/apply_profile.py`.
 
 ---
 
