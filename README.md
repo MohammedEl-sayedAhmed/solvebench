@@ -53,8 +53,22 @@ solution file.
 
 `./setup.sh` (or `.\setup.ps1` on Windows) is an interactive installer for the
 recommended VS Code extensions (Python, C/C++, Java debugger) and optional dev
-deps. In VS Code you can then debug any open solution with **F5** — per-language
-launch configs live in [.vscode/launch.json](.vscode/launch.json).
+deps.
+
+**Self-contained & reversible** — setup never touches your machine's global
+config. Everything it creates stays inside the repo:
+
+| Artifact | Location | Notes |
+| -------- | -------- | ----- |
+| VS Code extensions | `./.pst/extensions` | repo-local, not your global VS Code |
+| pytest (optional) | `./.venv` | a local virtualenv (PEP 668 safe) |
+| container image | docker daemon | `pst-runner`; the only out-of-repo item |
+
+- **Edit with the repo-scoped editor:** `./code.sh` (or `.\code.ps1`) launches
+  VS Code using the repo-local extensions/profile under `.pst/`. Debug any open
+  solution with **F5** — configs are in [.vscode/launch.json](.vscode/launch.json).
+- **Remove everything:** `./teardown.sh` (or `.\teardown.ps1`) deletes `.pst/`,
+  `.venv/`, caches/build files, and optionally the `pst-runner` image.
 
 ### Run in a container (recommended — no local tools needed)
 
