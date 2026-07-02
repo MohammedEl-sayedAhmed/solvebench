@@ -6,18 +6,23 @@ __pycache__/
 .venv/
 venv/
 
+# Repo-local VS Code extensions + profile (see setup.sh / code.sh)
+.pst/
+
 # Test / build artifacts
 report.html
 build/
-*.class          # compiled Java
-*.o              # compiled C/C++ objects
-*.out            # compiled C/C++ binaries
 bin/
+# compiled Java
+*.class
+# compiled C/C++ objects and binaries
+*.o
+*.out
 
 # Tooling leftovers
 .serverless/
 
-# Editor / OS — ignore user-specific VS Code files but keep shared configs
+# Editor / OS — keep shared VS Code configs, ignore everything else under .vscode
 .vscode/*
 !.vscode/launch.json
 !.vscode/tasks.json
