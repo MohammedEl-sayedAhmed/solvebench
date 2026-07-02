@@ -1,0 +1,3 @@
+# The polyglot runner (python run.py / ./run.sh) uses only the standard library.
+# These are OPTIONAL dev tools, for running solutions via pytest instead.
+pytest>=8.0

@@ -1,0 +1,15 @@
+# Project config. The polyglot runner (run.py) needs NO third-party packages;
+# pytest is optional and only used if you prefer `pytest` over `python run.py`.
+
+[tool.pytest.ini_options]
+# Put python/ on sys.path so `from common.test_framework import run_tests` works
+# without any per-file path hacks, and collect the self-testing solution files.
+pythonpath = ["python"]
+testpaths = ["python"]
+python_files = ["*.py"]
+python_functions = ["test_*"]
+addopts = "--import-mode=importlib"
+
+[tool.pyright]
+# Let editors resolve `common.test_framework` imports in python/ solutions.
+extraPaths = ["python"]
