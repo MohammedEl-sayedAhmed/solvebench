@@ -255,8 +255,12 @@ def main() -> int:
     sols.sort(key=lambda s: (s.platform, s.short_lang, s.group, s.name))
 
     if not sols:
-        print("No solutions matched the given filters.")
-        return 1
+        if args.filters or langs or args.platform:
+            print("No solutions matched the given filters.")
+            return 1
+        # An empty repo (e.g. a freshly init'ed fork) is a valid, passing state.
+        print("No solutions yet — add one with:  python new.py <platform>/<name> --lang py")
+        return 0
 
     if args.stats:
         print_stats(sols, args.sort)
