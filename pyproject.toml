@@ -11,5 +11,5 @@ python_functions = ["test_*"]
 addopts = "--import-mode=importlib"
 
 [tool.pyright]
-# Let editors resolve `common.test_framework` imports in python/ solutions.
-extraPaths = ["python"]
+# Let editors resolve `common.test_framework` (python/) and `import run` (scripts/).
+extraPaths = ["python", "."]
