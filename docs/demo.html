@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>problem-solving-training — polyglot runner</title>
+<style>
+  :root{
+    --ground:#0b1020; --surface:#111730; --surface-2:#0e142a;
+    --border:#242c4a; --text:#cdd6ee; --dim:#6c779a;
+    --mint:#5ef2b8; --peri:#7aa2ff; --fail:#ff6b7a;
+    --mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,"Liberation Mono",monospace;
+    --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    background:
+      radial-gradient(1100px 520px at 50% -10%, #16204012, transparent),
+      var(--ground);
+    color:var(--text); font-family:var(--sans);
+    -webkit-font-smoothing:antialiased; line-height:1.5;
+    min-height:100vh; display:flex; align-items:center; justify-content:center;
+    padding:40px 20px;
+  }
+  .wrap{width:100%; max-width:720px}
+  .masthead{text-align:center; margin-bottom:26px}
+  .logo{
+    font-family:var(--mono); font-size:.8rem; letter-spacing:.14em;
+    color:var(--peri); text-transform:uppercase; margin-bottom:14px;
+  }
+  h1{
+    font-size:clamp(1.7rem,5vw,2.5rem); line-height:1.1; margin:0 0 10px;
+    font-weight:680; letter-spacing:-.02em; text-wrap:balance;
+  }
+  .lede{margin:0 auto; max-width:52ch; color:var(--dim); font-size:1.02rem}
+
+  .term{
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:12px; overflow:hidden;
+    box-shadow:0 24px 60px -30px #000a, 0 2px 0 #ffffff08 inset;
+  }
+  .term-bar{
+    display:flex; align-items:center; gap:14px;
+    padding:10px 14px; border-bottom:1px solid var(--border);
+    background:linear-gradient(var(--surface),var(--surface-2));
+  }
+  .dots{display:flex; gap:7px}
+  .dots i{width:11px; height:11px; border-radius:50%; background:#333c60; display:block}
+  .dots i:nth-child(1){background:#3a4570}
+  .tabs{display:flex; gap:2px; flex:1; overflow-x:auto; scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{
+    font-family:var(--mono); font-size:.82rem; color:var(--dim);
+    background:none; border:0; border-bottom:2px solid transparent;
+    padding:6px 10px 7px; cursor:pointer; white-space:nowrap; letter-spacing:.02em;
+  }
+  .tab:hover{color:var(--text)}
+  .tab.is-active{color:var(--peri); border-bottom-color:var(--peri)}
+  .replay{
+    font-family:var(--mono); font-size:.72rem; letter-spacing:.08em;
+    color:var(--dim); background:#0c122a;
+    border:1px solid var(--border); border-radius:6px; padding:5px 9px; cursor:pointer;
+  }
+  .replay:hover{color:var(--mint); border-color:#33406e}
+
+  .term-body{
+    font-family:var(--mono); font-size:.86rem; line-height:1.62;
+    margin:0; padding:20px 20px 22px; min-height:320px;
+    overflow-x:auto; white-space:pre; tab-size:2;
+    font-variant-numeric:tabular-nums;
+  }
+  .line{min-height:1.62em}
+  .cmd .prompt,.prompt{color:var(--peri); font-weight:600}
+  .ok{color:var(--mint)}
+  .fail{color:var(--fail)}
+  .bold{font-weight:600}
+  .dim{color:var(--dim)}
+  .total{color:var(--text); font-weight:600}
+  .note{color:var(--peri)}
+  .cursor{color:var(--mint); animation:blink 1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+
+  .copy{margin-top:22px}
+  .copybox{
+    display:flex; align-items:center; gap:10px;
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:10px; padding:12px 12px 12px 16px; font-family:var(--mono);
+  }
+  .copybox code{flex:1; font-size:.82rem; color:var(--text); overflow-x:auto; white-space:nowrap}
+  .cmd-prompt{color:var(--mint); font-weight:700}
+  .copybtn{
+    font-family:var(--mono); font-size:.72rem; letter-spacing:.08em; color:var(--ground);
+    background:var(--mint); border:0; border-radius:6px; padding:7px 12px; cursor:pointer; font-weight:700;
+  }
+  .copybtn:hover{filter:brightness(1.08)}
+  .copy-note{color:var(--dim); font-size:.9rem; margin:12px 2px 0}
+  .copy-note code{font-family:var(--mono); color:var(--peri); font-size:.85em}
+
+  .foot{
+    display:flex; align-items:center; gap:18px; margin-top:26px;
+    font-family:var(--mono); font-size:.82rem;
+  }
+  .foot a{color:var(--text); text-decoration:none; border-bottom:1px solid transparent}
+  .foot a:hover{color:var(--mint); border-bottom-color:var(--mint)}
+  .foot-dim{margin-left:auto; color:var(--dim); letter-spacing:.04em}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--peri); outline-offset:2px; border-radius:4px}
+  @media (prefers-reduced-motion:reduce){.cursor{animation:none}}
+  @media (max-width:520px){ .foot-dim{display:none} .term-body{font-size:.78rem} }
+</style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="masthead">
+      <div class="logo">&gt;_ problem-solving-training</div>
+      <h1>One runner. Six languages.</h1>
+      <p class="lede">Solve a problem in Python, C++, Java, JavaScript, Go, or Rust — one command runs and checks them all.</p>
+    </header>
+
+    <section class="term" aria-label="Polyglot runner demo">
+      <div class="term-bar">
+        <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+        <nav class="tabs" role="tablist" aria-label="Demo scenes">
+          <button class="tab is-active" data-scene="polyglot" role="tab">polyglot</button>
+          <button class="tab" data-scene="stats" role="tab">stats</button>
+          <button class="tab" data-scene="bench" role="tab">bench</button>
+          <button class="tab" data-scene="scaffold" role="tab">scaffold</button>
+        </nav>
+        <button class="replay" id="replay" title="Replay this scene">REPLAY ↺</button>
+      </div>
+      <pre class="term-body" id="screen" aria-live="polite"></pre>
+    </section>
+
+    <section class="copy">
+      <div class="copybox">
+        <span class="cmd-prompt">$</span>
+        <code id="forkcmd">gh repo fork MohammedEl-sayedAhmed/problem-solving-training --clone</code>
+        <button class="copybtn" id="copybtn">COPY</button>
+      </div>
+      <p class="copy-note">Forks it into your account and clones it locally. Then <code>./init.sh</code> makes it yours — clears the examples, sets your handles, keeps the whole framework.</p>
+    </section>
+
+    <footer class="foot">
+      <a href="https://github.com/MohammedEl-sayedAhmed/problem-solving-training">★ Star</a>
+      <a href="https://github.com/MohammedEl-sayedAhmed/problem-solving-training/fork">⑂ Fork</a>
+      <span class="foot-dim">python · c++ · java · js · go · rust</span>
+    </footer>
+  </main>
+
+<script>
+  const SCENES = {
+    polyglot: {
+      cmd: "./run.sh leetcode/easy/two_sum",
+      out: [
+        "✅ [java] leetcode/easy/TwoSum",
+        "✅ [py]   leetcode/easy/two_sum",
+        "",
+        "PLATFORM   LANG   PASS  FAIL  TOTAL",
+        "-----------------------------------",
+        "leetcode   java     1     0      1",
+        "leetcode   py       1     0      1",
+        "-----------------------------------",
+        "TOTAL               2     0      2",
+        "",
+        "All solutions passed! 🎉",
+      ],
+    },
+    stats: {
+      cmd: "./run.sh --stats",
+      out: [
+        "PLATFORM        LANG     COUNT",
+        "------------------------------",
+        "adventofcode    py           6",
+        "codewars        py           7",
+        "leetcode        java         3",
+        "leetcode        py          16",
+        "others          py           1",
+        "------------------------------",
+        "TOTAL                       33",
+      ],
+    },
+    bench: {
+      cmd: "./run.sh --lang java --time",
+      out: [
+        "✅ [java] leetcode/easy/FizzBuzz         (0.51s)",
+        "✅ [java] leetcode/easy/TwoSum           (0.48s)",
+        "✅ [java] leetcode/easy/ValidPalindrome  (0.49s)",
+        "",
+        "Total run time: 1.48s",
+        "All solutions passed! 🎉",
+      ],
+    },
+    scaffold: {
+      cmd: "./run.sh new leetcode/easy/valid_anagram --lang rust",
+      out: [
+        "Created rust/leetcode/easy/valid_anagram.rs",
+        "Run it with:  python run.py leetcode/easy/valid_anagram",
+      ],
+    },
+  };
+
+  const screen = document.getElementById("screen");
+  const tabs = Array.from(document.querySelectorAll(".tab"));
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  let token = 0;
+  let current = "polyglot";
+
+  function lineClass(t) {
+    if (t.includes("✅")) return "ok";
+    if (t.includes("❌")) return "fail";
+    if (/passed! 🎉/.test(t)) return "ok bold";
+    if (/^TOTAL/.test(t)) return "total";
+    if (/^-+$/.test(t) || /PLATFORM|LANG|PASS/.test(t)) return "dim";
+    if (/^Created|^Run it|^Total run/.test(t)) return "note";
+    return "";
+  }
+
+  function cursor() {
+    const c = document.createElement("span");
+    c.className = "cursor";
+    c.textContent = "▋";
+    return c;
+  }
+
+  async function play(scene) {
+    const mine = ++token;
+    current = scene;
+    screen.replaceChildren();
+    const s = SCENES[scene];
+
+    const cmdEl = document.createElement("div");
+    cmdEl.className = "line cmd";
+    const prompt = document.createElement("span");
+    prompt.className = "prompt";
+    prompt.textContent = "$ ";
+    const typed = document.createElement("span");
+    const cur = cursor();
+    cmdEl.append(prompt, typed, cur);
+    screen.append(cmdEl);
+
+    if (reduce) {
+      typed.textContent = s.cmd;
+    } else {
+      for (let i = 0; i < s.cmd.length; i++) {
+        if (mine !== token) return;
+        typed.textContent += s.cmd[i];
+        await sleep(26);
+      }
+    }
+    await sleep(reduce ? 0 : 280);
+    cur.remove();
+
+    for (const t of s.out) {
+      if (mine !== token) return;
+      const el = document.createElement("div");
+      el.className = "line " + lineClass(t);
+      el.textContent = t === "" ? " " : t;
+      screen.append(el);
+      await sleep(reduce ? 0 : 65);
+    }
+
+    const done = document.createElement("div");
+    done.className = "line";
+    const p2 = document.createElement("span");
+    p2.className = "prompt";
+    p2.textContent = "$ ";
+    done.append(p2, cursor());
+    screen.append(done);
+
+    if (!reduce) {
+      await sleep(2800);
+      if (mine !== token) return;
+      const order = tabs.map((t) => t.dataset.scene);
+      select(order[(order.indexOf(current) + 1) % order.length]);
+    }
+  }
+
+  function select(scene) {
+    tabs.forEach((t) => {
+      const on = t.dataset.scene === scene;
+      t.classList.toggle("is-active", on);
+      t.setAttribute("aria-selected", on ? "true" : "false");
+    });
+    play(scene);
+  }
+
+  tabs.forEach((t) => t.addEventListener("click", () => select(t.dataset.scene)));
+  document.getElementById("replay").addEventListener("click", () => play(current));
+
+  const copybtn = document.getElementById("copybtn");
+  copybtn.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(document.getElementById("forkcmd").textContent);
+    } catch (e) { /* clipboard blocked; ignore */ }
+    const old = copybtn.textContent;
+    copybtn.textContent = "COPIED ✓";
+    setTimeout(() => (copybtn.textContent = old), 1400);
+  });
+
+  select("polyglot");
+</script>
+</body>
+</html>
