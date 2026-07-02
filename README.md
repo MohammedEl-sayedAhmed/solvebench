@@ -36,9 +36,14 @@ Language first, then platform, then the platform's own grouping (difficulty, yea
 ├── templates/              # starter templates per language
 ├── run.py                  # polyglot test runner
 ├── new.py                  # scaffolder for new solutions
+├── setup.sh / setup.ps1    # interactive, repo-local setup (extensions, venv)
+├── code.sh / code.ps1      # launch VS Code scoped to this repo (uses .pst/)
+├── teardown.sh / teardown.ps1   # remove everything setup created
 ├── run.sh / run.ps1 / run.cmd   # containerized wrappers (Linux·macOS / Windows)
 └── Dockerfile              # toolchain image (Python + g++ + JDK)
 ```
+
+Setup artifacts (`.pst/`, `.venv/`) stay inside the repo and are git-ignored.
 
 New platforms (e.g. `hackerrank/`) or languages just follow the same convention.
 
@@ -95,7 +100,7 @@ Works with Docker or Podman.
 ```bash
 python run.py                    # same flags as ./run.sh
 PST_NATIVE=1 ./run.sh --stats    # force the wrapper to skip the container
-pytest                           # optional: `pip install -r requirements.txt` first
+.venv/bin/pytest                 # optional; create the venv with ./setup.sh
 ```
 
 ### Sorting / tracking by platform
@@ -139,20 +144,20 @@ if any case fails (this is what the runner keys on):
 
 | #    | Title                                                                                                   | Solution                                                              | Difficulty | Notes                                                                                                      |
 | ---- | ------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- | ---------- | ---------------------------------------------------------------------------------------------------------- |
-| 1    | [Two Sum](https://leetcode.com/problems/two-sum/)                                                       | [Python](python/leetcode/easy/two_sum.py)                             | Easy       | Hash map approach                                                                                          |
+| 1    | [Two Sum](https://leetcode.com/problems/two-sum/)                                                       | [Python](python/leetcode/easy/two_sum.py) · [Java](java/leetcode/easy/TwoSum.java) | Easy       | Hash map approach                                                                                          |
 | 11   | [Container With Most Water](https://leetcode.com/problems/container-with-most-water/)                   | [Python](python/leetcode/medium/container_with_most_water.py)         | Medium     | Two-pointer approach                                                                                       |
 | 15   | [3Sum](https://leetcode.com/problems/3sum/)                                                             | [Python](python/leetcode/medium/three_sum.py)                         | Medium     | Two-pointer approach with sorting                                                                          |
 | 20   | [Valid Parentheses](https://leetcode.com/problems/valid-parentheses/)                                   | [Python](python/leetcode/easy/valid_parentheses.py)                   | Easy       | Stack approach                                                                                             |
 | 35   | [Search Insert Position](https://leetcode.com/problems/search-insert-position/)                         | [Python](python/leetcode/easy/search_insert_position.py)              | Easy       | Binary search approach                                                                                     |
 | 66   | [Plus One](https://leetcode.com/problems/plus-one/)                                                     | [Python](python/leetcode/easy/plus_one.py)                            | Easy       | Str and Int conversions in lists                                                                           |
 | 88   | [Merge Sorted Array](https://leetcode.com/problems/merge-sorted-array/)                                 | [Python](python/leetcode/easy/merge_sorted_array.py)                  | Easy       | Merge in reverse order using 3 pointer counters                                                            |
-| 125  | [Valid Palindrome](https://leetcode.com/problems/valid-palindrome/)                                     | [Python](python/leetcode/easy/valid_palindrome.py)                    | Easy       | Two-pointer or string reverse approach                                                                     |
+| 125  | [Valid Palindrome](https://leetcode.com/problems/valid-palindrome/)                                     | [Python](python/leetcode/easy/valid_palindrome.py) · [Java](java/leetcode/easy/ValidPalindrome.java) | Easy       | Two-pointer or string reverse approach                                                                     |
 | 150  | [Evaluate Reverse Polish Notation](https://leetcode.com/problems/evaluate-reverse-polish-notation/)     | [Python](python/leetcode/medium/reverse_polish_notation.py)           | Medium     | Stack; use int() to truncate division towards zero                                                        |
 | 155  | [Min Stack](https://leetcode.com/problems/min-stack/)                                                   | [Python](python/leetcode/medium/min_stack.py)                         | Medium     | Extra stack to track the min value for each index                                                          |
 | 167  | [Two Sum II](https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/)                           | [Python](python/leetcode/medium/two_sum_ii.py)                        | Medium     | Two-pointer approach with sorted array                                                                     |
 | 169  | [Majority Element](https://leetcode.com/problems/majority-element/)                                     | [Python](python/leetcode/easy/majority_element.py)                    | Easy       | Boyer-Moore Voting Algorithm                                                                               |
 | 392  | [Is Subsequence](https://leetcode.com/problems/is-subsequence/)                                         | [Python](python/leetcode/easy/is_subsequence.py)                      | Easy       | Two-pointer approach                                                                                       |
-| 412  | [Fizz Buzz](https://leetcode.com/problems/fizz-buzz/)                                                   | [Python](python/leetcode/easy/fizz_buzz.py)                           | Easy       | String array based on divisibility                                                                         |
+| 412  | [Fizz Buzz](https://leetcode.com/problems/fizz-buzz/)                                                   | [Python](python/leetcode/easy/fizz_buzz.py) · [Java](java/leetcode/easy/FizzBuzz.java) | Easy       | String array based on divisibility                                                                         |
 | 888  | [Fair Candy Swap](https://leetcode.com/problems/fair-candy-swap/)                                       | [Python](python/leetcode/easy/fair_candy_swap.py)                     | Easy       | Exchange candy boxes to equalize totals                                                                    |
 | 1177 | [Can Make Palindrome from Substring](https://leetcode.com/problems/can-make-palindrome-from-substring/) | [Python](python/leetcode/medium/can_make_palindrome_from_substring.py)| Medium     | Frequency count via prefix sums                                                                            |
 
