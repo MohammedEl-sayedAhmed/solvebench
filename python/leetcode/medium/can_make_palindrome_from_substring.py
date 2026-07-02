@@ -33,12 +33,7 @@ Constraints:
 s consists of lowercase English letters.
 """
 
-import sys
-import os
 from collections import Counter
-
-# Add the root directory to the Python path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
 from common.test_framework import run_tests
 
@@ -68,8 +63,6 @@ class Solution:
         # # Otherwise, for even-length substrings, the odd count must be 0
         # # We can change `k` characters to fix the odd counts
         # return odd_count // 2 <= k
-        
-        
         
         # # ------------------------ Optimized Approach ------------------------
         # # Length of the string
@@ -140,7 +133,6 @@ class Solution:
             answer.append(can_make_palindrome(left, right, k))
         
         return answer
-    
     
 def test_solution():
     solution = Solution()

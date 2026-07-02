@@ -30,12 +30,6 @@ Constraints:
 - s consists of parentheses only '()[]{}'.
 """
 
-import sys
-import os
-
-# Add the root directory to the Python path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
-
 from common.test_framework import run_tests
 
 class Solution:
@@ -54,7 +48,6 @@ class Solution:
                    '}':'{',
                    ']':'['}
         
-        
         for char in s:
             if char in mapping: # this is a closing tag
                 if len(stack) != 0:
@@ -71,9 +64,6 @@ class Solution:
         else:
             return False
         
-            
-
-
 def test_solution():
    solution = Solution()
    

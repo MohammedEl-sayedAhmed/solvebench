@@ -26,11 +26,6 @@ Constraints:
 Alice and Bob have a different total number of candies.
 There will be at least one valid answer for the given input.
 """
-import sys
-import os
-
-# Add the root directory to the Python path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
 from common.test_framework import run_tests
 class Solution:
@@ -51,7 +46,6 @@ class Solution:
         #             result = [i, j]
         #             return result
         
-        
         # Solution 2 using sets to be O(n + m)
         alice_sum = sum(aliceSizes)
         bob_sum = sum(bobSizes)
@@ -68,7 +62,6 @@ class Solution:
                 break
         return result
             
-        
 def test_solution():
     solution = Solution()
     

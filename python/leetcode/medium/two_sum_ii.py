@@ -34,11 +34,6 @@ Constraints:
 - -1000 <= target <= 1000
 - The tests are generated such that there is exactly one solution
 """
-import sys
-import os
-
-# Add the root directory to the Python path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
 from common.test_framework import run_tests
 
@@ -67,7 +62,6 @@ class Solution:
         
         return []
         
-        
         # Solution 2: Brute Force Approach
         """
         for i in range(len(numbers)):
@@ -82,7 +76,6 @@ class Solution:
         
         return []  # No solution found (though problem guarantees one exists)
         """
-
 
 def test_solution():
     solution = Solution()

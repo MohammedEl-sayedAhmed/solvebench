@@ -29,14 +29,7 @@ Constraints:
 - s consists only of printable ASCII characters.
 """
 
-import sys
-import os
-
-# Add the root directory to the Python path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
-
 from common.test_framework import run_tests
-
 
 class Solution:
     def isAlphaNum(self,c):
@@ -64,8 +57,6 @@ class Solution:
         """
                 
         # Solution 2
-        
-
         
         L = 0
         R = len(s) - 1

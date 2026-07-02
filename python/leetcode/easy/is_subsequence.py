@@ -26,14 +26,7 @@ and you want to check one by one to see if t has its subsequence. In this scenar
 how would you change your code?
 """
 
-import sys
-import os
-
-# Add the root directory to the Python path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
-
 from common.test_framework import run_tests
-
 
 # Solution 1: Brute Force Approach (Naive Solution)
 class BruteForceSolution:
@@ -54,7 +47,6 @@ class BruteForceSolution:
             return subsequences
 
         return s in generate_subsequences(t)
-
 
 # Solution 2: Two-Pointer Approach (Optimal Solution)
 class Solution:
@@ -82,7 +74,6 @@ class Solution:
                     return True
         
         return False  # If we finished the loop without matching all characters of s
-
 
 # Solution 3: Preprocessing with Index Map + Binary Search (Optimized Solution)
 class OptimizedSolution:
@@ -128,7 +119,6 @@ class OptimizedSolution:
             current_pos = positions[idx]  # Move to the next valid position
         
         return True
-
 
 def test_solution():
     solution = Solution()

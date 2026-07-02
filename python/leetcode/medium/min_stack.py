@@ -39,12 +39,6 @@ At most 3 * 104 calls will be made to push, pop, top, and getMin.
 
 """
 
-import sys
-import os
-
-# Add the root directory to the Python path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
-
 from common.test_framework import run_tests
 
 # Solution 1: Using Two Stacks (Optimal O(1) solution)
@@ -75,7 +69,6 @@ class MinStack:
     def getMin(self) -> int:
         # Return the minimum value from the min_stack (top element).
         return self.min_stack[-1]
-
 
 # Solution 2: Using a Doubly Linked List (for constant time `pop(i)` support)
 # Time Complexity:
@@ -155,14 +148,12 @@ class MinStackLinkedList:
         else:
             return None
         
-    
     def getMin(self) -> int:
         if self.tail:
             return self.tail.current_min
         else:
             return None
         
-
 def test_solution():
     # Create instances of both solutions
     min_stack = MinStack()
@@ -202,6 +193,5 @@ def test_solution():
     # Run the test cases using the `run_tests` function
     run_tests(test_cases)
 
-    
 if __name__ == "__main__":
     test_solution()

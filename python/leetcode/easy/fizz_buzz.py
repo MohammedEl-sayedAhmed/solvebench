@@ -24,11 +24,6 @@ Output: ["1","2","Fizz","4","Buzz","Fizz","7","8","Fizz","Buzz","11","Fizz","13"
 Constraints:
 1 <= n <= 10^4
 """
-import sys
-import os
-
-# Add the root directory to the Python path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
 from common.test_framework import run_tests
 class Solution:
@@ -45,8 +40,6 @@ class Solution:
                 result.append(str(i))
         return result
             
-
-
 def test_solution():
     solution = Solution()
     

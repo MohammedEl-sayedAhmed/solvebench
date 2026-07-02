@@ -26,12 +26,6 @@ Constraints:
 - 0 <= height[i] <= 10^4
 """
 
-import sys
-import os
-
-# Add the root directory to the Python path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
-
 from common.test_framework import run_tests
 
 class Solution:

@@ -33,12 +33,6 @@ Constraints:
 digits does not contain any leading 0's.
 """
 
-import sys
-import os
-
-# Add the root directory to the Python path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
-
 from common.test_framework import run_tests
 
 class Solution:
@@ -50,7 +44,6 @@ class Solution:
         
         return digits
                 
-
 def test_solution():
     solution = Solution()
 

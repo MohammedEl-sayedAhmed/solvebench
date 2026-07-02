@@ -32,12 +32,6 @@ Constraints:
 - -105 <= nums[i] <= 105
 """
 
-import sys
-import os
-
-# Add the root directory to the Python path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
-
 from common.test_framework import run_tests
 
 class Solution:
@@ -59,8 +53,6 @@ class Solution:
         #                 res.add(tuple(sorted([nums[i], nums[j], nums[k]])))
         # return [list(x) for x in res]
                     
-        
-
         # Solution 2: Two Pointer Approach
         # Time: O(n²), Space: O(1)
         
@@ -90,9 +82,6 @@ class Solution:
                     left += 1
         return res
                 
-        
-        
-
 def test_solution():
    solution = Solution()
    

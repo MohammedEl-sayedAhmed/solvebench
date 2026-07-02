@@ -25,12 +25,6 @@ nums contains distinct values sorted in ascending order.
 -10^4 <= target <= 10^4
 """
 
-import sys
-import os
-
-# Add the root directory to the Python path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
-
 from common.test_framework import run_tests
 
 class Solution:
@@ -53,8 +47,6 @@ class Solution:
                 high = mid - 1
         return low
             
-        
-
 def test_solution():
     solution = Solution()
 

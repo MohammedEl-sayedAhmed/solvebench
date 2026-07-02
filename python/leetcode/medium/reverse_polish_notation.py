@@ -40,11 +40,6 @@ Constraints:
 1 <= tokens.length <= 104
 tokens[i] is either an operator: "+", "-", "*", or "/", or an integer in the range [-200, 200].
 """
-import sys
-import os
-
-# Add the root directory to the Python path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
 from common.test_framework import run_tests
 from typing import List
@@ -86,7 +81,6 @@ def test_solution():
     ]
 
     run_tests(test_cases)
-
 
 if __name__ == "__main__":
     test_solution()

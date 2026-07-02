@@ -28,12 +28,6 @@ Constraints:
 - Only one valid answer exists.
 """
 
-import sys
-import os
-
-# Add the root directory to the Python path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
-
 from common.test_framework import run_tests
 
 class Solution:
@@ -53,10 +47,6 @@ class Solution:
             else:
                 num_to_idx[nums[i]] = i
             
-
-            
-
-
 def test_solution():
     solution = Solution()
     

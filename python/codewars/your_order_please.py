@@ -14,12 +14,6 @@ Examples:
 ""  -->  ""
 """
 
-import sys
-import os
-
-# Add the root directory to the Python path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
 from common.test_framework import run_tests
 
 def order(sentence):
@@ -45,7 +39,6 @@ def order(sentence):
     sorted_words = " ".join(sorted_words)
     return sorted_words
                 
-
 def test_solution():
     test_cases = [
         (order, ["is2 Thi1s T4est 3a"], "Thi1s is2 3a T4est", "Example 1"),

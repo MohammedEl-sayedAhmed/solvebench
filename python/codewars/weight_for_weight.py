@@ -19,11 +19,7 @@ Notes:
 - All numbers in the list are positive numbers and the list can be empty.
 - The input string may have leading, trailing whitespaces and more than a unique whitespace between two consecutive numbers.
 """
-import sys
-import os
 
-# Add the root directory to the Python path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from common.test_framework import run_tests
 class Solution:
     def order_weight(self, strng: str) -> str:
@@ -48,9 +44,6 @@ class Solution:
         
         return sortedWeight
                 
-        
-
-
 def test_solution():
     solution = Solution()
     

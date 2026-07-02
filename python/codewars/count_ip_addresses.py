@@ -11,11 +11,6 @@ Examples:
 * With input "10.0.0.0", "10.0.1.0"   => return  256 
 * With input "20.0.0.10", "20.0.1.0"  => return  246
 """
-import sys
-import os
-
-# Add the root directory to the Python path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from common.test_framework import run_tests
 def ips_between(start, end):
@@ -42,7 +37,6 @@ def ips_between(start, end):
     #     endSum += int(ip) * (256**i_vals[i])
     # return endSum - startSum 
 
-    
     # More Neat solution
     # Convert IP addresses to integer
     def ip_to_int(ip: str) -> int:
@@ -52,10 +46,6 @@ def ips_between(start, end):
     end_int = ip_to_int(end)
     # Return the difference between the two addresses
     return end_int - start_int
-
-
-    
-    
 
 def test_solution():
     test_cases = [

@@ -35,12 +35,6 @@ nums2.length == n
 -10^9 <= nums1[i], nums2[j] <= 10^9
 """
 
-import sys
-import os
-
-# Add the root directory to the Python path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
-
 from common.test_framework import run_tests
 from typing import List
 
@@ -68,11 +62,6 @@ class Solution:
             j -= 1
             k -= 1
         
-
-
-
-
-
 def test_solution():
     solution = Solution()
 
@@ -105,7 +94,6 @@ def test_solution():
 
     # Run the tests
     # run_tests(test_cases)
-
 
 if __name__ == "__main__":
     test_solution()

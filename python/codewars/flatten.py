@@ -9,12 +9,6 @@ flatten(1, [2, 3], 4, 5, [6, [7]]) # returns [1, 2, 3, 4, 5, 6, 7]
 flatten('a', ['b', 2], 3, None, [[4], ['c']]) # returns ['a', 'b', 2, 3, None, 4, 'c']
 """
 
-import sys
-import os
-
-# Add the root directory to the Python path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
 from common.test_framework import run_tests
 
 def flatten(*args):
@@ -43,12 +37,6 @@ def flatten(*args):
     
     return result
             
-            
-
-
-
-
-
 def test_solution():
     test_cases = [
         (flatten, [[], []], [], "flatten() should return []"),

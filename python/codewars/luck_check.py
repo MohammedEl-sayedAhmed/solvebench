@@ -13,12 +13,6 @@ Examples:
 56328116  # 5 + 6 + 3 + 2 = 8 + 1 + 1 + 6
 """
 
-import sys
-import os
-
-# Add the root directory to the Python path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
 from common.test_framework import run_tests
 
 def luck_check(ticket):
@@ -61,10 +55,6 @@ def luck_check(ticket):
     else:
         return False
         
-        
-    
-    
-
 def test_solution():
     test_cases = [
         (luck_check, ['5555'], True, "Test Case 1"),

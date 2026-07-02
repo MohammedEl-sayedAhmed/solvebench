@@ -23,12 +23,6 @@ Constraints:
 Follow-up: Could you solve the problem in linear time and in O(1) space?
 """
 
-import sys
-import os
-
-# Add the root directory to the Python path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
-
 from common.test_framework import run_tests
 
 class Solution:
@@ -48,14 +42,12 @@ class Solution:
         #     count[num] = count.get(num, 0) + 1
         # return max(count, key=count.get)
         
-        
         # Solution 2: Sorting Approach
         # Time: O(n log n), Space: O(1)
         # After sorting, the majority element will always be located at the middle index of the sorted array. This is because the majority element appears more than half the time, so it will occupy the middle position when the array is sorted.
         # nums.sort()
         # mid_idx = len(nums) // 2
         # return nums[mid_idx]
-        
         
         # Solution 3: Boyer-Moore Voting Algorithm
         # Time: O(n), Space: O(1)
@@ -72,9 +64,6 @@ class Solution:
                 
         return candidate
             
-        
-
-
 def test_solution():
     solution = Solution()
     test_cases = [
