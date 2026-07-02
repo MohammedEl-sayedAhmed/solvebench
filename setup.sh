@@ -41,11 +41,12 @@ info() { printf "    ${DIM}%s${RST}\n" "$1"; }
 skip() { printf "    ${DIM}– %s${RST}\n" "$1"; }
 warn() { printf "    ${YLW}!${RST} %s\n" "$1"; }
 
-# Run a command with an animated spinner; returns the command's exit code.
-# usage: spin "message" -- command args...
+# Run a command with an animated spinner. The command's stdout+stderr go to
+# LOGFILE; the spinner animates on the terminal. Returns the command's exit code.
+# usage: spin LOGFILE "message" -- command args...
 spin() {
-  local msg="$1"; shift; [ "$1" = "--" ] && shift
-  "$@" & local pid=$!
+  local log="$1" msg="$2"; shift 2; [ "$1" = "--" ] && shift
+  "$@" >"$log" 2>&1 & local pid=$!
   if [ ! -t 1 ]; then wait "$pid"; return $?; fi
   local frames=('|' '/' '-' '\') i=0
   printf '\033[?25l'
@@ -79,7 +80,7 @@ if command -v code >/dev/null 2>&1; then
     args=(--extensions-dir "$EXT_DIR")
     for e in "${EXTS[@]}"; do args+=(--install-extension "$e"); done
     log=$(mktemp)
-    spin "installing ${#EXTS[@]} extensions into .pst/extensions…" -- code "${args[@]}" --force >"$log" 2>&1
+    spin "$log" "installing ${#EXTS[@]} extensions into .pst/extensions… (may take a minute)" -- code "${args[@]}" --force
     installed=$(code --extensions-dir "$EXT_DIR" --list-extensions 2>/dev/null | tr '[:upper:]' '[:lower:]')
     failed=0
     for e in "${EXTS[@]}"; do
@@ -103,11 +104,13 @@ if command -v python3 >/dev/null 2>&1; then
     if [ ! -d .venv ] && ! python3 -m venv .venv 2>/dev/null; then
       warn "could not create .venv — install the venv module: sudo apt install python3-venv"
     else
-      if spin "installing pytest into ./.venv…" -- .venv/bin/pip install -q -r requirements.txt; then
+      plog=$(mktemp)
+      if spin "$plog" "installing pytest into ./.venv…" -- .venv/bin/pip install -r requirements.txt; then
         ok "pytest ready — run it with: .venv/bin/pytest  (or: source .venv/bin/activate)"
       else
-        warn "pip install failed (see above)"
+        warn "pip install failed:"; sed 's/^/        /' "$plog" | tail -n 8
       fi
+      rm -f "$plog"
     fi
   else
     skip "skipped pytest"
@@ -120,11 +123,13 @@ fi
 step "Container image (optional)"
 if command -v docker >/dev/null 2>&1 || command -v podman >/dev/null 2>&1; then
   if ask "Build the pst-runner image now? (otherwise built on first ./run.sh)" N; then
-    if spin "building pst-runner image…" -- ./run.sh --stats >/dev/null 2>&1; then
+    blog=$(mktemp)
+    if spin "$blog" "building pst-runner image (first time can take a few minutes)…" -- ./run.sh --stats; then
       ok "image ready (remove later with ./teardown.sh)"
     else
-      warn "build failed"
+      warn "build failed:"; sed 's/^/        /' "$blog" | tail -n 8
     fi
+    rm -f "$blog"
   else
     skip "skipped — built automatically on first ./run.sh"
   fi
