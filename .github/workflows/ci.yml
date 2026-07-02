@@ -22,8 +22,20 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - name: Ensure g++ is available
-        run: g++ --version || (sudo apt-get update && sudo apt-get install -y g++)
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "stable"
+
+      - name: Ensure g++ and rustc are available
+        run: |
+          g++ --version || (sudo apt-get update && sudo apt-get install -y g++)
+          rustc --version || (sudo apt-get update && sudo apt-get install -y rustc)
 
       - name: Run all solutions
         run: python run.py

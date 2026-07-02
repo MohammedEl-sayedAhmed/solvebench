@@ -32,6 +32,13 @@ LANGS = {
     "cpp": ("cpp", ".cpp", "templates/solution.cpp"),
     "c++": ("cpp", ".cpp", "templates/solution.cpp"),
     "java": ("java", ".java", "templates/Solution.java"),
+    "js": ("javascript", ".js", "templates/solution.js"),
+    "javascript": ("javascript", ".js", "templates/solution.js"),
+    "node": ("javascript", ".js", "templates/solution.js"),
+    "go": ("go", ".go", "templates/solution.go"),
+    "golang": ("go", ".go", "templates/solution.go"),
+    "rust": ("rust", ".rs", "templates/solution.rs"),
+    "rs": ("rust", ".rs", "templates/solution.rs"),
 }
 
 
