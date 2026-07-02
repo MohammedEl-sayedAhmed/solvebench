@@ -1,0 +1,9 @@
+.git
+__pycache__
+*.pyc
+*.class
+*.out
+build
+report.html
+.pytest_cache
+.venv

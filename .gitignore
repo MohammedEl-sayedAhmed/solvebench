@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.venv/
+venv/
+
+# Test / build artifacts
+report.html
+build/
+*.class          # compiled Java
+*.o              # compiled C/C++ objects
+*.out            # compiled C/C++ binaries
+bin/
+
+# Tooling leftovers
+.serverless/
+
+# Editor / OS — ignore user-specific VS Code files but keep shared configs
+.vscode/*
+!.vscode/launch.json
+!.vscode/tasks.json
+!.vscode/settings.json
+!.vscode/extensions.json
+.idea/
+.DS_Store
