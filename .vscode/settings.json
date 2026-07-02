@@ -1,0 +1,11 @@
+{
+  "python.analysis.extraPaths": ["python"],
+  "python.testing.pytestEnabled": true,
+  "python.testing.pytestArgs": ["."],
+  "java.project.sourcePaths": ["java"],
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/*.class": true,
+    "**/*.out": true
+  }
+}

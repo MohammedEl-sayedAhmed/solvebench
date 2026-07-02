@@ -1,0 +1,9 @@
+{
+  "recommendations": [
+    "ms-python.python",
+    "ms-python.debugpy",
+    "ms-vscode.cpptools",
+    "redhat.java",
+    "vscjava.vscode-java-debug"
+  ]
+}

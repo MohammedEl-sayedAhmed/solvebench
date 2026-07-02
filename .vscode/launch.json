@@ -1,0 +1,39 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug: Python solution (current file)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${file}",
+      "console": "integratedTerminal",
+      "cwd": "${fileDirname}",
+      "env": { "PYTHONPATH": "${workspaceFolder}/python" }
+    },
+    {
+      "name": "Debug: C++ solution (current file)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${fileDirname}/${fileBasenameNoExtension}.out",
+      "args": [],
+      "cwd": "${fileDirname}",
+      "stopAtEntry": false,
+      "MIMode": "gdb",
+      "preLaunchTask": "cpp: build current file",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ]
+    },
+    {
+      "name": "Debug: Java solution (current file)",
+      "type": "java",
+      "request": "launch",
+      "mainClass": "${file}",
+      "cwd": "${fileDirname}"
+    }
+  ]
+}
