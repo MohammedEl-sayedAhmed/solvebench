@@ -1,107 +1,185 @@
 # Problem Solving Training
 
-This repository contains my solutions to various programming problems from different platforms like LeetCode, HackerRank, and others.
+My solutions to programming problems from LeetCode, Codewars, Advent of Code, and
+other platforms — solvable in **multiple languages** and runnable **anywhere** via
+a single containerized test runner (no local toolchain required).
+
+## Highlights
+
+- 🌐 **Polyglot** — solve the same problem in Python, C++, or Java. Each language
+  has a tiny shared test helper so solutions self-verify.
+- 🧪 **One runner** — `run.py` discovers every solution, runs it, and reports
+  pass/fail grouped by **platform** (sortable). Wrong answers fail loudly.
+- 🐳 **Containerized** — `./run.sh` (or `.\run.ps1` on Windows) runs everything
+  inside Docker, so you don't need Python/g++/JDK installed.
+- 🪟🐧 **Cross-platform** — works on Ubuntu, KDE/other Linux, macOS, and Windows.
+- 🏗️ **Scaffolder** — `new.py` starts a new solution in any language from a template.
 
 ## Structure
 
+Language first, then platform, then the platform's own grouping (difficulty, year/day, …):
+
 ```
-├── leetcode                # Solutions to LeetCode problems
-│   ├── easy                # Easy level problems
-│   ├── medium              # Medium level problems
-│   └── hard                # Hard level problems
-├── hackerrank              # Solutions to HackerRank problems
-├── AdventOfCode            # Solutions to Advent Of Code problems
-└── others                  # Solutions to problems from other platforms
+.
+├── python/                 # Python solutions
+│   ├── common/             #   shared helpers (run_tests, aoc.input_path)
+│   ├── leetcode/{easy,medium,hard}/
+│   ├── codewars/
+│   ├── adventofcode/<year>/<day>/
+│   └── others/
+├── cpp/                    # C++ solutions (mirror the same platform tree)
+│   └── common/             #   test_framework.hpp
+├── java/                   # Java solutions
+│   └── common/             #   TestFramework.java
+├── inputs/                 # shared, language-agnostic puzzle inputs
+│   └── adventofcode/<year>/<day>/input.txt
+├── templates/              # starter templates per language
+├── run.py                  # polyglot test runner
+├── new.py                  # scaffolder for new solutions
+├── run.sh / run.ps1 / run.cmd   # containerized wrappers (Linux·macOS / Windows)
+└── Dockerfile              # toolchain image (Python + g++ + JDK)
 ```
+
+New platforms (e.g. `hackerrank/`) or languages just follow the same convention.
+
+Puzzle inputs (Advent of Code) live in `inputs/`, **outside** the language trees,
+so the same input is reused across languages. Solutions resolve them via a helper
+(Python: `from common.aoc import input_path`) rather than a path relative to the
+solution file.
+
+## Quick start
+
+### First-time setup (optional)
+
+`./setup.sh` (or `.\setup.ps1` on Windows) is an interactive installer for the
+recommended VS Code extensions (Python, C/C++, Java debugger) and optional dev
+deps. In VS Code you can then debug any open solution with **F5** — per-language
+launch configs live in [.vscode/launch.json](.vscode/launch.json).
+
+### Run in a container (recommended — no local tools needed)
+
+```bash
+./run.sh                        # run every solution, all languages
+./run.sh leetcode/easy/two_sum  # run one problem across every language it's solved in
+./run.sh --platform codewars    # only Codewars
+./run.sh --lang py --lang cpp   # only these languages
+./run.sh --stats                # inventory grouped by platform (no runs)
+```
+
+On **Windows** use the PowerShell wrapper (or `run.cmd` from `cmd`):
+
+```powershell
+.\run.ps1                        # or:  run.cmd
+.\run.ps1 leetcode/easy/two_sum
+```
+
+The first invocation builds the `pst-runner` image once; later runs reuse it.
+Works with Docker or Podman.
+
+### Run natively (if you have the toolchains)
+
+```bash
+python run.py                    # same flags as ./run.sh
+PST_NATIVE=1 ./run.sh --stats    # force the wrapper to skip the container
+pytest                           # optional: `pip install -r requirements.txt` first
+```
+
+### Sorting / tracking by platform
+
+```bash
+python run.py --stats                 # counts per platform × language
+python run.py --sort platform         # summary grouped by platform (default)
+python run.py --sort status           # failures first
+python run.py --sort language         # group by language
+```
+
+## Adding a new solution
+
+```bash
+./run.sh new leetcode/easy/valid_anagram --lang py
+./run.sh new leetcode/easy/valid_anagram --lang cpp  --url https://leetcode.com/problems/valid-anagram/
+./run.sh new leetcode/easy/valid_anagram --lang java --title "Valid Anagram"
+```
+
+This creates the file under the right language directory (Java files/classes are
+auto-named in PascalCase). Fill in the solution and its example test cases, then:
+
+```bash
+./run.sh leetcode/easy/valid_anagram
+```
+
+### How a solution self-tests
+
+Each language ships a minimal helper that prints ✅/❌ per case and exits non-zero
+if any case fails (this is what the runner keys on):
+
+| Language | Helper | Pattern |
+| -------- | ------ | ------- |
+| Python | [python/common/test_framework.py](python/common/test_framework.py) | `run_tests([(fn, args, expected, "name"), …])` |
+| C++ | [cpp/common/test_framework.hpp](cpp/common/test_framework.hpp) | `tf::TestRunner t; t.check("name", got, expected); return t.summary();` |
+| Java | [java/common/TestFramework.java](java/common/TestFramework.java) | `TestFramework t = new TestFramework(); t.check(...); System.exit(t.summary());` |
 
 ## Solutions
 
-##### LeetCode
+##### LeetCode &nbsp;·&nbsp; profile: [@MohammedElsayed](https://leetcode.com/u/MohammedElsayed/)
 
-| #    | Title                                                                                                   | Solution                                               | Difficulty | Notes                                                                                                      |
-| ---- | ----------------------------------------------------------------------------------------------------    | ---------------------------------------------------    | ---------- | -----------------------------------------------------------------------------------------------------------|
-| 1    | [Two Sum](https://leetcode.com/problems/two-sum/)                                                       | [Python](leetcode/easy/two_sum.py)                     | Easy       | Hash map approach                                                                                          |
-| 11   | [Container With Most Water](https://leetcode.com/problems/container-with-most-water/)                   | [Python](leetcode/medium/container_with_most_water.py) | Medium     | Two-pointer approach                                                                                       |
-| 15   | [3Sum](https://leetcode.com/problems/3sum/)                                                             | [Python](leetcode/medium/three_sum.py)                 | Medium     | Two-pointer approach with sorting                                                                          |
-| 20   | [Valid Parentheses](https://leetcode.com/problems/valid-parentheses/)                                   | [Python](leetcode/easy/valid_parentheses.py)           | Easy       | Stack approach                                                                                             |
-| 35   | [Search Insert Position](https://leetcode.com/problems/search-insert-position/)                         | [Python](leetcode/easy/search_insert_position.py)      | Easy       | Binary search approach                                                                                     |
-| 66   | [Plus One](https://leetcode.com/problems/plus-one/)                                                     | [Python](leetcode/easy/plus_one.py)                    | Easy       | Str and Int conversions in lists                                                                           |
-| 88   | [Merge Sorted Array](https://leetcode.com/problems/merge-sorted-array/)                                 | [Python](leetcode/easy/merge_sorted_array.py)          | Easy       | Merge in reverse order using 3 pointers counters                                                           |
-| 125  | [Valid Palindrome](https://leetcode.com/problems/valid-palindrome/)                                     | [Python](leetcode/easy/valid_palindrome.py)            | Easy       | Two-pointer or string reverse approach                                                                     |
-| 150  | [Evaluate Reverse Polish Notation](https://leetcode.com/problems/evaluate-reverse-polish-notation/)     | [Python](leetcode/medium/reverse_polish_notation.py)   | Medium     | Stack to append numbers and pop in reverse for operators, in the division use int to truncate towards zero |
-| 155  | [Min Stack](https://leetcode.com/problems/min-stack/)                                                   | [Python](leetcode/medium/min_stack.py)                 | Medium     | Extra Stack to track the min value for each index                                                          |
-| 167  | [Two Sum II](https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/)                           | [Python](leetcode/medium/two_sum_ii.py)                | Medium     | Two-pointer approach with sorted array                                                                     |
-| 169  | [Majority Element](https://leetcode.com/problems/majority-element/)                                     | [Python](leetcode/easy/majority_element.py)            | Easy       | Boyer-Moore Voting Algorithm                                                                               |
-| 392  | [Is Subsequence](https://leetcode.com/problems/is-subsequence/)                                         | [Python](leetcode/easy/is_subsequence.py)              | Easy       | Two-pointer approach                                                                                       |
-| 412  | [Fizz Buzz](https://leetcode.com/problems/fizz-buzz/)                                                   | [Python](leetcode/easy/fizz_buzz.py)                   | Easy       | String array based on divisibility                                                                         |
-| 888  | [Fair Candy Swap](https://leetcode.com/problems/fair-candy-swap/)                                       | [Python](leetcode/easy/fair_candy_swap.py)             | Easy       | Exchange candy boxes to equalize total                                                                     |
-| 1177 | [Can Make Palindrome from Substring](https://leetcode.com/problems/can-make-palindrome-from-substring/) | [Python](leetcode/medium/can_make_palindrome.py)       | Medium     | Frequency count and replacement strategy using Prefix Sum                                                  |
-
+| #    | Title                                                                                                   | Solution                                                              | Difficulty | Notes                                                                                                      |
+| ---- | ------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- | ---------- | ---------------------------------------------------------------------------------------------------------- |
+| 1    | [Two Sum](https://leetcode.com/problems/two-sum/)                                                       | [Python](python/leetcode/easy/two_sum.py)                             | Easy       | Hash map approach                                                                                          |
+| 11   | [Container With Most Water](https://leetcode.com/problems/container-with-most-water/)                   | [Python](python/leetcode/medium/container_with_most_water.py)         | Medium     | Two-pointer approach                                                                                       |
+| 15   | [3Sum](https://leetcode.com/problems/3sum/)                                                             | [Python](python/leetcode/medium/three_sum.py)                         | Medium     | Two-pointer approach with sorting                                                                          |
+| 20   | [Valid Parentheses](https://leetcode.com/problems/valid-parentheses/)                                   | [Python](python/leetcode/easy/valid_parentheses.py)                   | Easy       | Stack approach                                                                                             |
+| 35   | [Search Insert Position](https://leetcode.com/problems/search-insert-position/)                         | [Python](python/leetcode/easy/search_insert_position.py)              | Easy       | Binary search approach                                                                                     |
+| 66   | [Plus One](https://leetcode.com/problems/plus-one/)                                                     | [Python](python/leetcode/easy/plus_one.py)                            | Easy       | Str and Int conversions in lists                                                                           |
+| 88   | [Merge Sorted Array](https://leetcode.com/problems/merge-sorted-array/)                                 | [Python](python/leetcode/easy/merge_sorted_array.py)                  | Easy       | Merge in reverse order using 3 pointer counters                                                            |
+| 125  | [Valid Palindrome](https://leetcode.com/problems/valid-palindrome/)                                     | [Python](python/leetcode/easy/valid_palindrome.py)                    | Easy       | Two-pointer or string reverse approach                                                                     |
+| 150  | [Evaluate Reverse Polish Notation](https://leetcode.com/problems/evaluate-reverse-polish-notation/)     | [Python](python/leetcode/medium/reverse_polish_notation.py)           | Medium     | Stack; use int() to truncate division towards zero                                                        |
+| 155  | [Min Stack](https://leetcode.com/problems/min-stack/)                                                   | [Python](python/leetcode/medium/min_stack.py)                         | Medium     | Extra stack to track the min value for each index                                                          |
+| 167  | [Two Sum II](https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/)                           | [Python](python/leetcode/medium/two_sum_ii.py)                        | Medium     | Two-pointer approach with sorted array                                                                     |
+| 169  | [Majority Element](https://leetcode.com/problems/majority-element/)                                     | [Python](python/leetcode/easy/majority_element.py)                    | Easy       | Boyer-Moore Voting Algorithm                                                                               |
+| 392  | [Is Subsequence](https://leetcode.com/problems/is-subsequence/)                                         | [Python](python/leetcode/easy/is_subsequence.py)                      | Easy       | Two-pointer approach                                                                                       |
+| 412  | [Fizz Buzz](https://leetcode.com/problems/fizz-buzz/)                                                   | [Python](python/leetcode/easy/fizz_buzz.py)                           | Easy       | String array based on divisibility                                                                         |
+| 888  | [Fair Candy Swap](https://leetcode.com/problems/fair-candy-swap/)                                       | [Python](python/leetcode/easy/fair_candy_swap.py)                     | Easy       | Exchange candy boxes to equalize totals                                                                    |
+| 1177 | [Can Make Palindrome from Substring](https://leetcode.com/problems/can-make-palindrome-from-substring/) | [Python](python/leetcode/medium/can_make_palindrome_from_substring.py)| Medium     | Frequency count via prefix sums                                                                            |
 
 ##### Codewars
 
-| # | Title                                                                  | Solution                                 | Difficulty | Notes                                                                                                                                     |
-| - | -------------------------------------------------------------------    | -------------------------------------    | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| 1 | [Weight for Weight](https://www.codewars.com/kata/weight-for-weight)   | [Python](codewars/weight_for_weight.py)  | 5 kyu      | Sort numbers by the sum of their digits using lambda function                                                                             |
-| 2 | [Pete, the Baker](https://www.codewars.com/kata/pete-the-baker)        | [Python](codewars/pete_the_baker.py)     | 5 kyu      | Greedy approach to calculate max number of cakes based on the limiting ingredient                                                         |
-| 3 | [Count IP Addresses](https://www.codewars.com/kata/count-ip-addresses) | [Python](codewars/count_ip_addresses.py) | 5 kyu      | Converts IP addresses to integers to calculate the number of addresses between two given IPv4 addresses                                   |
-| 4 | [Flatten](https://www.codewars.com/kata/flatten)                       | [Python](codewars/flatten.py)            | 5 kyu      | Recursively flattens lists and appends non-list items to the result                                                                       |
-| 5 | [Your Order, Please](https://www.codewars.com/kata/your-order-please)  | [Python](codewars/your_order_please.py)  | 6 kyu      | Sort words in a string based on the number in each word, returning them in the correct order                                              |
-| 6 | [Luck Check](https://www.codewars.com/kata/luck-check)                 | [Python](codewars/luck_check.py)         | 5 kyu      | Check if a ticket number is lucky by comparing sums of digits on the left and right halves, with input validation for non-numeric strings |
-| 7 | [Give me a Diamond](https://www.codewars.com/kata/give-me-a-diamond)   | [Python](codewars/give_me_diamond.py)    | 6 kyu      | Generate a diamond shape string using asterisks                                                                                           |
+| # | Title                                                                  | Solution                                        | Difficulty | Notes                                                                                                    |
+| - | ---------------------------------------------------------------------- | ----------------------------------------------- | ---------- | -------------------------------------------------------------------------------------------------------- |
+| 1 | [Weight for Weight](https://www.codewars.com/kata/weight-for-weight)   | [Python](python/codewars/weight_for_weight.py)  | 5 kyu      | Sort by digit-sum using a lambda key                                                                     |
+| 2 | [Pete, the Baker](https://www.codewars.com/kata/pete-the-baker)        | [Python](python/codewars/pete_the_baker.py)     | 5 kyu      | Greedy: max cakes bounded by the limiting ingredient                                                     |
+| 3 | [Count IP Addresses](https://www.codewars.com/kata/count-ip-addresses) | [Python](python/codewars/count_ip_addresses.py) | 5 kyu      | Convert IPs to integers and subtract                                                                     |
+| 4 | [Flatten](https://www.codewars.com/kata/flatten)                       | [Python](python/codewars/flatten.py)            | 5 kyu      | Recursively flatten nested lists                                                                         |
+| 5 | [Your Order, Please](https://www.codewars.com/kata/your-order-please)  | [Python](python/codewars/your_order_please.py)  | 6 kyu      | Sort words by the embedded digit                                                                         |
+| 6 | [Luck Check](https://www.codewars.com/kata/luck-check)                 | [Python](python/codewars/luck_check.py)         | 5 kyu      | Compare left/right digit-sum halves, with input validation                                               |
+| 7 | [Give me a Diamond](https://www.codewars.com/kata/give-me-a-diamond)   | [Python](python/codewars/give_me_diamond.py)    | 6 kyu      | Build a diamond string from asterisks                                                                    |
 
-##### HackerRank
+##### Advent of Code
 
-| Challenge                        | Solution                | Difficulty | Notes       |
-| -----------------------------    | --------------------    | ---------- | ----------- |
-| [Challenge Name](challenge_link) | [Python](solution_link) | Easy       | Brief notes |
-
-
-##### Advent Of Code
-
-| Year  | Day  | Title                                                                                                   | Solution                                                   | Notes                                                                                                                                           |
-| ----- | ---- | --------------------------------------------------------------------------------------------------------| -----------------------------------------------------------| ------------------------------------------------------------------------------------------------------------------------------------------------|
-| 2021  | 10   | [Syntax Scoring](https://adventofcode.com/2021/day/10)                                                  | [Python](AdventOfCode/2021/10/2021_10_Syntax_Scoring.py)   | Calculate syntax error score for corrupted lines                                                                                                |
-| 2021  | 11   | [Dumbo Octopus](https://adventofcode.com/2021/day/11)                                                   | [Python](AdventOfCode/2021/11/dumbo_octopus.py)            | Simulate energy levels and flashes of dumbo octopuses using 2D arrays to model the grid and recursive function to handle flashes                |
-| 2021  | 14   | [Extended Polymerization](https://adventofcode.com/2021/day/14)                                         | [Python](AdventOfCode/2021/14/extended_polymerization.py)  | Apply pair insertion rules to a polymer template and find the most and least common elements, using default dict and counter                    |
-| 2022  | 7    | [No Space Left On Device](https://adventofcode.com/2022/day/7)                                          | [Python](AdventOfCode/2022/7/no_space_left_on_device.py)   | Calculate directory sizes, {'direc': size} and find the smallest directory to delete to free up enough space                                    |
-| 2022  | 14   | [Regolith Reservoir](https://adventofcode.com/2022/day/14)                                              | [Python](AdventOfCode/2022/14/regolith_reservoir.py)       | Simulate falling sand using a set-based approach for efficient lookup, handling both an abyss and an infinite floor scenario                    |
-| 2022  | 24   | [Blizzard Basin](https://adventofcode.com/2022/day/24)                                                  | [Python](AdventOfCode/2022/24/blizzard_basin.py)           | BFS approach with blizzard position caching and multiple trips handling                                                                         |
-
+| Year | Day | Title                                                              | Solution                                                          | Notes                                                                                     |
+| ---- | --- | ------------------------------------------------------------------ | ----------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| 2021 | 10  | [Syntax Scoring](https://adventofcode.com/2021/day/10)             | [Python](python/adventofcode/2021/10/syntax_scoring.py)           | Syntax-error score for corrupted lines using a stack                                      |
+| 2021 | 11  | [Dumbo Octopus](https://adventofcode.com/2021/day/11)              | [Python](python/adventofcode/2021/11/dumbo_octopus.py)            | Simulate energy levels and flashes on a 2D grid with recursion                            |
+| 2021 | 14  | [Extended Polymerization](https://adventofcode.com/2021/day/14)    | [Python](python/adventofcode/2021/14/extended_polymerization.py)  | Pair insertion via `defaultdict`/`Counter`                                                |
+| 2022 | 7   | [No Space Left On Device](https://adventofcode.com/2022/day/7)     | [Python](python/adventofcode/2022/7/no_space_left_on_device.py)   | Compute directory sizes, pick the smallest dir to delete                                  |
+| 2022 | 14  | [Regolith Reservoir](https://adventofcode.com/2022/day/14)         | [Python](python/adventofcode/2022/14/regolith_reservoir.py)       | Simulate falling sand with a set-based grid (abyss + infinite floor)                      |
+| 2022 | 24  | [Blizzard Basin](https://adventofcode.com/2022/day/24)             | [Python](python/adventofcode/2022/24/blizzard_basin.py)           | BFS with cached blizzard positions across multiple trips                                  |
 
 ##### Others
 
-| Platform    | Challenge                                                                       | Solution                                | Difficulty | Notes                                                                                   |
-| ----------- | ----------------------------------------------------------------------------    | ------------------------------------    | ---------- | --------------------------------------------------------------------------------------- |
-| Coding Game | [Rectangle Partition](https://www.codingame.com/ide/puzzle/rectangle-partition) | [Python](others/rectangle_partition.py) | Hard       | Brute force is not optimized, An improved version using length_freq counting dictionary |
-
-## How to Use
-
-1. Navigate to the specific platform folder
-2. Each solution file is named according to the problem
-3. Solutions include problem description and explanation in comments
-
-## Contributing
-
-Feel free to open issues or submit pull requests if you find any bugs or have suggestions for improvements.
+| Platform    | Challenge                                                                       | Solution                                       | Difficulty | Notes                                                             |
+| ----------- | ------------------------------------------------------------------------------- | ---------------------------------------------- | ---------- | ----------------------------------------------------------------- |
+| CodinGame   | [Rectangle Partition](https://www.codingame.com/ide/puzzle/rectangle-partition) | [Python](python/others/rectangle_partition.py) | Hard       | Brute-force + optimized length-frequency counting (both tested)   |
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
+Licensed under the MIT License — see [LICENSE](LICENSE).
 
 ## Author
 
 - **Mohammed El-sayed Ahmed**
 - GitHub: [@MohammedEl-sayedAhmed](https://github.com/MohammedEl-sayedAhmed)
-
-## Acknowledgments
-
-- Thanks to all the coding platforms for providing great problems to solve
-- Special thanks to the programming community for their continuous support
-
-## Contact
-
-If you have any questions or suggestions, feel free to reach out to me.
+- LeetCode: [@MohammedElsayed](https://leetcode.com/u/MohammedElsayed/)
 
 ## Stats
 
@@ -110,4 +188,3 @@ If you have any questions or suggestions, feel free to reach out to me.
 ---
 
 ⭐ Star this repository if you find it helpful!
-
