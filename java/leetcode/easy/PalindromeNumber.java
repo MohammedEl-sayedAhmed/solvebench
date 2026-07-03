@@ -34,8 +34,13 @@ package leetcode.easy;
 import common.TestFramework;
 
 public class PalindromeNumber {
-    // Explain the approach. Time O(?), Space O(?).
-    // public boolean isPalindrome(int x) 
+    // Approach: reverse only the SECOND half of the digits (no string
+    // conversion) and compare it with the first half. Time O(log10 n) — we
+    // process about half the digits — and Space O(1).
+    //
+    // Alternative (kept for reference): a string two-pointer scan, which is
+    // simpler but O(n) time and O(n) space for the string:
+    // public boolean isPalindrome(int x)
     // {
     //     String[] str_x = String.valueOf(x).split("");
     //     int l = 0;
@@ -89,8 +94,9 @@ public class PalindromeNumber {
             
         }
 
-        // if x is even, then x will equal reversed half
-        // if x is odd, then x will equal the reversed half when driopping last digit, and we can drop it if divide by 10
+        // Even number of digits: x ends up equal to reversedHalf.
+        // Odd number of digits: the middle digit lands in reversedHalf's last
+        // place, so drop it with /10 before comparing.
 
         return x == reversedHalf || x == reversedHalf /10;
 
