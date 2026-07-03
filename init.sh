@@ -22,7 +22,36 @@ ask()  {
 }
 prompt() { local ans; read -r -p "$(printf "${YLW}?${RST} %s: " "$1")" ans || ans=""; printf '%s' "$ans"; }
 
-printf "\n  ${CYN}${BOLD}>_ solvebench${RST} ${DIM}· init${RST}\n\n"
+# Animated SOLVEBENCH wordmark: a left-to-right sweep in a gold->crimson
+# gradient. Plain and instant when piped or NO_COLOR is set.
+solvebench_banner() {
+  local a1=' ___   ___   _    __   __ ___     ___  ___  _  _   ___  _  _ '
+  local a2='/ __| / _ \ | |   \ \ / /| __|   | _ )| __|| \| | / __|| || |'
+  local a3='\__ \| (_) || |__  \ V / | _|    | _ \| _| | .` || (__ | __ |'
+  local a4='|___/ \___/ |____|  \_/  |___|   |___/|___||_|\_| \___||_||_|'
+  if [ ! -t 1 ] || [ -n "${NO_COLOR:-}" ]; then
+    printf '\n%s\n%s\n%s\n%s\n' "$a1" "$a2" "$a3" "$a4"
+    return
+  fi
+  local g1=$'\033[38;5;220m' g2=$'\033[38;5;214m' g3=$'\033[38;5;203m' g4=$'\033[38;5;196m' r0=$'\033[0m'
+  local w=${#a1} i
+  printf '\n\033[?25l\n\n\n\n\033[4A'
+  for ((i = 2; i <= w; i += 2)); do
+    printf '\r%s%s%s\033[K\n' "$g1" "${a1:0:i}" "$r0"
+    printf '\r%s%s%s\033[K\n' "$g2" "${a2:0:i}" "$r0"
+    printf '\r%s%s%s\033[K\n' "$g3" "${a3:0:i}" "$r0"
+    printf '\r%s%s%s\033[K\n' "$g4" "${a4:0:i}" "$r0"
+    printf '\033[4A'
+    sleep 0.004
+  done
+  printf '\r%s%s%s\033[K\n' "$g1" "$a1" "$r0"
+  printf '\r%s%s%s\033[K\n' "$g2" "$a2" "$r0"
+  printf '\r%s%s%s\033[K\n' "$g3" "$a3" "$r0"
+  printf '\r%s%s%s\033[K\n' "$g4" "$a4" "$r0"
+  printf '\033[?25h'
+}
+solvebench_banner
+printf "  ${DIM}init — a clean slate that's yours${RST}\n\n"
 
 warn "This clears ALL solutions and puzzle inputs from the working tree and"
 warn "resets the README solutions index. Tooling (runner, helpers, CI) is kept."
