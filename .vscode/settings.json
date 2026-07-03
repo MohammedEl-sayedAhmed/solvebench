@@ -3,6 +3,7 @@
   "python.testing.pytestEnabled": true,
   "python.testing.pytestArgs": ["."],
   "java.project.sourcePaths": ["java"],
+  "java.server.launchMode": "Standard",
   "files.exclude": {
     "**/__pycache__": true,
     "**/*.class": true,
