@@ -83,6 +83,15 @@
   @keyframes blink{50%{opacity:0}}
   @media (prefers-reduced-motion:reduce){ .cursor{animation:none} }
 
+  /* ---- arrow effects (entrance on init, farewell on teardown) ---- */
+  .term-body.fx{font-size:min(.8rem, calc((100vw - 84px) / 44)); line-height:1.2}
+  .aw-a{color:#ff5d73; font-weight:700}
+  .aw-c{color:var(--mint); font-weight:700}
+  .aw-w{color:var(--peri)}
+  .aw-w.flash{color:#fff; text-shadow:0 0 8px #ffc857}
+  .aw-w.dim{color:#5c4a52; text-shadow:none}
+  .aw-star{color:var(--mint); font-weight:700}
+
   /* ---- living mark: chevron draws itself in, cursor blinks like a caret ---- */
   .mark .mark-chev{stroke-dasharray:52; animation:markdraw .9s ease-out .15s both}
   @keyframes markdraw{from{stroke-dashoffset:52}to{stroke-dashoffset:0}}
@@ -315,6 +324,96 @@
     },
   };
 
+  // ---- the arrow scenes (shared with the main site's hero terminal) ----
+  const ART = [
+    " ___   ___   _    __   __ ___     ___  ___  _  _   ___  _  _ ",
+    "/ __| / _ \\ | |   \\ \\ / /| __|   | _ )| __|| \\| | / __|| || |",
+    "\\__ \\| (_) || |__  \\ V / | _|    | _ \\| _| | .` || (__ | __ |",
+    "|___/ \\___/ |____|  \\_/  |___|   |___/|___||_|\\_| \\___||_||_|",
+  ];
+  const G_UP = ["  /\\", " /  \\"];
+  const G_RT = ["  \\", "   \\", "   /", "  /"];
+  const G_DN = [" \\  /", "  \\/"];
+
+  function awFrame(lines, sky, glyph, x, y, wo, flash, dimWord) {
+    for (let r = 0; r < lines.length; r++) {
+      const el = lines[r];
+      el.replaceChildren();
+      let icon = glyph[r - y] || "";
+      let lead = "";
+      if (icon) {
+        if (x < 0) icon = icon.slice(-x);
+        else lead = " ".repeat(x);
+      }
+      let vis = lead.length + icon.length;
+      if (icon) {
+        const a = document.createElement("span");
+        a.className = "aw-a"; a.textContent = lead + icon;
+        el.append(a);
+      }
+      if (r >= sky) {
+        if (r === sky + 3) {
+          const p1 = Math.max(0, 6 - vis);
+          el.append(" ".repeat(p1));
+          const c = document.createElement("span");
+          c.className = "aw-c"; c.textContent = "__";
+          el.append(c);
+          vis += p1 + 2;
+        }
+        el.append(" ".repeat(Math.max(0, 11 + wo - vis)));
+        const w = document.createElement("span");
+        w.className = "aw-w" + (flash ? " flash" : "") + (dimWord ? " dim" : "");
+        w.textContent = ART[r - sky];
+        el.append(w);
+        if (flash && r === sky + 1) {
+          const st = document.createElement("span");
+          st.className = "aw-star"; st.textContent = " *";
+          el.append(st);
+        }
+      } else if (!icon) {
+        el.textContent = " ";
+      }
+    }
+  }
+  const mkLines = (screen, n) => Array.from({length: n}, () => {
+    const d = document.createElement("div");
+    d.className = "line"; d.textContent = " ";
+    screen.append(d);
+    return d;
+  });
+
+  async function awEntrance(screen, alive) {   // rise, vanish, dive, strike, settle
+    const SKY = 4;
+    screen.classList.add("fx");
+    const L = mkLines(screen, SKY + 4);
+    const F = (g, x, y, wo, fl) => awFrame(L, SKY, g, x, y, wo, fl, false);
+    F(G_UP, 3, SKY, 0, 0); await sleep(430);
+    for (let y = SKY - 1; y >= -2; y--) { if (!alive()) return; F(G_UP, 3, y, 0, 0); await sleep(90); }
+    await sleep(480);
+    for (const [x, y] of [[-3,0],[0,1],[3,2],[5,3],[7,SKY]]) { if (!alive()) return; F(G_RT, x, y, 0, 0); await sleep(26); }
+    if (!alive()) return;
+    F(G_RT, 7, SKY, 2, 1); await sleep(120);
+    F(G_RT, 6, SKY, 3, 1); await sleep(95);
+    for (const [x, wo] of [[4,2],[1,1],[-2,1],[-4,0],[-3,0],[-1,0]]) { if (!alive()) return; F(G_RT, x, SKY, wo, 0); await sleep(75); }
+    F(G_RT, 0, SKY, 0, 0); await sleep(850);
+    screen.classList.remove("fx");
+    screen.replaceChildren();
+  }
+
+  async function awFarewell(screen, alive) {   // bow down, sink below, sign dims
+    screen.classList.add("fx");
+    screen.append(document.createTextNode("\n"));
+    const L = mkLines(screen, 4);
+    const F = (g, x, y, dim) => awFrame(L, 0, g, x, y, 0, 0, dim);
+    F(G_RT, 0, 0, false); await sleep(600);              // at its post, one last time
+    if (!alive()) return;
+    F(G_DN, 1, 1, false); await sleep(380);              // head bows down
+    for (const y of [2, 3, 4]) { if (!alive()) return; F(G_DN, 1, y, false); await sleep(150); }
+    await sleep(420);                                    // gone
+    F(G_DN, 1, -9, true);                                // the sign dims; cursor remains
+    screen.classList.remove("fx");
+  }
+
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   const tokens = {};  // per-scene cancel tokens (REPLAY restarts cleanly)
@@ -358,9 +457,14 @@
 
   async function play(key, box) {
     const mine = (tokens[key] = (tokens[key] || 0) + 1);
+    const alive = () => tokens[key] === mine;
     const s = SCENES[key];
     const screen = box.querySelector(".term-body");
     screen.replaceChildren();
+    if (key === "init" && !reduce) {
+      await awEntrance(screen, alive);          // the arrow arrives first
+      if (!alive()) return;
+    }
 
     const cmdEl = document.createElement("div");
     cmdEl.className = "line cmd";
@@ -389,6 +493,10 @@
       el.textContent = t === "" ? " " : t;
       screen.append(el);
       await sleep(reduce ? 0 : 150);
+    }
+    if (key === "teardown" && !reduce) {
+      await awFarewell(screen, alive);          // …and sadly departs
+      if (!alive()) return;
     }
     const done = document.createElement("div");
     done.className = "line";
