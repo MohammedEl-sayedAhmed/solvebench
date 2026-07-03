@@ -33,9 +33,9 @@ solvebench_banner() {
     printf '\n%s\n%s\n%s\n%s\n' "$a1" "$a2" "$a3" "$a4"
     return
   fi
-  local bg=$'\033[48;5;234m' red=$'\033[38;5;203m' gld=$'\033[38;5;220;1m' r0=$'\033[0m'
-  local icons=("${bg}${red}  \\      ${r0}" "${bg}${red}   \\     ${r0}" \
-               "${bg}${red}   /     ${r0}" "${bg}${red}  /   ${gld}__ ${r0}")
+  local red=$'\033[38;5;203;1m' gld=$'\033[38;5;220;1m' r0=$'\033[0m'
+  local icons=("${red}  \\      ${r0}" "${red}   \\     ${r0}" \
+               "${red}   /     ${r0}" "${red}  /   ${gld}__ ${r0}")
   local rows=("$a1" "$a2" "$a3" "$a4") g=(220 214 203 196) w=${#a1} i r
   printf '\n\033[?25l\n\n\n\n\033[4A'
   for ((i = 2; i <= w; i += 2)); do

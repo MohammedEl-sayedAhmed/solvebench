@@ -7,10 +7,10 @@ $ExtDir = Join-Path $PSScriptRoot ".pst\extensions"
 
 function Banner {
     Write-Host ''
-    Write-Host '  \      ' -NoNewline -ForegroundColor Red -BackgroundColor Black; Write-Host '  ' -NoNewline; Write-Host ' ___   ___   _    __   __ ___     ___  ___  _  _   ___  _  _ ' -ForegroundColor Yellow
-    Write-Host '   \     ' -NoNewline -ForegroundColor Red -BackgroundColor Black; Write-Host '  ' -NoNewline; Write-Host '/ __| / _ \ | |   \ \ / /| __|   | _ )| __|| \| | / __|| || |' -ForegroundColor DarkYellow
-    Write-Host '   /     ' -NoNewline -ForegroundColor Red -BackgroundColor Black; Write-Host '  ' -NoNewline; Write-Host '\__ \| (_) || |__  \ V / | _|    | _ \| _| | .` || (__ | __ |' -ForegroundColor Red
-    Write-Host '  /   ' -NoNewline -ForegroundColor Red -BackgroundColor Black; Write-Host '__ ' -NoNewline -ForegroundColor Yellow -BackgroundColor Black; Write-Host '  ' -NoNewline; Write-Host '|___/ \___/ |____|  \_/  |___|   |___/|___||_|\_| \___||_||_|' -ForegroundColor DarkRed
+    Write-Host '  \      ' -NoNewline -ForegroundColor Red; Write-Host '  ' -NoNewline; Write-Host ' ___   ___   _    __   __ ___     ___  ___  _  _   ___  _  _ ' -ForegroundColor Yellow
+    Write-Host '   \     ' -NoNewline -ForegroundColor Red; Write-Host '  ' -NoNewline; Write-Host '/ __| / _ \ | |   \ \ / /| __|   | _ )| __|| \| | / __|| || |' -ForegroundColor DarkYellow
+    Write-Host '   /     ' -NoNewline -ForegroundColor Red; Write-Host '  ' -NoNewline; Write-Host '\__ \| (_) || |__  \ V / | _|    | _ \| _| | .` || (__ | __ |' -ForegroundColor Red
+    Write-Host '  /   ' -NoNewline -ForegroundColor Red; Write-Host '__ ' -NoNewline -ForegroundColor Yellow; Write-Host '  ' -NoNewline; Write-Host '|___/ \___/ |____|  \_/  |___|   |___/|___||_|\_| \___||_||_|' -ForegroundColor DarkRed
     Write-Host "  one environment for every judge" -ForegroundColor DarkGray
     Write-Host "  self-contained: everything lands in .\.pst and .\.venv`n" -ForegroundColor DarkGray
 }

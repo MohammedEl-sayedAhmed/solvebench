@@ -27,11 +27,11 @@ A3='\__ \| (_) || |__  \ V / | _|    | _ \| _| | .` || (__ | __ |'
 A4='|___/ \___/ |____|  \_/  |___|   |___/|___||_|\_| \___||_||_|'
 
 # The favicon, as ANSI art: dark tile, red chevron, gold cursor (9 cols x 4 rows).
-IBG=$'\033[48;5;234m'; IRED=$'\033[38;5;203m'; IGLD=$'\033[38;5;220;1m'; IRST=$'\033[0m'
-I1="${IBG}${IRED}  \\      ${IRST}"
-I2="${IBG}${IRED}   \\     ${IRST}"
-I3="${IBG}${IRED}   /     ${IRST}"
-I4="${IBG}${IRED}  /   ${IGLD}__ ${IRST}"
+IRED=$'\033[38;5;203;1m'; IGLD=$'\033[38;5;220;1m'; IRST=$'\033[0m'
+I1="${IRED}  \\      ${IRST}"
+I2="${IRED}   \\     ${IRST}"
+I3="${IRED}   /     ${IRST}"
+I4="${IRED}  /   ${IGLD}__ ${IRST}"
 
 # Sweep the wordmark in left-to-right with a gold->crimson gradient.
 # Plain and instant when piped or NO_COLOR is set.
