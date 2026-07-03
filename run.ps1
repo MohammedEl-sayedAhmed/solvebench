@@ -12,7 +12,7 @@
 #
 # Force native execution with PST_NATIVE=1.
 $ErrorActionPreference = 'Stop'
-$Image = 'pst-runner'
+$Image = 'solvebench'
 Set-Location -Path $PSScriptRoot
 
 $argv = @($args)

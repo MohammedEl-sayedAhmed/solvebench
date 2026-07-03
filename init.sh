@@ -22,14 +22,7 @@ ask()  {
 }
 prompt() { local ans; read -r -p "$(printf "${YLW}?${RST} %s: " "$1")" ans || ans=""; printf '%s' "$ans"; }
 
-printf '%s' "$CYN"
-cat <<'ART'
-     ____   ____   _____    init
-    |  _ \ / ___| |_   _|
-    |  __/  ___) |  | |
-    |_|    |____/   |_|
-ART
-printf '%s\n' "$RST"
+printf "\n  ${CYN}${BOLD}>_ solvebench${RST} ${DIM}· init${RST}\n\n"
 
 warn "This clears ALL solutions and puzzle inputs from the working tree and"
 warn "resets the README solutions index. Tooling (runner, helpers, CI) is kept."

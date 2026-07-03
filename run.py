@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Polyglot test runner for the problem-solving-training repo.
+Polyglot test runner for the solvebench repo.
 
 Discovers self-testing solution files across languages, runs each one, and
 reports pass/fail grouped by *platform*. A solution "passes" when its process

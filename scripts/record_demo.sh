@@ -10,7 +10,7 @@ if ! command -v asciinema >/dev/null 2>&1; then
   exit 1
 fi
 
-asciinema rec --overwrite --title "problem-solving-training — polyglot runner" \
+asciinema rec --overwrite --title "solvebench — polyglot runner" \
   -c 'bash -lc "python3 run.py --stats; echo; python3 run.py --lang java --time"' \
   demo.cast
 

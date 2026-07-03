@@ -1,5 +1,5 @@
 {
-  "name": "problem-solving-training",
+  "name": "solvebench",
   "build": { "dockerfile": "../Dockerfile" },
   "workspaceFolder": "/repo",
   "workspaceMount": "source=${localWorkspaceFolder},target=/repo,type=bind",

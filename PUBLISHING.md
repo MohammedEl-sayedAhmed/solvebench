@@ -7,7 +7,7 @@ Steps to take this repo public (a few are GitHub UI actions the scripts can't do
 - [ ] **Settings → General → Danger Zone → Change visibility → Public**
 - [ ] **Settings → Pages → Deploy from a branch → `main` / `docs`** — publishes the
       marketing site (`docs/index.html`) and animated demo at
-      `https://mohammedel-sayedahmed.github.io/problem-solving-training/`
+      `https://mohammedel-sayedahmed.github.io/solvebench/`
 - [ ] **Settings → Features → Discussions** — enable, to gather Q&A and grow reach
 - [ ] **Settings → General → Social preview** — upload a preview image
 - [ ] Confirm the repo **description + topics** are set (they are, via `gh repo edit`)

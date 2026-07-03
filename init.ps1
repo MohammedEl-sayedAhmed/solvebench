@@ -15,12 +15,7 @@ function Ask($q, $def = 'Y') {
     return $a -match '^[Yy]'
 }
 
-Write-Host @"
-     ____   ____   _____    init
-    |  _ \ / ___| |_   _|
-    |  __/  ___) |  | |
-    |_|    |____/   |_|
-"@ -ForegroundColor Cyan
+Write-Host "`n  >_ solvebench · init`n" -ForegroundColor Cyan
 
 Warn "This clears ALL solutions and puzzle inputs and resets the README index."
 if (-not (Ask "Continue?" 'N')) { Write-Host "    aborted - nothing changed"; exit 0 }

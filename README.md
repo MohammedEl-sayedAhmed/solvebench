@@ -1,9 +1,9 @@
-# Problem Solving Training
+# solvebench
 
-[![tests](https://github.com/MohammedEl-sayedAhmed/problem-solving-training/actions/workflows/ci.yml/badge.svg)](https://github.com/MohammedEl-sayedAhmed/problem-solving-training/actions/workflows/ci.yml)
+[![tests](https://github.com/MohammedEl-sayedAhmed/solvebench/actions/workflows/ci.yml/badge.svg)](https://github.com/MohammedEl-sayedAhmed/solvebench/actions/workflows/ci.yml)
 [![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![stars](https://img.shields.io/github/stars/MohammedEl-sayedAhmed/problem-solving-training?style=social)](https://github.com/MohammedEl-sayedAhmed/problem-solving-training/stargazers)
-[![forks](https://img.shields.io/github/forks/MohammedEl-sayedAhmed/problem-solving-training?style=social)](https://github.com/MohammedEl-sayedAhmed/problem-solving-training/network/members)
+[![stars](https://img.shields.io/github/stars/MohammedEl-sayedAhmed/solvebench?style=social)](https://github.com/MohammedEl-sayedAhmed/solvebench/stargazers)
+[![forks](https://img.shields.io/github/forks/MohammedEl-sayedAhmed/solvebench?style=social)](https://github.com/MohammedEl-sayedAhmed/solvebench/network/members)
 
 **One environment for every judge.** My solutions to LeetCode, Codewars, Advent
 of Code, and more — tracked automatically, solvable in **six languages**, and
@@ -143,13 +143,13 @@ config. Everything it creates stays inside the repo:
 | -------- | -------- | ----- |
 | VS Code extensions | `./.pst/extensions` | repo-local, not your global VS Code |
 | pytest (optional) | `./.venv` | a local virtualenv (PEP 668 safe) |
-| container image | docker daemon | `pst-runner`; the only out-of-repo item |
+| container image | docker daemon | `solvebench`; the only out-of-repo item |
 
 - **Edit with the repo-scoped editor:** `./code.sh` (or `.\code.ps1`) launches
   VS Code using the repo-local extensions/profile under `.pst/`. Debug any open
   solution with **F5** — configs are in [.vscode/launch.json](.vscode/launch.json).
 - **Remove everything:** `./teardown.sh` (or `.\teardown.ps1`) deletes `.pst/`,
-  `.venv/`, caches/build files, and optionally the `pst-runner` image.
+  `.venv/`, caches/build files, and optionally the `solvebench` image.
 
 ### Run in a container (recommended — no local tools needed)
 
@@ -168,7 +168,7 @@ On **Windows** use the PowerShell wrapper (or `run.cmd` from `cmd`):
 .\run.ps1 leetcode/easy/two_sum
 ```
 
-The first invocation builds the `pst-runner` image once; later runs reuse it.
+The first invocation builds the `solvebench` image once; later runs reuse it.
 Works with Docker or Podman.
 
 Inside the **Dev Container** (or any container) `./run.sh` detects it and runs

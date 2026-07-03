@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Remove everything setup.sh / code.sh created. Repo-local only — the sole
-# out-of-repo item touched is the optional 'pst-runner' docker image.
+# out-of-repo item touched is the optional 'solvebench' docker image.
 set -uo pipefail
 cd "$(dirname "$0")"
 
@@ -20,14 +20,7 @@ ask()  {
   ans="${ans:-$def}"; [[ "$ans" =~ ^[Yy] ]]
 }
 
-printf '%s' "$CYN"
-cat <<'ART'
-     ____   ____   _____
-    |  _ \ / ___| |_   _|   cleanup
-    |  __/  ___) |  | |
-    |_|    |____/   |_|
-ART
-printf '%s\n' "$RST"
+printf "\n  ${CYN}${BOLD}>_ solvebench${RST} ${DIM}· teardown${RST}\n\n"
 
 # 1) Repo-local artifacts ----------------------------------------------------
 step "Repo-local artifacts"
@@ -60,14 +53,14 @@ step "Container image (docker daemon)"
 ENGINE=""
 command -v docker >/dev/null 2>&1 && ENGINE=docker
 [ -z "$ENGINE" ] && command -v podman >/dev/null 2>&1 && ENGINE=podman
-if [ -n "$ENGINE" ] && "$ENGINE" image inspect pst-runner >/dev/null 2>&1; then
-  if ask "Remove the 'pst-runner' image?" Y; then
-    "$ENGINE" rmi pst-runner >/dev/null 2>&1 && ok "removed pst-runner image" || skip "could not remove image"
+if [ -n "$ENGINE" ] && "$ENGINE" image inspect solvebench >/dev/null 2>&1; then
+  if ask "Remove the 'solvebench' image?" Y; then
+    "$ENGINE" rmi solvebench >/dev/null 2>&1 && ok "removed solvebench image" || skip "could not remove image"
   else
-    skip "kept pst-runner image"
+    skip "kept solvebench image"
   fi
 else
-  skip "no pst-runner image present"
+  skip "no solvebench image present"
 fi
 
 printf "\n${GRN}${BOLD}Teardown complete.${RST} Tracked repo files are untouched.\n"

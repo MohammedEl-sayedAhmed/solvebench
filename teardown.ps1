@@ -1,6 +1,6 @@
 #!/usr/bin/env pwsh
 # Remove everything setup.ps1 / code.ps1 created (Windows/pwsh). Repo-local only,
-# except the optional 'pst-runner' docker image.
+# except the optional 'solvebench' docker image.
 Set-Location $PSScriptRoot
 
 function Step($m) { Write-Host "`n==> $m" -ForegroundColor Blue }
@@ -13,12 +13,7 @@ function Ask($q, $def = 'Y') {
     return $ans -match '^[Yy]'
 }
 
-Write-Host @"
-     ____   ____   _____
-    |  _ \ / ___| |_   _|   cleanup
-    |  __/  ___) |  | |
-    |_|    |____/   |_|
-"@ -ForegroundColor Cyan
+Write-Host "`n  >_ solvebench · teardown`n" -ForegroundColor Cyan
 
 Step "Repo-local artifacts"
 $targets = @('.pst', '.venv', '.pytest_cache', 'report.html')
@@ -41,11 +36,11 @@ $engine = if (Get-Command docker -ErrorAction SilentlyContinue) { 'docker' }
           elseif (Get-Command podman -ErrorAction SilentlyContinue) { 'podman' }
           else { $null }
 if ($engine) {
-    & $engine image inspect pst-runner *> $null
+    & $engine image inspect solvebench *> $null
     if ($LASTEXITCODE -eq 0) {
-        if (Ask "Remove the 'pst-runner' image?" 'Y') { & $engine rmi pst-runner *> $null; Ok "removed pst-runner image" }
-        else { Skip "kept pst-runner image" }
-    } else { Skip "no pst-runner image present" }
+        if (Ask "Remove the 'solvebench' image?" 'Y') { & $engine rmi solvebench *> $null; Ok "removed solvebench image" }
+        else { Skip "kept solvebench image" }
+    } else { Skip "no solvebench image present" }
 } else { Skip "no docker/podman" }
 
 Write-Host "`nTeardown complete. Tracked repo files are untouched.`n" -ForegroundColor Green

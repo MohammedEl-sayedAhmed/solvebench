@@ -15,7 +15,7 @@
 # Force native execution with PST_NATIVE=1.
 set -euo pipefail
 
-IMAGE=pst-runner
+IMAGE=solvebench
 cd "$(dirname "$0")"
 
 run_native() {

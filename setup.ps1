@@ -6,16 +6,9 @@ Set-Location $PSScriptRoot
 $ExtDir = Join-Path $PSScriptRoot ".pst\extensions"
 
 function Banner {
-    Write-Host @"
-     ____   ____   _____
-    |  _ \ / ___| |_   _|
-    | |_) |\___ \   | |
-    |  __/  ___) |  | |
-    |_|    |____/   |_|
-"@ -ForegroundColor Cyan
-    Write-Host "    Problem · Solving · Training" -ForegroundColor White
-    Write-Host "    polyglot practice - python | c++ | java" -ForegroundColor DarkGray
-    Write-Host "    self-contained: everything lands in .\.pst and .\.venv`n" -ForegroundColor DarkGray
+    Write-Host "`n  >_ solvebench" -ForegroundColor Cyan
+    Write-Host "  one environment for every judge" -ForegroundColor DarkGray
+    Write-Host "  self-contained: everything lands in .\.pst and .\.venv`n" -ForegroundColor DarkGray
 }
 function Step($m) { Write-Host "`n==> $m" -ForegroundColor Blue }
 function Ok($m)   { Write-Host "    [ok] $m" -ForegroundColor Green }
@@ -64,7 +57,7 @@ if (Get-Command python -ErrorAction SilentlyContinue) {
 # 3) Container image (optional) ----------------------------------------------
 Step "Container image (optional)"
 if ((Get-Command docker -ErrorAction SilentlyContinue) -or (Get-Command podman -ErrorAction SilentlyContinue)) {
-    if (Ask "Build the pst-runner image now?" 'N') {
+    if (Ask "Build the solvebench image now?" 'N') {
         .\run.ps1 --stats | Out-Null
         if ($LASTEXITCODE -eq 0) { Ok "image ready (remove later with .\teardown.ps1)" } else { Warn "build failed" }
     } else { Skip "skipped - built automatically on first .\run.ps1" }

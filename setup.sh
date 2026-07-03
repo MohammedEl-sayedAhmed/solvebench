@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# Interactive one-time setup for Problem Solving Training.
+# Interactive one-time setup for solvebench.
 #
 # EVERYTHING it creates stays INSIDE this repo directory and is fully reversible
 # (see ./teardown.sh):
 #   .pst/extensions   repo-local VS Code extensions (never touches global VS Code)
 #   .venv/            optional Python dev deps (pytest)
-# The only out-of-repo artifact is the optional 'pst-runner' docker image, which
+# The only out-of-repo artifact is the optional 'solvebench' docker image, which
 # lives in the docker daemon and is removed by ./teardown.sh.
 set -uo pipefail
 cd "$(dirname "$0")"
@@ -21,18 +21,9 @@ else
 fi
 
 banner() {
-  printf '%s' "$CYN"
-  cat <<'ART'
-     ____   ____   _____
-    |  _ \ / ___| |_   _|
-    | |_) |\___ \   | |
-    |  __/  ___) |  | |
-    |_|    |____/   |_|
-ART
-  printf '%s' "$RST"
-  printf "    ${BOLD}Problem · Solving · Training${RST}\n"
-  printf "    ${DIM}polyglot practice — python · c++ · java${RST}\n"
-  printf "    ${DIM}self-contained: everything lands in ./.pst and ./.venv${RST}\n\n"
+  printf "\n  ${CYN}${BOLD}>_ solvebench${RST}\n"
+  printf "  ${DIM}one environment for every judge${RST}\n"
+  printf "  ${DIM}self-contained: everything lands in ./.pst and ./.venv${RST}\n\n"
 }
 
 step() { printf "\n${BLU}==>${RST} ${BOLD}%s${RST}\n" "$1"; }
@@ -122,9 +113,9 @@ fi
 # 3) Container image (lives in the docker daemon; removed by teardown) -------
 step "Container image (optional)"
 if command -v docker >/dev/null 2>&1 || command -v podman >/dev/null 2>&1; then
-  if ask "Build the pst-runner image now? (otherwise built on first ./run.sh)" N; then
+  if ask "Build the solvebench image now? (otherwise built on first ./run.sh)" N; then
     blog=$(mktemp)
-    if spin "$blog" "building pst-runner image (first time can take a few minutes)…" -- ./run.sh --stats; then
+    if spin "$blog" "building solvebench image (first time can take a few minutes)…" -- ./run.sh --stats; then
       ok "image ready (remove later with ./teardown.sh)"
     else
       warn "build failed:"; sed 's/^/        /' "$blog" | tail -n 8
