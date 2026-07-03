@@ -21,6 +21,30 @@ if [ ! -f "$SETTINGS" ]; then
   printf '{\n  "security.workspace.trust.enabled": false\n}\n' > "$SETTINGS"
 fi
 
+# Seed repo-local keybindings once (the .pst profile is git-ignored, so these
+# can't be committed): duplicate the current line up/down with Ctrl+Alt+Up/Down.
+# A user keybinding overrides the built-in default on those keys.
+KEYBINDINGS="$PWD/.pst/user-data/User/keybindings.json"
+if [ ! -f "$KEYBINDINGS" ]; then
+  mkdir -p "$(dirname "$KEYBINDINGS")"
+  cat > "$KEYBINDINGS" <<'EOF'
+// Repo-scoped keybindings for the ./code.sh editor (--user-data-dir .pst).
+// Seeded by code.sh / code.ps1 if missing; safe to edit.
+[
+  {
+    "key": "ctrl+alt+up",
+    "command": "editor.action.copyLinesUpAction",
+    "when": "editorTextFocus && !editorReadonly"
+  },
+  {
+    "key": "ctrl+alt+down",
+    "command": "editor.action.copyLinesDownAction",
+    "when": "editorTextFocus && !editorReadonly"
+  }
+]
+EOF
+fi
+
 # Guard: since the .pst profile skips the trust prompt, only paths INSIDE this
 # repo may be opened with it. Use your normal VS Code for anything else.
 for a in "$@"; do

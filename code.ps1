@@ -20,6 +20,30 @@ if (-not (Test-Path $settings)) {
     '{ "security.workspace.trust.enabled": false }' | Set-Content $settings
 }
 
+# Seed repo-local keybindings once (the .pst profile is git-ignored, so these
+# can't be committed): duplicate the current line up/down with Ctrl+Alt+Up/Down.
+# A user keybinding overrides the built-in default on those keys.
+$keybindings = Join-Path $dataDir "User\keybindings.json"
+if (-not (Test-Path $keybindings)) {
+    New-Item -ItemType Directory -Force -Path (Split-Path $keybindings) | Out-Null
+    @'
+// Repo-scoped keybindings for the .\code.ps1 editor (--user-data-dir .pst).
+// Seeded by code.sh / code.ps1 if missing; safe to edit.
+[
+  {
+    "key": "ctrl+alt+up",
+    "command": "editor.action.copyLinesUpAction",
+    "when": "editorTextFocus && !editorReadonly"
+  },
+  {
+    "key": "ctrl+alt+down",
+    "command": "editor.action.copyLinesDownAction",
+    "when": "editorTextFocus && !editorReadonly"
+  }
+]
+'@ | Set-Content $keybindings
+}
+
 # Guard: since the .pst profile skips the trust prompt, only paths INSIDE this
 # repo may be opened with it. Use your normal VS Code for anything else.
 $sep = [IO.Path]::DirectorySeparatorChar

@@ -29,9 +29,16 @@ if [ -z "$(git status --porcelain)" ]; then
   exit 0
 fi
 
-# Safety: never publish a work identity.
-if grep -rniE 'witco' . --exclude-dir=.git >/dev/null 2>&1; then
-  echo "refusing to commit: found 'witco' in the working tree" >&2
+# Safety: never publish a work identity. Scan only committable files: git grep
+# --untracked covers tracked + new files (what `git add -A` would stage) and
+# skips git-ignored dirs (.venv, .pst, node_modules) — the old plain `grep -r`
+# also flagged those. Exclude this guard's own machinery: ship.sh/ship.ps1 name
+# the sentinel to run the check and PUBLISHING.md documents it — not leaks.
+leak=$(git grep --untracked -nIiE 'witco' -- . \
+  ':(exclude)ship.sh' ':(exclude)ship.ps1' ':(exclude)PUBLISHING.md' 2>/dev/null || true)
+if [ -n "$leak" ]; then
+  echo "refusing to commit: found a work identity in committable files:" >&2
+  echo "$leak" >&2
   exit 1
 fi
 

@@ -23,8 +23,14 @@ if (-not (git status --porcelain)) {
     exit 0
 }
 
-if (Select-String -Path (git ls-files) -Pattern 'witco' -Quiet -ErrorAction SilentlyContinue) {
-    Write-Error "refusing to commit: found 'witco' in tracked files"
+# Safety: never publish a work identity. Scan only committable files (git grep
+# --untracked = tracked + new files, skipping git-ignored .venv/.pst/node_modules).
+# Exclude this guard's own machinery — ship.sh/ship.ps1 name the sentinel to run
+# the check and PUBLISHING.md documents it, so those aren't leaks.
+$leak = git grep --untracked -nIiE 'witco' -- . `
+    ':(exclude)ship.sh' ':(exclude)ship.ps1' ':(exclude)PUBLISHING.md'
+if ($leak) {
+    Write-Error "refusing to commit: found a work identity in committable files:`n$leak"
     exit 1
 }
 

@@ -4,6 +4,8 @@
   "python.testing.pytestArgs": ["."],
   "java.project.sourcePaths": ["java"],
   "java.server.launchMode": "Standard",
+  "//": "The Run|Debug CodeLens over main() launches via the language server's standalone jdt.ls project, which doesn't see java/common (TestFramework) — it fails with 'TestFramework cannot be resolved to a type'. Disable it and use the F5 config 'Debug: Java solution (current file)', which builds to .pst/build/java with explicit classPaths.",
+  "java.debug.settings.enableRunDebugCodeLens": false,
   "files.exclude": {
     "**/__pycache__": true,
     "**/*.class": true,
