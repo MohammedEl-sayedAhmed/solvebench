@@ -5,9 +5,10 @@
 [![stars](https://img.shields.io/github/stars/MohammedEl-sayedAhmed/problem-solving-training?style=social)](https://github.com/MohammedEl-sayedAhmed/problem-solving-training/stargazers)
 [![forks](https://img.shields.io/github/forks/MohammedEl-sayedAhmed/problem-solving-training?style=social)](https://github.com/MohammedEl-sayedAhmed/problem-solving-training/network/members)
 
-My solutions to programming problems from LeetCode, Codewars, Advent of Code, and
-other platforms — solvable in **multiple languages** and runnable **anywhere** via
-a single containerized test runner (no local toolchain required).
+**One environment for every judge.** My solutions to LeetCode, Codewars, Advent
+of Code, and more — tracked automatically, solvable in **six languages**, and
+debuggable **locally with real breakpoints** (no premium subscriptions). One
+containerized runner verifies everything on any OS.
 
 > **Want your own?** ⭐ Star it, then **Fork** — it doubles as a ready-made
 > polyglot practice framework. After forking, run `./init.sh` to make it yours
@@ -43,11 +44,12 @@ a single containerized test runner (no local toolchain required).
 | **Total** | 4 | 30 | **34** |
 <!-- stats:end -->
 
-## Demo
+## Website & demo
 
-▶ **[Live animated demo](docs/demo.html)** — watch the one runner drive every
-language (open `docs/demo.html`, or serve it via GitHub Pages). Regenerate the
-recording locally with `./scripts/record_demo.sh` (asciinema → GIF).
+🌐 **[Project site](docs/index.html)** — the full pitch: features, workflow, and
+command reference (`docs/index.html`; serve it with GitHub Pages → `main /docs`).
+▶ **[Animated terminal demo](docs/demo.html)** — watch the one runner drive
+every language. Regenerate a recording with `./scripts/record_demo.sh`.
 
 ## Fork & make it yours
 
