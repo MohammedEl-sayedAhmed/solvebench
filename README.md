@@ -222,24 +222,34 @@ if any case fails (this is what the runner keys on):
 
 ### Estimate complexity
 
-One command per problem — it finds the solution, generates growing inputs from
-the function's type hints, and fits runtime + peak memory to a Big-O class:
+One command per problem — works for **Python and Java** solutions. It finds the
+solution, generates growing inputs from the function's type hints (Python) or
+parameter types via reflection (Java, with JIT warm-up and per-call allocation
+tracking), and fits runtime + memory to a Big-O class:
 
 ```bash
 ./run.sh complexity leetcode/easy/two_sum
 #  function: twoSum · inputs: auto-generated from type hints (nums: list, target: int)
 #  time  ≈ O(n) · space ≈ O(n)
 
+./run.sh complexity two_sum --lang java         # measure the Java solution instead
 ./run.sh complexity three_sum --max-seconds 1   # slow solutions stop growing early
 ./run.sh complexity min_stack --method push     # pick the method explicitly
 ```
 
-If the input shape can't come from type hints (constraints, in-place mutation),
-add a 2-line hook to the solution file and it takes precedence:
+Language is auto-detected (Python first, then Java — Java-only solutions just
+work). If the input shape can't come from the types (constraints, in-place
+mutation), add a small hook to the solution and it takes precedence:
 
 ```python
 def complexity_input(n):
-    return [list(range(n)), n]   # the argument list for input size n
+    return [list(range(n)), n]   # Python: the argument list for input size n
+```
+
+```java
+public static Object[] complexityInput(int n) {
+    return new Object[] { /* args for size n */ };   // Java equivalent
+}
 ```
 
 Results are **empirical** (a fit, not a proof) — defaults are adversarial where

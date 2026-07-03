@@ -99,15 +99,25 @@ def estimate(func, make_input, sizes=None, repeat=3, label=None, measure_space=T
             if times[-1] > max_seconds or (nxt and times[-1] * (nxt / n) > max_seconds):
                 print(f"(stopping after n={n}: the next size would exceed the {max_seconds:.2f}s cap)")
                 break
-    sizes = used_sizes
+    return report(used_sizes, times, spaces if measure_space else None, name)
 
-    header = f"{'n':>10}{'time (ms)':>14}" + (f"{'peak (KB)':>14}" if measure_space else "")
-    print(f"\n📈  Complexity estimate — {name}")
+
+def report(sizes, times, spaces, label, space_label="peak (KB)"):
+    """Render the measurement table, fit the Big-O classes, and return them.
+
+    Shared by estimate() and other measurement front-ends (e.g. the Java
+    harness driven by complexity.py) so every language reports identically.
+    ``spaces`` may be None (no space data) or shorter than ``sizes`` (probe
+    skipped near the time cap).
+    """
+    spaces = spaces or []
+    header = f"{'n':>10}{'time (ms)':>14}" + (f"{space_label:>14}" if spaces else "")
+    print(f"\n📈  Complexity estimate — {label}")
     print(header)
     print("─" * len(header))
     for i, n in enumerate(sizes):
         row = f"{n:>10}{times[i] * 1e3:>14.3f}"
-        if measure_space:
+        if spaces:
             row += f"{spaces[i] / 1024:>14.1f}" if i < len(spaces) else f"{'—':>14}"
         print(row)
     print("─" * len(header))
@@ -116,7 +126,7 @@ def estimate(func, make_input, sizes=None, repeat=3, label=None, measure_space=T
         print("⚠  fewer than 3 data points — the fit below is unreliable; try smaller --sizes")
     result = {"sizes": sizes, "times": times, "time_class": _best_fit(sizes, times)}
     print(f"time  ≈ {result['time_class']}")
-    if measure_space and spaces:
+    if spaces:
         result["spaces"] = spaces
         result["space_class"] = _best_fit(sizes[:len(spaces)], spaces)
         print(f"space ≈ {result['space_class']}  (auxiliary — allocations during the call)")

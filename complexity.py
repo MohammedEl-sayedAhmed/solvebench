@@ -33,13 +33,14 @@ import inspect
 import random
 import re
 import string
+import subprocess
 import sys
 from pathlib import Path
 from typing import Callable, NoReturn, cast
 
 REPO = Path(__file__).resolve().parent
 sys.path.insert(0, str(REPO / "python"))
-from common.complexity import estimate  # noqa: E402
+from common.complexity import estimate, report  # noqa: E402
 
 
 def die(msg: str) -> NoReturn:
@@ -50,15 +51,17 @@ def die(msg: str) -> NoReturn:
 # --------------------------------------------------------------------------- #
 # Locate the solution file
 # --------------------------------------------------------------------------- #
-def find_solution_file(fragment: str) -> Path:
-    root = REPO / "python"
+LANG_ROOTS = {"py": ("python", ".py"), "java": ("java", ".java")}
+
+
+def _search(lang: str, fragment: str) -> Path | None:
+    root_name, ext = LANG_ROOTS[lang]
+    root = REPO / root_name
     norm = lambda s: re.sub(r"[^a-z0-9/]", "", s.lower())
     nfrag = norm(fragment.replace("\\", "/"))
     rels = {p: norm(str(p.relative_to(root).with_suffix("")))
-            for p in sorted(root.rglob("*.py")) if "common" not in p.parts}
+            for p in sorted(root.rglob(f"*{ext}")) if "common" not in p.parts}
     hits = [p for p, r in rels.items() if nfrag in r]
-    if not hits:
-        die(f"no Python solution matches {fragment!r} (searched python/)")
     if len(hits) > 1:
         # An exact name/path match beats substring matches (two_sum vs two_sum_ii).
         exact = [p for p in hits if rels[p] == nfrag or rels[p].endswith("/" + nfrag)]
@@ -66,7 +69,25 @@ def find_solution_file(fragment: str) -> Path:
             return exact[0]
         opts = ", ".join(str(p.relative_to(root)) for p in hits)
         die(f"{fragment!r} is ambiguous: {opts}")
-    return hits[0]
+    return hits[0] if hits else None
+
+
+def find_solution_file(fragment: str, lang: str | None) -> tuple[Path, str]:
+    """Resolve (path, lang). Auto mode prefers Python, falls back to Java."""
+    if lang:
+        hit = _search(lang, fragment)
+        if hit is None:
+            die(f"no {lang} solution matches {fragment!r}")
+        return hit, lang
+    py = _search("py", fragment)
+    jv = _search("java", fragment)
+    if py is not None:
+        if jv is not None:
+            print(f"(also solved in java — measure it with:  --lang java)")
+        return py, "py"
+    if jv is not None:
+        return jv, "java"
+    die(f"no Python or Java solution matches {fragment!r}")
 
 
 def load_module(path: Path):
@@ -86,6 +107,24 @@ def _tokens(name: str) -> set[str]:
     return {t.lower() for t in re.split(r"[_\W]+", snake) if t}
 
 
+def pick_name(names: list[str], file_stem: str, method: str | None) -> str:
+    """Choose which function/method to measure by file-name token overlap."""
+    if not names:
+        die("no candidate function found — pass --method or add complexity_input(n)")
+    if method:
+        if method in names:
+            return method
+        die(f"--method {method!r} not found; available: {', '.join(sorted(names))}")
+    ft = _tokens(file_stem)
+    scored = sorted(names, key=lambda nm: (-len(_tokens(nm) & ft), nm))
+    best = len(_tokens(scored[0]) & ft)
+    ties = [nm for nm in scored if len(_tokens(nm) & ft) == best]
+    if len(names) > 1 and (best == 0 or len(ties) > 1):
+        die(f"can't guess which function to measure; pass --method one of: "
+            f"{', '.join(sorted(names))}")
+    return scored[0]
+
+
 def pick_callable(mod, file_stem: str, method: str | None):
     candidates: dict[str, Callable] = {}
     sol_cls = getattr(mod, "Solution", None)
@@ -101,22 +140,8 @@ def pick_callable(mod, file_stem: str, method: str | None):
                     and not name.startswith("_") and name not in skip
                     and not name.startswith("solve_from")):
                 candidates[name] = fn
-
-    if not candidates:
-        die("no candidate function found — pass --method or add complexity_input(n)")
-    if method:
-        if method in candidates:
-            return method, candidates[method]
-        die(f"--method {method!r} not found; available: {', '.join(sorted(candidates))}")
-
-    ft = _tokens(file_stem)
-    scored = sorted(candidates, key=lambda nm: (-len(_tokens(nm) & ft), nm))
-    best = len(_tokens(scored[0]) & ft)
-    ties = [nm for nm in scored if len(_tokens(nm) & ft) == best]
-    if len(candidates) > 1 and (best == 0 or len(ties) > 1):
-        die(f"can't guess which function to measure; pass --method one of: "
-            f"{', '.join(sorted(candidates))}")
-    return scored[0], candidates[scored[0]]
+    name = pick_name(list(candidates), file_stem, method)
+    return name, candidates[name]
 
 
 # --------------------------------------------------------------------------- #
@@ -179,19 +204,55 @@ def make_input_builder(mod, fn) -> tuple[Callable[[int], list], str]:
 
 
 # --------------------------------------------------------------------------- #
-def main() -> int:
-    ap = argparse.ArgumentParser(description=__doc__,
-                                 formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("problem", help="solution path fragment, e.g. leetcode/easy/two_sum")
-    ap.add_argument("--method", help="function/method name to measure")
-    ap.add_argument("--sizes", help="comma-separated input sizes (default 500,1000,2000,4000,8000)")
-    ap.add_argument("--repeat", type=int, default=3, help="timing repeats per size (default 3)")
-    ap.add_argument("--max-seconds", type=float, default=2.0,
-                    help="stop growing sizes once one run exceeds this (default 2.0)")
-    args = ap.parse_args()
+# Java flow: compile via scripts/build_java.py, then drive ComplexityHarness
+# --------------------------------------------------------------------------- #
+def run_java(path: Path, args) -> int:
+    build = REPO / ".pst" / "build" / "java"
+    proc = subprocess.run([sys.executable, str(REPO / "scripts" / "build_java.py")],
+                          capture_output=True, text=True)
+    if proc.returncode != 0:
+        die("java build failed:\n" + proc.stdout + proc.stderr)
 
-    path = find_solution_file(args.problem)
-    print(f"solution: {path.relative_to(REPO)}")
+    fqcn = ".".join(path.relative_to(REPO / "java").with_suffix("").parts)
+    base = ["java", "-cp", str(build), "common.ComplexityHarness"]
+
+    listed = subprocess.run(base + ["list", fqcn], capture_output=True, text=True)
+    if listed.returncode != 0:
+        die("could not inspect the class:\n" + listed.stdout + listed.stderr)
+    methods = [ln.split()[1] for ln in listed.stdout.splitlines() if ln.startswith("METHOD ")]
+    name = pick_name(methods, path.stem, args.method)
+
+    sizes = args.sizes or "500,1000,2000,4000,8000"
+    meas = subprocess.run(
+        base + ["measure", fqcn, name, sizes, str(args.repeat), str(args.max_seconds)],
+        capture_output=True, text=True)
+    if meas.returncode != 0:
+        err = (meas.stderr or meas.stdout).strip()
+        if "cannot generate parameter type" in err:
+            die(f"{err}\nAdd a hook to the solution class and it takes precedence:\n\n"
+                f"    public static Object[] complexityInput(int n) {{\n"
+                f"        return new Object[] {{ /* args for size n */ }};\n    }}")
+        die(err or "harness failed")
+
+    sizes_out, times, spaces = [], [], []
+    for ln in meas.stdout.splitlines():
+        parts = ln.split()
+        if parts[0] == "INPUTS":
+            print(f"function: {name}  ·  inputs: {ln[7:]}")
+        elif parts[0] == "DATA":
+            n, t_ns, alloc = int(parts[1]), int(parts[2]), int(parts[3])
+            sizes_out.append(n)
+            times.append(t_ns / 1e9)
+            if alloc >= 0:
+                spaces.append(float(alloc))
+        elif parts[0] == "STOP":
+            print(f"(stopping after n={parts[1]}: the next size would exceed the "
+                  f"{args.max_seconds:.2f}s cap)")
+    report(sizes_out, times, spaces or None, name, space_label="alloc (KB)")
+    return 0
+
+
+def run_python(path: Path, args) -> int:
     mod = load_module(path)
     name, fn = pick_callable(mod, path.stem, args.method)
     builder, how = make_input_builder(mod, fn)
@@ -211,6 +272,25 @@ def main() -> int:
     estimate(fn, builder, sizes=sizes or (500, 1000, 2000, 4000, 8000),
              repeat=args.repeat, label=name, max_seconds=args.max_seconds)
     return 0
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser(description=__doc__,
+                                 formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("problem", help="solution path fragment, e.g. leetcode/easy/two_sum")
+    ap.add_argument("--lang", choices=["py", "python", "java"],
+                    help="which language's solution to measure (default: py, then java)")
+    ap.add_argument("--method", help="function/method name to measure")
+    ap.add_argument("--sizes", help="comma-separated input sizes (default 500,1000,2000,4000,8000)")
+    ap.add_argument("--repeat", type=int, default=3, help="timing repeats per size (default 3)")
+    ap.add_argument("--max-seconds", type=float, default=2.0,
+                    help="stop growing sizes once one run exceeds this (default 2.0)")
+    args = ap.parse_args()
+
+    lang = {"python": "py"}.get(args.lang, args.lang)
+    path, lang = find_solution_file(args.problem, lang)
+    print(f"solution: {path.relative_to(REPO)}")
+    return run_java(path, args) if lang == "java" else run_python(path, args)
 
 
 if __name__ == "__main__":
