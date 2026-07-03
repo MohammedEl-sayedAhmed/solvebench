@@ -20,39 +20,73 @@ else
   BOLD=; DIM=; RED=; GRN=; YLW=; BLU=; CYN=; RST=
 fi
 
-# Animated SOLVEBENCH wordmark: a left-to-right sweep in a gold->crimson
-# gradient. Plain and instant when piped or NO_COLOR is set.
+# The SOLVE BENCH wordmark rows (shared by the sweep-in and the shimmer loop).
+A1=' ___   ___   _    __   __ ___     ___  ___  _  _   ___  _  _ '
+A2='/ __| / _ \ | |   \ \ / /| __|   | _ )| __|| \| | / __|| || |'
+A3='\__ \| (_) || |__  \ V / | _|    | _ \| _| | .` || (__ | __ |'
+A4='|___/ \___/ |____|  \_/  |___|   |___/|___||_|\_| \___||_||_|'
+
+# Sweep the wordmark in left-to-right with a gold->crimson gradient.
+# Plain and instant when piped or NO_COLOR is set.
 solvebench_banner() {
-  local a1=' ___   ___   _    __   __ ___     ___  ___  _  _   ___  _  _ '
-  local a2='/ __| / _ \ | |   \ \ / /| __|   | _ )| __|| \| | / __|| || |'
-  local a3='\__ \| (_) || |__  \ V / | _|    | _ \| _| | .` || (__ | __ |'
-  local a4='|___/ \___/ |____|  \_/  |___|   |___/|___||_|\_| \___||_||_|'
   if [ ! -t 1 ] || [ -n "${NO_COLOR:-}" ]; then
-    printf '\n%s\n%s\n%s\n%s\n' "$a1" "$a2" "$a3" "$a4"
+    printf '\n%s\n%s\n%s\n%s\n' "$A1" "$A2" "$A3" "$A4"
     return
   fi
-  local g1=$'\033[38;5;220m' g2=$'\033[38;5;214m' g3=$'\033[38;5;203m' g4=$'\033[38;5;196m' r0=$'\033[0m'
-  local w=${#a1} i
+  local g=(220 214 203 196) rows=("$A1" "$A2" "$A3" "$A4")
+  local w=${#A1} i r
   printf '\n\033[?25l\n\n\n\n\033[4A'
   for ((i = 2; i <= w; i += 2)); do
-    printf '\r%s%s%s\033[K\n' "$g1" "${a1:0:i}" "$r0"
-    printf '\r%s%s%s\033[K\n' "$g2" "${a2:0:i}" "$r0"
-    printf '\r%s%s%s\033[K\n' "$g3" "${a3:0:i}" "$r0"
-    printf '\r%s%s%s\033[K\n' "$g4" "${a4:0:i}" "$r0"
+    for r in 0 1 2 3; do
+      printf '\r\033[38;5;%sm%s\033[0m\033[K\n' "${g[r]}" "${rows[r]:0:i}"
+    done
     printf '\033[4A'
     sleep 0.004
   done
-  printf '\r%s%s%s\033[K\n' "$g1" "$a1" "$r0"
-  printf '\r%s%s%s\033[K\n' "$g2" "$a2" "$r0"
-  printf '\r%s%s%s\033[K\n' "$g3" "$a3" "$r0"
-  printf '\r%s%s%s\033[K\n' "$g4" "$a4" "$r0"
+  for r in 0 1 2 3; do
+    printf '\r\033[38;5;%sm%s\033[0m\033[K\n' "${g[r]}" "${rows[r]}"
+  done
   printf '\033[?25h'
 }
 
+# Keep it alive: rotate the banner's gradient forever in the background while
+# setup runs below it. The banner rows are pinned by a scroll region; each
+# frame is a single write (no tearing) and everything is cleaned up on exit.
+BANNER_LOOP_PID=
+start_banner_loop() {
+  [ -t 1 ] && [ -z "${NO_COLOR:-}" ] || return 0
+  (
+    g=(220 214 203 196) rows=("$A1" "$A2" "$A3" "$A4") phase=0
+    while :; do
+      frame=$'\0337'
+      for r in 0 1 2 3; do
+        c=${g[(r + phase) % 4]}
+        frame+=$'\033['$((r + 2))$';1H\033[38;5;'"$c"$'m'"${rows[r]}"$'\033[0m\033[K'
+      done
+      frame+=$'\0338'
+      printf '%s' "$frame"
+      phase=$(( (phase + 1) % 4 ))
+      sleep 0.15
+    done
+  ) &
+  BANNER_LOOP_PID=$!
+  trap 'kill "$BANNER_LOOP_PID" 2>/dev/null; printf "\033[r\033[?25h"' EXIT
+  trap 'exit 130' INT
+  trap 'exit 143' TERM
+}
+
 banner() {
-  solvebench_banner
+  if [ ! -t 1 ] || [ -n "${NO_COLOR:-}" ]; then
+    solvebench_banner
+    printf "  one environment for every judge\n\n"
+    return
+  fi
+  printf '\033[2J\033[H'        # the banner owns the top of a fresh screen
+  solvebench_banner             # sweep in (art lands on rows 2-5)
   printf "  ${DIM}one environment for every judge${RST}\n"
-  printf "  ${DIM}self-contained: everything lands in ./.pst and ./.venv${RST}\n\n"
+  printf "  ${DIM}self-contained: everything lands in ./.pst and ./.venv${RST}\n"
+  printf '\033[9r\033[9;1H'     # scroll region below the pinned banner
+  start_banner_loop
 }
 
 step() { printf "\n${BLU}==>${RST} ${BOLD}%s${RST}\n" "$1"; }
