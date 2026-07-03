@@ -290,7 +290,11 @@ def main() -> int:
     sols.sort(key=lambda s: (s.platform, s.short_lang, s.group, s.name))
 
     if not sols:
-        if args.filters or langs or args.platform or args.changed:
+        if args.changed:
+            # No changed solutions to run (e.g. a docs/config-only commit) — fine.
+            print("No changed solutions to run.")
+            return 0
+        if args.filters or langs or args.platform:
             print("No solutions matched the given filters.")
             return 1
         print("No solutions yet — add one with:  python new.py <platform>/<name> --lang py")
