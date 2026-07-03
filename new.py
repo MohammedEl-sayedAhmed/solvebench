@@ -47,7 +47,12 @@ LANGS = {
 
 
 def pascal_case(name: str) -> str:
-    return "".join(part.capitalize() for part in re.split(r"[_\-\s]+", name) if part)
+    cc = "".join(part.capitalize() for part in re.split(r"[_\-\s]+", name) if part)
+    # A Java identifier can't start with a digit (e.g. "3sum" -> "_3sum"), so
+    # prefix an underscore; keeps the class name valid and the file name in sync.
+    if cc and cc[0].isdigit():
+        cc = "_" + cc
+    return cc
 
 
 def title_from_slug(slug: str) -> str:
