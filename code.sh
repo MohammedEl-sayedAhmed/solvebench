@@ -13,12 +13,29 @@ fi
 
 # Seed the repo-local profile's user settings once: a fresh profile starts in
 # Restricted Mode (workspace not trusted), which stops the Java language server
-# from importing the project. .pst only ever opens this repo, so trust it.
+# from importing the project. Safe ONLY because this launcher refuses to open
+# anything outside this repo (enforced below).
 SETTINGS="$PWD/.pst/user-data/User/settings.json"
 if [ ! -f "$SETTINGS" ]; then
   mkdir -p "$(dirname "$SETTINGS")"
   printf '{\n  "security.workspace.trust.enabled": false\n}\n' > "$SETTINGS"
 fi
+
+# Guard: since the .pst profile skips the trust prompt, only paths INSIDE this
+# repo may be opened with it. Use your normal VS Code for anything else.
+for a in "$@"; do
+  case "$a" in -*) continue ;; esac                 # skip CLI flags
+  p="${a%%:[0-9]*}"                                  # tolerate --goto file:line
+  abs=$(realpath -m -- "$p" 2>/dev/null || echo "")
+  case "$abs" in
+    "$PWD"|"$PWD"/*) ;;
+    *)
+      echo "code.sh only opens paths inside this repo (the .pst profile skips the trust prompt)." >&2
+      echo "Refusing: $a" >&2
+      exit 1
+      ;;
+  esac
+done
 
 exec code \
   --extensions-dir "$PWD/.pst/extensions" \
