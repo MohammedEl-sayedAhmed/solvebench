@@ -18,6 +18,19 @@
 
 namespace tf {
 
+// UTF-8 byte sequences for the symbols (portable regardless of source encoding).
+inline const char* PASS  = "\xE2\x9C\x85";       // check mark
+inline const char* FAIL  = "\xE2\x9D\x8C";       // cross mark
+inline const char* PARTY = "\xF0\x9F\x8E\x89";   // party popper
+inline const char* DASH  = "\xE2\x80\x94";       // em dash
+inline const char* DOT   = "\xC2\xB7";           // middle dot
+
+inline std::string rule(int n = 34) {
+    std::string s;
+    for (int i = 0; i < n; ++i) s += "\xE2\x94\x80";  // box-drawing horizontal
+    return s;
+}
+
 // ---- pretty-printing helpers so failures show useful values ----------------
 template <typename T>
 std::string show(const T& v) {
@@ -55,23 +68,25 @@ public:
         ++total_;
         if (got == expected) {
             ++passed_;
-            std::cout << "\xE2\x9C\x85 " << name << " passed\n";
+            std::cout << PASS << "  " << name << "\n";
         } else {
             failures_.push_back(name);
-            std::cout << "\xE2\x9D\x8C " << name << " failed\n"
-                      << "   Expected: " << show(expected) << "\n"
-                      << "   Got: " << show(got) << "\n";
+            std::cout << FAIL << "  " << name << "\n"
+                      << "      expected: " << show(expected) << "\n"
+                      << "      got:      " << show(got) << "\n";
         }
     }
 
     // Returns a process exit code: 0 when everything passed, 1 otherwise.
     int summary() const {
-        std::cout << "\nTest Results: " << passed_ << "/" << total_ << " passed\n";
+        std::cout << "\n" << rule() << "\n";
         if (failures_.empty()) {
-            std::cout << "All tests passed! \xF0\x9F\x8E\x89\n";
+            std::cout << PARTY << "  " << passed_ << "/" << total_
+                      << " passed " << DASH << " all green\n";
             return 0;
         }
-        std::cout << failures_.size() << " test(s) failed\n";
+        std::cout << FAIL << "  " << passed_ << "/" << total_
+                  << " passed " << DOT << " " << failures_.size() << " failed\n";
         return 1;
     }
 };

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"os"
 	"reflect"
+	"strings"
 )
 
 // --- tiny inline test helper (Go's tooling makes a shared cross-dir one awkward) ---
@@ -15,10 +16,10 @@ var failed int
 
 func check(name string, got, want interface{}) {
 	if reflect.DeepEqual(got, want) {
-		fmt.Printf("✅ %s passed\n", name)
+		fmt.Printf("✅  %s\n", name)
 	} else {
 		failed++
-		fmt.Printf("❌ %s failed\n   Expected: %v\n   Got:      %v\n", name, want, got)
+		fmt.Printf("❌  %s\n      expected: %v\n      got:      %v\n", name, want, got)
 	}
 }
 
@@ -30,8 +31,10 @@ func solve( /* args */ ) interface{} {
 func main() {
 	// check("Example 1", solve(/* args */), want)
 
+	fmt.Println("\n" + strings.Repeat("─", 34))
 	if failed > 0 {
+		fmt.Printf("❌  %d test(s) failed\n", failed)
 		os.Exit(1)
 	}
-	fmt.Println("All tests passed! 🎉")
+	fmt.Println("🎉  all tests passed — all green")
 }

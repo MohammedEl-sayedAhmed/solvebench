@@ -8,32 +8,28 @@ def run_tests(test_cases):
 
     Prints a ✅/❌ line per case and a summary, then raises ``TestFailure`` if any
     case failed. Raising (rather than only printing) is what lets ``run.py`` and
-    ``pytest`` detect failures via a non-zero exit / failed assertion — previously
-    a wrong answer still reported as "passed".
+    ``pytest`` detect failures via a non-zero exit / failed assertion.
 
     :param test_cases: A list of tuples ``(function, args, expected, test_name)``.
     """
-    passed_tests = 0
-    total_tests = len(test_cases)
+    passed = 0
+    total = len(test_cases)
     failures = []
 
-    for func, args, expected, test_name in test_cases:
-        result = func(*args)  # Call the function with the provided arguments
+    for func, args, expected, name in test_cases:
+        result = func(*args)
         if result == expected:
-            passed_tests += 1
-            print(f"✅ {test_name} passed")
+            passed += 1
+            print(f"✅  {name}")
         else:
-            failures.append(test_name)
-            print(f"❌ {test_name} failed")
-            print(f"   Input: {args}")
-            print(f"   Expected: {expected}")
-            print(f"   Got: {result}\n")
+            failures.append(name)
+            print(f"❌  {name}")
+            print(f"      expected: {expected}")
+            print(f"      got:      {result}")
 
-    # Print metrics
-    print(f"\nTest Results: {passed_tests}/{total_tests} passed")
-    if passed_tests == total_tests:
-        print("All tests passed! 🎉")
+    print("\n" + "─" * 34)
+    if not failures:
+        print(f"🎉  {passed}/{total} passed — all green")
     else:
-        raise TestFailure(
-            f"{len(failures)}/{total_tests} test(s) failed: {', '.join(failures)}"
-        )
+        print(f"❌  {passed}/{total} passed · {len(failures)} failed")
+        raise TestFailure(f"{len(failures)}/{total} failed: {', '.join(failures)}")

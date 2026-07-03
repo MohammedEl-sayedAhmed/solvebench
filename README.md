@@ -27,17 +27,17 @@ a single containerized test runner (no local toolchain required).
 ## Progress
 
 <!-- stats:start -->
-![adventofcode](https://img.shields.io/badge/adventofcode-6%20solved-brightgreen) ![codewars](https://img.shields.io/badge/codewars-7%20solved-red) ![leetcode](https://img.shields.io/badge/leetcode-19%20solved-orange) ![others](https://img.shields.io/badge/others-1%20solved-lightgrey)
+![adventofcode](https://img.shields.io/badge/adventofcode-6%20solved-brightgreen) ![codewars](https://img.shields.io/badge/codewars-7%20solved-red) ![leetcode](https://img.shields.io/badge/leetcode-20%20solved-orange) ![others](https://img.shields.io/badge/others-1%20solved-lightgrey)
 
-33 solutions · 4 platforms · 2 languages
+34 solutions · 4 platforms · 2 languages
 
 | Platform | java | py | Total |
 | --- | --- | --- | --- |
 | adventofcode | 0 | 6 | 6 |
 | codewars | 0 | 7 | 7 |
-| leetcode | 3 | 16 | 19 |
+| leetcode | 4 | 16 | 20 |
 | others | 0 | 1 | 1 |
-| **Total** | 3 | 30 | **33** |
+| **Total** | 4 | 30 | **34** |
 <!-- stats:end -->
 
 ## Demo
@@ -87,6 +87,7 @@ Language first, then platform, then the platform's own grouping (difficulty, yea
 ├── setup.sh / setup.ps1    # interactive, repo-local setup (extensions, venv)
 ├── code.sh / code.ps1      # launch VS Code scoped to this repo (uses .pst/)
 ├── teardown.sh / teardown.ps1   # remove everything setup created
+├── ship.sh / ship.ps1      # refresh README refs, then commit & push
 ├── run.sh / run.ps1 / run.cmd   # containerized wrappers (Linux·macOS / Windows)
 └── Dockerfile              # toolchain image (Python, g++, JDK, Node, Go, Rust)
 ```
@@ -143,6 +144,10 @@ On **Windows** use the PowerShell wrapper (or `run.cmd` from `cmd`):
 The first invocation builds the `pst-runner` image once; later runs reuse it.
 Works with Docker or Podman.
 
+Inside the **Dev Container** (or any container) `./run.sh` detects it and runs
+natively — no `PST_NATIVE` needed. With no engine installed it also falls back
+to native automatically.
+
 ### Run natively (if you have the toolchains)
 
 ```bash
@@ -162,17 +167,29 @@ python run.py --sort language         # group by language
 
 ## Adding a new solution
 
+**From a problem link (easiest).** Paste the URL and pick a language — for
+LeetCode the number, title, and difficulty are fetched automatically and the
+file lands in the right folder:
+
 ```bash
-./run.sh new leetcode/easy/valid_anagram --lang py
-./run.sh new leetcode/easy/valid_anagram --lang cpp  --url https://leetcode.com/problems/valid-anagram/
-./run.sh new leetcode/easy/valid_anagram --lang java --title "Valid Anagram"
+./run.sh new https://leetcode.com/problems/two-sum/ --lang java
+#  → java/leetcode/easy/TwoSum.java, titled "1. Two Sum", URL filled in
 ```
 
-This creates the file under the right language directory (Java files/classes are
-auto-named in PascalCase). Fill in the solution and its example test cases, then:
+Codewars / HackerRank / Codeforces / Advent of Code links work too; add
+`--difficulty easy|medium|hard` if a site doesn't expose it.
+
+**Or give an explicit path:**
 
 ```bash
-./run.sh leetcode/easy/valid_anagram
+./run.sh new leetcode/easy/valid_anagram --lang py
+```
+
+Fill in the solution + example tests, run it, then ship:
+
+```bash
+./run.sh leetcode/easy/two_sum      # runs every language you solved it in
+./ship.sh "feat: two sum"           # refresh README stats, commit & push
 ```
 
 ### How a solution self-tests
@@ -232,6 +249,7 @@ if any case fails (this is what the runner keys on):
 | [66. Plus One](https://leetcode.com/problems/plus-one/) | easy | [py](python/leetcode/easy/plus_one.py) |
 | [88. Merge Sorted Array](https://leetcode.com/problems/merge-sorted-array/) | easy | [py](python/leetcode/easy/merge_sorted_array.py) |
 | [888. Fair Candy Swap](https://leetcode.com/problems/fair-candy-swap/) | easy | [py](python/leetcode/easy/fair_candy_swap.py) |
+| [9. Palindrome Number](https://leetcode.com/problems/palindrome-number/) | easy | [java](java/leetcode/easy/PalindromeNumber.java) |
 
 ##### Others
 

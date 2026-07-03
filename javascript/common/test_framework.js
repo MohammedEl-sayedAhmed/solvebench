@@ -1,7 +1,7 @@
 // Minimal test helper — the JavaScript counterpart of the other common/ helpers.
 // Solutions load it via NODE_PATH (set by run.py) as:
 //   const { runTests } = require("common/test_framework");
-// Prints ✅/❌ per case and exits non-zero if any case fails.
+// Prints a ✅/❌ line per case and exits non-zero if any case fails.
 function runTests(cases) {
   let passed = 0;
   const failures = [];
@@ -11,21 +11,21 @@ function runTests(cases) {
     const got = fn(...args);
     if (eq(got, expected)) {
       passed++;
-      console.log(`✅ ${name} passed`);
+      console.log(`✅  ${name}`);
     } else {
       failures.push(name);
-      console.log(`❌ ${name} failed`);
-      console.log(`   Expected: ${JSON.stringify(expected)}`);
-      console.log(`   Got:      ${JSON.stringify(got)}`);
+      console.log(`❌  ${name}`);
+      console.log(`      expected: ${JSON.stringify(expected)}`);
+      console.log(`      got:      ${JSON.stringify(got)}`);
     }
   }
 
-  console.log(`\nTest Results: ${passed}/${cases.length} passed`);
+  console.log("\n" + "─".repeat(34));
   if (failures.length) {
-    console.log(`${failures.length} test(s) failed`);
+    console.log(`❌  ${passed}/${cases.length} passed · ${failures.length} failed`);
     process.exit(1);
   }
-  console.log("All tests passed! 🎉");
+  console.log(`🎉  ${passed}/${cases.length} passed — all green`);
 }
 
 module.exports = { runTests };

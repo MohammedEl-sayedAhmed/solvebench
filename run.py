@@ -148,7 +148,7 @@ def run_java(sol, build):
     outdir.mkdir(parents=True, exist_ok=True)
     java_root = REPO / "java"
     framework = java_root / "common" / "TestFramework.java"
-    ok, out = _run(["javac", "-d", str(outdir), "-cp", str(java_root),
+    ok, out = _run(["javac", "-encoding", "UTF-8", "-d", str(outdir), "-cp", str(java_root),
                     str(framework), str(sol.path)], cwd=REPO)
     if not ok:
         return False, "compile error:\n" + out
