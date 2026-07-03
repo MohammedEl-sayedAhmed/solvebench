@@ -445,10 +445,17 @@
     dots.append(...[0, 1, 2].map(() => document.createElement("i")));
     const title = document.createElement("span");
     title.className = "term-title"; title.textContent = SCENES[key].cmd;
+    const copy = document.createElement("button");
+    copy.className = "replay"; copy.title = "Copy command"; copy.textContent = "COPY";
+    copy.addEventListener("click", async () => {
+      try { await navigator.clipboard.writeText(SCENES[key].cmd); } catch (e) {}
+      copy.textContent = "✓";
+      setTimeout(() => (copy.textContent = "COPY"), 1200);
+    });
     const replay = document.createElement("button");
     replay.className = "replay"; replay.title = "Replay"; replay.textContent = "REPLAY ↺";
     replay.addEventListener("click", () => play(key, box));
-    bar.append(dots, title, replay);
+    bar.append(dots, title, copy, replay);
     const screen = document.createElement("pre");
     screen.className = "term-body";
     screen.setAttribute("aria-live", "polite");

@@ -199,6 +199,17 @@
     overflow-x:auto; white-space:pre; color:var(--text);
   }
   .snippet .c{color:var(--dim)}
+  .snippet{position:relative; padding-right:70px}
+  .copy-mini{
+    font-family:var(--mono); font-size:.62rem; letter-spacing:.06em; font-weight:700;
+    color:var(--dim); background:#150d12; border:1px solid var(--border-soft);
+    border-radius:5px; padding:4px 0; min-width:52px; text-align:center; cursor:pointer;
+  }
+  .copy-mini:hover{color:var(--mint); border-color:var(--border)}
+  .copy-mini.done{color:var(--ground); background:var(--mint); border-color:transparent}
+  .snippet .copy-mini{position:absolute; top:8px; right:8px}
+  td .copy-mini{margin-left:10px; vertical-align:middle}
+  @media (pointer:coarse){ .copy-mini{padding:6px 0; min-width:58px} }
   .snippet .m{color:var(--mint)}
 
   /* commands table */
@@ -926,6 +937,27 @@
       }, 70);
     }, 3400);
   })();
+
+
+  // ---- copy buttons on every command (snippets + commands table) ----
+  function copyBtn(getText) {
+    const b = document.createElement("button");
+    b.className = "copy-mini"; b.textContent = "COPY"; b.title = "Copy command";
+    b.addEventListener("click", async () => {
+      try { await navigator.clipboard.writeText(getText()); } catch (e) {}
+      b.textContent = "✓"; b.classList.add("done");
+      setTimeout(() => { b.textContent = "COPY"; b.classList.remove("done"); }, 1200);
+    });
+    return b;
+  }
+  document.querySelectorAll(".snippet").forEach((sn) => {
+    const text = sn.textContent.trim();
+    sn.append(copyBtn(() => text));
+  });
+  document.querySelectorAll("#commands tbody td:first-child").forEach((td) => {
+    const text = td.textContent.trim();
+    td.append(copyBtn(() => text));
+  });
 
   // ---- reveal on scroll ----
   const io = new IntersectionObserver((entries) => {
