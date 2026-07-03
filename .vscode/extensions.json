@@ -4,6 +4,7 @@
     "ms-python.debugpy",
     "ms-vscode.cpptools",
     "redhat.java",
-    "vscjava.vscode-java-debug"
+    "vscjava.vscode-java-debug",
+    "cweijan.vscode-office"
   ]
 }

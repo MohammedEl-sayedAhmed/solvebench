@@ -71,8 +71,8 @@ ask() {  # ask "question" [default Y|N] -> exit 0 for yes
 banner
 
 # 1) VS Code extensions (repo-local, no global footprint) --------------------
-EXTS=(ms-python.python ms-python.debugpy ms-vscode.cpptools redhat.java vscjava.vscode-java-debug)
-step "VS Code extensions (${#EXTS[@]} recommended: Python, C/C++, Java debug)"
+EXTS=(ms-python.python ms-python.debugpy ms-vscode.cpptools redhat.java vscjava.vscode-java-debug cweijan.vscode-office)
+step "VS Code extensions (${#EXTS[@]} recommended: Python, C/C++, Java debug, Markdown preview)"
 if command -v code >/dev/null 2>&1; then
   if ask "Install them into the repo (./.pst/extensions, not global)?" Y; then
     mkdir -p "$EXT_DIR"

@@ -32,7 +32,7 @@ function Ask($q, $def = 'Y') {
 Banner
 
 # 1) VS Code extensions (repo-local, no global footprint) --------------------
-$exts = @('ms-python.python', 'ms-python.debugpy', 'ms-vscode.cpptools', 'redhat.java', 'vscjava.vscode-java-debug')
+$exts = @('ms-python.python', 'ms-python.debugpy', 'ms-vscode.cpptools', 'redhat.java', 'vscjava.vscode-java-debug', 'cweijan.vscode-office')
 Step "VS Code extensions ($($exts.Count) recommended: Python, C/C++, Java debug)"
 if (Get-Command code -ErrorAction SilentlyContinue) {
     if (Ask "Install them into the repo (.\.pst\extensions, not global)?" 'Y') {
