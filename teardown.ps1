@@ -21,7 +21,17 @@ function Ask($q, $def = 'Y') {
 Write-Host "  teardown - remove everything setup created`n" -ForegroundColor DarkGray
 
 Step "Repo-local artifacts"
-$targets = @('.pst', '.venv', '.pytest_cache', 'report.html')
+# The code.ps1 editor profile lives outside the repo (same derivation as
+# code.ps1 — it can't sit under .\.pst or the Java language server refuses to
+# import the project). Remove it here so teardown still erases every trace.
+# Same derivation as code.ps1: LOCALAPPDATA on Windows, ~/.cache elsewhere,
+# path lower-cased before hashing (Windows paths are case-insensitive).
+$cacheRoot = if ($env:LOCALAPPDATA) { $env:LOCALAPPDATA } else { Join-Path $HOME '.cache' }
+$pathKey = $PSScriptRoot.ToLowerInvariant()
+$md5 = [System.Security.Cryptography.MD5]::Create()
+$hash = ([BitConverter]::ToString($md5.ComputeHash([Text.Encoding]::UTF8.GetBytes($pathKey))) -replace '-', '').Substring(0, 8).ToLower()
+$profileDir = Join-Path (Join-Path $cacheRoot 'solvebench') "$(Split-Path $pathKey -Leaf)-$hash"
+$targets = @('.pst', '.venv', '.pytest_cache', 'report.html', $profileDir)
 $present = @($targets | Where-Object { Test-Path $_ })
 foreach ($t in $present) { Write-Host "    $t" }
 $compiled = @(Get-ChildItem -Recurse -Force -ErrorAction SilentlyContinue |

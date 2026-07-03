@@ -13,6 +13,7 @@ venv/
 report.html
 build/
 bin/
+target/
 # compiled Java
 *.class
 # compiled C/C++ objects and binaries

@@ -115,7 +115,13 @@ fi
 
 # 1) Repo-local artifacts ----------------------------------------------------
 step "Repo-local artifacts"
-DIRS=(.pst .venv .pytest_cache)
+# The code.sh editor profile lives outside the repo (same derivation as code.sh
+# — it can't sit under ./.pst or the Java language server refuses to import the
+# project). Remove it here so teardown still erases every trace.
+PHYS="$(pwd -P)"
+REPO_ID="$(basename "$PHYS")-$(printf %s "$PHYS" | cksum | cut -d' ' -f1)"
+PROFILE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/solvebench/$REPO_ID"
+DIRS=(.pst .venv .pytest_cache "$PROFILE_DIR")
 present=()
 for d in "${DIRS[@]}"; do
   if [ -e "$d" ]; then

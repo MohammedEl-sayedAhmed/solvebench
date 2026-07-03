@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
-# Launch VS Code scoped to THIS repo only: repo-local extensions + profile under
-# ./.pst, so it never reads or writes your global VS Code install. Remove it all
-# with ./teardown.sh. Run ./setup.sh first to populate the extensions.
+# Launch VS Code scoped to THIS repo only: repo-local extensions (./.pst) + a
+# dedicated profile (~/.cache/solvebench/<repo>-<id>), so it never reads or
+# writes your global VS Code install. Remove it all with ./teardown.sh.
+# Run ./setup.sh first to populate the extensions.
 set -uo pipefail
 cd "$(dirname "$0")"
 
@@ -11,24 +12,37 @@ if ! command -v code >/dev/null 2>&1; then
   exit 1
 fi
 
-# Seed the repo-local profile's user settings once: a fresh profile starts in
-# Restricted Mode (workspace not trusted), which stops the Java language server
-# from importing the project. Safe ONLY because this launcher refuses to open
+# Where this launcher keeps VS Code state:
+#   extensions -> ./.pst/extensions            (repo-local, populated by setup.sh)
+#   profile    -> ~/.cache/solvebench/<repo>-<id>/user-data   (OUTSIDE the repo)
+# The profile can't live under ./.pst: the Java language server (Eclipse-based)
+# refuses to import any project whose folder contains its own workspace
+# metadata — "project overlaps the workspace location" — which broke the Java
+# Run|Debug CodeLens. teardown.sh removes this directory too.
+# Key the profile to the PHYSICAL path (pwd -P): symlinked spellings of the
+# same repo then share one profile, and teardown.sh finds it from any of them.
+PHYS="$(pwd -P)"
+REPO_ID="$(basename "$PHYS")-$(printf %s "$PHYS" | cksum | cut -d' ' -f1)"
+DATA_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/solvebench/$REPO_ID/user-data"
+
+# Seed the profile's user settings once: a fresh profile starts in Restricted
+# Mode (workspace not trusted), which stops the Java language server from
+# importing the project. Safe ONLY because this launcher refuses to open
 # anything outside this repo (enforced below).
-SETTINGS="$PWD/.pst/user-data/User/settings.json"
+SETTINGS="$DATA_DIR/User/settings.json"
 if [ ! -f "$SETTINGS" ]; then
   mkdir -p "$(dirname "$SETTINGS")"
   printf '{\n  "security.workspace.trust.enabled": false\n}\n' > "$SETTINGS"
 fi
 
-# Seed repo-local keybindings once (the .pst profile is git-ignored, so these
+# Seed the profile's keybindings once (the profile lives outside git, so these
 # can't be committed): duplicate the current line up/down with Ctrl+Alt+Up/Down.
 # A user keybinding overrides the built-in default on those keys.
-KEYBINDINGS="$PWD/.pst/user-data/User/keybindings.json"
+KEYBINDINGS="$DATA_DIR/User/keybindings.json"
 if [ ! -f "$KEYBINDINGS" ]; then
   mkdir -p "$(dirname "$KEYBINDINGS")"
   cat > "$KEYBINDINGS" <<'EOF'
-// Repo-scoped keybindings for the ./code.sh editor (--user-data-dir .pst).
+// Keybindings for the repo-scoped editor launched by ./code.sh.
 // Seeded by code.sh / code.ps1 if missing; safe to edit.
 [
   {
@@ -63,5 +77,5 @@ done
 
 exec code \
   --extensions-dir "$PWD/.pst/extensions" \
-  --user-data-dir "$PWD/.pst/user-data" \
+  --user-data-dir "$DATA_DIR" \
   "${@:-.}"

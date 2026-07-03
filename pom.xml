@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Minimal Maven descriptor whose ONLY job is to give the Java language server a
+  real project model so the "Run | Debug" CodeLens over main() works.
+
+  sourceDirectory=java makes the whole java/ tree one source root, so the shared
+  common.TestFramework helper resolves and the LS compiles everything to
+  target/ (git-ignored). The CodeLens then launches with -cp target/classes.
+
+  This does NOT change how the repo actually builds/runs: run.py, ./run.sh, F5,
+  and CI all compile on their own (to .pst/build or temp dirs) and never invoke
+  Maven. No dependencies are declared, so no network/downloads are needed.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>solvebench</groupId>
+  <artifactId>solvebench</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <properties>
+    <maven.compiler.release>17</maven.compiler.release>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <build>
+    <sourceDirectory>java</sourceDirectory>
+  </build>
+</project>

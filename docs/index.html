@@ -453,6 +453,7 @@
           <tr><td>./ship.sh "msg"</td><td>Refresh README stats/index, commit, push</td></tr>
           <tr><td>./teardown.sh</td><td>Remove everything setup created</td></tr>
           <tr><td>./init.sh</td><td>Fork clean-slate: clear examples, set your handles</td></tr>
+          <tr><td data-nocopy>common.TestFramework</td><td>The self-test helper every solution calls — <a href="demo.html#testframework">copy-paste cheat sheet: check &amp; checkUnordered</a></td></tr>
         </tbody>
       </table>
     </div>
@@ -955,6 +956,7 @@
     sn.append(copyBtn(() => text));
   });
   document.querySelectorAll("#commands tbody td:first-child").forEach((td) => {
+    if (td.hasAttribute("data-nocopy")) return;   // reference rows, not commands
     const text = td.textContent.trim();
     td.append(copyBtn(() => text));
   });

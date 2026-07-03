@@ -83,6 +83,21 @@
   @keyframes blink{50%{opacity:0}}
   @media (prefers-reduced-motion:reduce){ .cursor{animation:none} }
 
+  /* ---- static code snippets (TestFramework cheat sheet) ---- */
+  .snip{background:var(--surface); border:1px solid var(--border); border-radius:12px; overflow:hidden;
+        margin:0 0 14px; box-shadow:0 24px 60px -30px #000a, 0 2px 0 #ffffff08 inset}
+  .snip-bar{display:flex; align-items:center; gap:12px; padding:8px 13px;
+            border-bottom:1px solid var(--border); background:linear-gradient(var(--surface),var(--surface-2))}
+  .snip-title{font-family:var(--mono); font-size:.72rem; color:var(--dim); letter-spacing:.06em; flex:1;
+              overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .snip pre{font-family:var(--mono); font-size:.78rem; line-height:1.6; margin:0; padding:14px 16px 16px;
+            overflow-x:auto; white-space:pre; tab-size:4;
+            scrollbar-width:thin; scrollbar-color:var(--border) transparent}
+  .snip pre::-webkit-scrollbar{height:6px}
+  .snip pre::-webkit-scrollbar-thumb{background:var(--border); border-radius:3px}
+  .snip .c{color:var(--dim)}
+  @media (max-width:520px){ .snip pre{font-size:.72rem; padding:12px 12px 14px} }
+
   /* ---- arrow effects (entrance on init, farewell on teardown) ---- */
   .term-body.fx{font-size:min(.8rem, calc((100vw - 84px) / 44)); line-height:1.2}
   .aw-a{color:#ff5d73; font-weight:700}
@@ -128,7 +143,8 @@
       <p class="lede">The whole toolkit in one tour — each terminal plays as you reach it.
         <a href="index.html">← back to the site</a></p>
       <nav class="toc" aria-label="Commands">
-        <a href="#run">run</a><a href="#new">new</a><a href="#complexity">complexity</a>
+        <a href="#run">run</a><a href="#new">new</a><a href="#testframework">check</a>
+        <a href="#complexity">complexity</a>
         <a href="#ship">ship</a><a href="#stats">stats</a><a href="#bench">bench</a>
         <a href="#setup">setup</a><a href="#init">init</a><a href="#teardown">teardown</a>
       </nav>
@@ -158,6 +174,108 @@
         <li>Plain paths work too: <code>new leetcode/easy/two_sum --lang py</code></li>
       </ul>
       <div class="term" data-scene="new"></div>
+    </section>
+
+    <section class="cmdcard" id="testframework">
+      <p class="cmd-eyebrow">daily loop · assert</p>
+      <h2><b>TestFramework</b> — check · checkUnordered</h2>
+      <p class="cmd-desc">Every solution asserts its own examples with the shared
+        <a href="https://github.com/MohammedEl-sayedAhmed/solvebench/blob/main/java/common/TestFramework.java"><code>common.TestFramework</code></a>
+        helper — that's what <code>./run.sh</code>, F5, the hook, and CI all execute.
+        Copy the shape you need.</p>
+      <ul class="cmd-points">
+        <li><code>t.check(name, got, expected)</code> — strict, order-sensitive (deepEquals). The default.</li>
+        <li><code>t.checkUnordered(...)</code> — recursive multisets, for "return in any order" problems (3Sum, subsets)</li>
+        <li>Duplicates still count in <code>checkUnordered</code> — it's a multiset, not a set</li>
+        <li>Java helper — Python solutions use <code>python/common/test_framework.py</code>'s <code>run_tests(...)</code> instead (strict equality, no unordered variant)</li>
+      </ul>
+
+      <div class="snip">
+        <div class="snip-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="snip-title">the skeleton — every solution ends in System.exit(t.summary())</span>
+          <button class="replay" title="Copy snippet">COPY</button></div>
+<pre>package leetcode.medium;
+
+import common.TestFramework;
+
+public class Example {
+    public int solve(int[] nums) { return 0; }
+
+    public static void main(String[] args) {
+        Example s = new Example();
+        TestFramework t = new TestFramework();
+
+        t.check("Example 1", s.solve(new int[] {1, 2, 3}), 6);
+
+        System.exit(t.summary());   <span class="c">// 0 = all green, 1 = something failed</span>
+    }
+}</pre>
+      </div>
+
+      <div class="snip">
+        <div class="snip-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="snip-title">scalars &amp; strings</span>
+          <button class="replay" title="Copy snippet">COPY</button></div>
+<pre>t.check("boolean", s.isPalindrome(121), true);
+t.check("int",     s.add(2, 3), 5);
+t.check("long",    s.factorial(20), 2432902008176640000L);
+t.check("double",  s.average(new int[] {1, 2}), 1.5);   <span class="c">// exact — no tolerance</span>
+t.check("char",    s.firstUniq("leetcode"), 'l');
+t.check("String",  s.reverse("abc"), "cba");
+t.check("null",    s.find("nope"), null);</pre>
+      </div>
+
+      <div class="snip">
+        <div class="snip-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="snip-title">arrays — 1-D &amp; 2-D</span>
+          <button class="replay" title="Copy snippet">COPY</button></div>
+<pre>t.check("int[]",     s.sortedSquares(new int[] {-2, -1, 0}), new int[] {0, 1, 4});
+t.check("String[]",  s.split("a,b"), new String[] {"a", "b"});
+t.check("boolean[]", s.sieve(4), new boolean[] {false, false, true, true});
+t.check("int[][]",   s.transpose(new int[][] {{1, 2}, {3, 4}}),
+                     new int[][] {{1, 3}, {2, 4}});</pre>
+      </div>
+
+      <div class="snip">
+        <div class="snip-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="snip-title">lists &amp; list-of-lists — order matters → check</span>
+          <button class="replay" title="Copy snippet">COPY</button></div>
+<pre>import java.util.List;
+
+t.check("List&lt;Integer&gt;", s.range(1, 3), List.of(1, 2, 3));
+t.check("List&lt;String&gt;",  s.words("a b"), List.of("a", "b"));
+t.check("empty list",    s.range(2, 1), List.of());
+
+<span class="c">// sequences where order is the answer (BFS levels, paths) stay strict</span>
+t.check("levelOrder", s.levelOrder(root),
+        List.of(List.of(3), List.of(9, 20), List.of(15, 7)));</pre>
+      </div>
+
+      <div class="snip">
+        <div class="snip-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="snip-title">"in any order" → checkUnordered (nested multisets)</span>
+          <button class="replay" title="Copy snippet">COPY</button></div>
+<pre>t.checkUnordered("3Sum", s.threeSum(new int[] {-1, 0, 1, 2, -1, -4}),
+        List.of(List.of(-1, -1, 2), List.of(-1, 0, 1)));
+
+t.checkUnordered("subsets", s.subsets(new int[] {1, 2}),
+        List.of(List.of(), List.of(1), List.of(2), List.of(1, 2)));
+
+t.checkUnordered("int[] any order", s.result(), new int[] {1, 2, 3});
+<span class="c">// order is ignored at every depth; duplicates still count:</span>
+<span class="c">//   [[0,0,0],[0,0,0]] != [[0,0,0]]</span></pre>
+      </div>
+
+      <div class="snip">
+        <div class="snip-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="snip-title">gotchas</span>
+          <button class="replay" title="Copy snippet">COPY</button></div>
+<pre><span class="c">// shapes must match: int[] != Integer[] != List&lt;Integer&gt;</span>
+<span class="c">//   t.check("x", new int[] {1}, List.of(1))     // always fails</span>
+<span class="c">// doubles compare exactly — round when you need tolerance:</span>
+<span class="c">//   t.check("x", Math.round(got * 1e6), 1500000L);</span>
+<span class="c">// summary() goes last: its return value is the process exit code</span></pre>
+      </div>
     </section>
 
     <section class="cmdcard" id="complexity">
@@ -526,6 +644,16 @@
     }
   }, { threshold: 0.35 });
   document.querySelectorAll(".term[data-scene]").forEach((el) => io.observe(el));
+
+  // TestFramework cheat-sheet snippets: COPY grabs the whole block.
+  document.querySelectorAll(".snip").forEach((snip) => {
+    const btn = snip.querySelector("button");
+    btn.addEventListener("click", async () => {
+      try { await navigator.clipboard.writeText(snip.querySelector("pre").textContent); } catch (e) {}
+      btn.textContent = "✓";
+      setTimeout(() => (btn.textContent = "COPY"), 1200);
+    });
+  });
 
   // Fork copy box
   const copybtn = document.getElementById("copybtn");

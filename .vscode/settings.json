@@ -4,8 +4,9 @@
   "python.testing.pytestArgs": ["."],
   "java.project.sourcePaths": ["java"],
   "java.server.launchMode": "Standard",
-  "//": "The Run|Debug CodeLens over main() launches via the language server's standalone jdt.ls project, which doesn't see java/common (TestFramework) — it fails with 'TestFramework cannot be resolved to a type'. Disable it and use the F5 config 'Debug: Java solution (current file)', which builds to .pst/build/java with explicit classPaths.",
-  "java.debug.settings.enableRunDebugCodeLens": false,
+  "//": "pom.xml gives the language server a real Maven project (sourceDirectory=java), so it compiles all of java/ together — common.TestFramework resolves and the Run|Debug CodeLens over main() launches with -cp target/classes. If the CodeLens misbehaves after a pull, run 'Java: Clean Java Language Server Workspace' + reload. F5 ('Debug: Java solution (current file)') is the build-all fallback.",
+  "//2": "There's almost always a half-solved WIP file in the tree; don't let its compile errors pop 'Build failed, continue?' when running a different, finished solution.",
+  "java.debug.settings.onBuildFailureProceed": true,
   "files.exclude": {
     "**/__pycache__": true,
     "**/*.class": true,
