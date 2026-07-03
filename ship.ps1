@@ -36,7 +36,14 @@ if ($leak) {
 
 git add -A .
 if (-not $msg) { $msg = "chore: update solutions and refresh README" }
+# Don't blindly proceed: a rejecting pre-commit hook (e.g. a failing solution)
+# makes `git commit` exit non-zero — without this check we'd falsely report
+# "committed" and try to push a commit that was never made.
 git commit -q -m $msg
+if ($LASTEXITCODE -ne 0) {
+    Write-Error "commit failed (pre-commit hook rejected it?) — nothing pushed"
+    exit 1
+}
 Write-Host "committed: $msg"
 
 $br = git rev-parse --abbrev-ref HEAD

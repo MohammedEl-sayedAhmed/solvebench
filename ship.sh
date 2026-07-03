@@ -44,7 +44,13 @@ fi
 
 git add -A .
 [ -z "$MSG" ] && MSG="chore: update solutions and refresh README"
-git commit -q -m "$MSG"
+# Don't blindly proceed: a rejecting pre-commit hook (e.g. a failing solution)
+# makes `git commit` exit non-zero — without this check we'd falsely report
+# "committed"/"pushed" and try to push a commit that was never made.
+if ! git commit -q -m "$MSG"; then
+  echo "commit failed (pre-commit hook rejected it?) — nothing pushed" >&2
+  exit 1
+fi
 echo "committed: $MSG"
 
 BR=$(git rev-parse --abbrev-ref HEAD)
