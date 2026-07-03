@@ -101,6 +101,23 @@ so the same input is reused across languages. Solutions resolve them via a helpe
 (Python: `from common.aoc import input_path`) rather than a path relative to the
 solution file.
 
+## Commands
+
+Everything lives in the repo root so the commands stay short. On Windows use the
+`.ps1` equivalent (e.g. `.\run.ps1`, `.\ship.ps1`).
+
+| Command | What it does |
+| ------- | ------------ |
+| `./run.sh [filter]` | Run solutions (uses a container on the host; native inside the Dev Container) |
+| `./run.sh new <url\|path> --lang X` | Scaffold a solution — a LeetCode URL auto-fetches number/title/difficulty |
+| `./run.sh --stats` · `--changed` · `--time` | Inventory by platform · only git-changed · with timings |
+| `./setup.sh` | Interactive one-time setup (repo-local VS Code extensions, venv) |
+| `./code.sh` | Open VS Code scoped to this repo (uses `.pst/`) |
+| `./ship.sh "msg"` | Refresh README stats, then commit & push |
+| `./teardown.sh` | Remove setup artifacts (`.pst/`, `.venv/`, the image) |
+| `./init.sh` | Fork clean-slate: clear examples, set your handles |
+| `python python/common/complexity.py` | Estimate a solution's time/space complexity |
+
 ## Quick start
 
 ### First-time setup (optional)
