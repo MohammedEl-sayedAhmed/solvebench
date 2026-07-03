@@ -203,6 +203,20 @@ if any case fails (this is what the runner keys on):
 | C++ | [cpp/common/test_framework.hpp](cpp/common/test_framework.hpp) | `tf::TestRunner t; t.check("name", got, expected); return t.summary();` |
 | Java | [java/common/TestFramework.java](java/common/TestFramework.java) | `TestFramework t = new TestFramework(); t.check(...); System.exit(t.summary());` |
 
+### Estimate complexity
+
+Empirically check how a Python solution scales — it measures runtime and peak
+memory across growing inputs and fits the growth to a Big-O class:
+
+```python
+from common.complexity import estimate
+# make_input(n) returns the argument list for input size n
+estimate(Solution().majorityElement, make_input=lambda n: [list(range(n))])
+#  ->  time ≈ O(n) · space ≈ O(1)
+```
+
+See it live on known cases: `python python/common/complexity.py`.
+
 ## Solutions
 
 <!-- solutions:start -->
