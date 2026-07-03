@@ -33,6 +33,73 @@ I2="${IRED}   \\     ${IRST}"
 I3="${IRED}   /     ${IRST}"
 I4="${IRED}  /   ${IGLD}__ ${IRST}"
 
+# One marquee chase-light strip (72 dots; lit pairs step with the offset).
+lights() {
+  local o=$1 i out=''
+  for ((i = 0; i < 72; i++)); do
+    if (( (i - o % 4 + 4) % 4 < 2 )); then out+=$'\033[38;5;220m·'
+    else out+=$'\033[38;5;238m·'; fi
+  done
+  printf '%s\033[0m' "$out"
+}
+
+# The arrow's entrance: it rises pointing UP, slips out of sight behind the
+# marquee light-strip (the terminal's top edge), then dives back in fast —
+# pointing RIGHT — strikes the wordmark (jolt + flash), recoils backwards on
+# the momentum, and settles at its post. The gold cursor stays parked.
+# Glyph rows above row 2 are simply not drawn: that's the "behind the wall".
+arrow_intro() {
+  local up=('  /\' ' /  \')
+  local rt=('  \' '   \' '   /' '  /')
+  local red=$'\033[38;5;203;1m' gld=$'\033[38;5;220;1m' r0=$'\033[0m'
+  local g=(220 214 203 196) rows=("$A1" "$A2" "$A3" "$A4")
+
+  _arrow_frame() {  # $1 glyph-name  $2 x  $3 y(abs row of glyph top)  $4 word-off  $5 flash?
+    local -n gp=$1
+    local x=$2 y=$3 wo=$4 fl=$5 f=$'\0337' ra gi icon line sp vis pad wc
+    for ra in 2 3 4 5; do
+      gi=$(( ra - y ))
+      icon=''
+      if (( gi >= 0 && gi < ${#gp[@]} )); then icon="${gp[gi]}"; fi
+      line=''; vis=0
+      if [ -n "$icon" ]; then
+        if (( x < 0 )); then
+          icon="${icon:$(( -x ))}"
+          line="${red}${icon}${r0}"; vis=${#icon}
+        else
+          printf -v line '%*s' "$x" ''
+          line+="${red}${icon}${r0}"; vis=$(( x + ${#icon} ))
+        fi
+      fi
+      pad=$(( 11 + wo - vis )); (( pad < 0 )) && pad=0
+      printf -v sp '%*s' "$pad" ''
+      wc=${g[ra - 2]}; (( fl )) && wc=231
+      f+=$'\033['"$ra"$';1H'"${line}${sp}"$'\033[38;5;'"$wc"$'m'"${rows[ra - 2]}"$'\033[0m\033[K'
+    done
+    f+=$'\033[5;7H'"${gld}__${r0}"                      # cursor parked at its post
+    (( fl )) && f+=$'\033[3;'$(( 11 + wo ))$'H\033[38;5;220;1m*\033[0m'
+    printf '%s' "$f"$'\0338'
+  }
+
+  local y spec
+  _arrow_frame up 3 4 0 0; sleep 0.40                   # rise into view
+  for y in 3 2 1 0; do                                  # fly upward…
+    _arrow_frame up 3 "$y" 0 0; sleep 0.09              # …vanishing behind the lights
+  done
+  _arrow_frame up 3 -9 0 0; sleep 0.50                  # gone behind the wall
+  for spec in '-2 -2' '1 -1' '3 0' '5 1' '7 2'; do      # dive back, fast
+    set -- $spec
+    _arrow_frame rt "$1" "$2" 0 0; sleep 0.025
+  done
+  _arrow_frame rt 7 2 2 1; sleep 0.11                   # impact!
+  _arrow_frame rt 6 2 3 1; sleep 0.09
+  for spec in '4 2' '1 1' '-2 1' '-4 0' '-3 0' '-1 0'; do
+    set -- $spec
+    _arrow_frame rt "$1" 2 "$2" 0; sleep 0.07            # momentum recoil, damped
+  done
+  _arrow_frame rt 0 2 0 0                                # standing still
+}
+
 # Sweep the wordmark in left-to-right with a gold->crimson gradient.
 # Plain and instant when piped or NO_COLOR is set.
 solvebench_banner() {
@@ -41,20 +108,18 @@ solvebench_banner() {
     return
   fi
   local g=(220 214 203 196) rows=("$A1" "$A2" "$A3" "$A4")
-  local icons=("$I1" "$I2" "$I3" "$I4")
   local w=${#A1} i r
-  printf '\n\033[?25l\n\n\n\n\033[4A'
+  printf '\033[?25l\n\n\n\n\033[4A'
   for ((i = 2; i <= w; i += 2)); do
     for r in 0 1 2 3; do
-      printf '\r%s  \033[38;5;%sm%s\033[0m\033[K\n' "${icons[r]}" "${g[r]}" "${rows[r]:0:i}"
+      printf '\r%11s\033[38;5;%sm%s\033[0m\033[K\n' '' "${g[r]}" "${rows[r]:0:i}"
     done
     printf '\033[4A'
     sleep 0.004
   done
   for r in 0 1 2 3; do
-    printf '\r%s  \033[38;5;%sm%s\033[0m\033[K\n' "${icons[r]}" "${g[r]}" "${rows[r]}"
+    printf '\r%11s\033[38;5;%sm%s\033[0m\033[K\n' '' "${g[r]}" "${rows[r]}"
   done
-  printf '\033[?25h'
 }
 
 # Keep it alive: rotate the banner's gradient forever in the background while
@@ -64,17 +129,25 @@ BANNER_LOOP_PID=
 start_banner_loop() {
   [ -t 1 ] && [ -z "${NO_COLOR:-}" ] || return 0
   (
-    g=(220 214 203 196) rows=("$A1" "$A2" "$A3" "$A4") phase=0
+    g=(220 214 203 196) rows=("$A1" "$A2" "$A3" "$A4") phase=0 off=0
     icons=("$I1" "$I2" "$I3" "$I4")
+    titles=(two_sum 3sum fizz_buzz min_stack lru_cache) t=0 tick=0
     while :; do
       frame=$'\0337'
+      frame+=$'\033[1;1H'"$(lights "$off")"$'\033[K'
       for r in 0 1 2 3; do
         c=${g[(r + phase) % 4]}
         frame+=$'\033['$((r + 2))$';1H'"${icons[r]}"'  '$'\033[38;5;'"$c"$'m'"${rows[r]}"$'\033[0m\033[K'
       done
+      frame+=$'\033[6;1H'"$(lights $((off + 2)))"$'\033[K'
+      caret=$'\xE2\x96\x8B'; (( phase % 2 )) && caret=' '
+      frame+=$'\033[7;1H  \033[38;5;220mnow solving: '"${titles[t]} ${caret}"$'\033[0m\033[K'
       frame+=$'\0338'
       printf '%s' "$frame"
       phase=$(( (phase + 1) % 4 ))
+      off=$(( (off + 1) % 4 ))
+      tick=$(( tick + 1 ))
+      (( tick % 22 == 0 )) && t=$(( (t + 1) % ${#titles[@]} ))
       sleep 0.15
     done
   ) &
@@ -91,10 +164,15 @@ banner() {
     return
   fi
   printf '\033[2J\033[H'        # the banner owns the top of a fresh screen
+  lights 0; printf '\n'         # marquee chase strip (row 1)
   solvebench_banner             # sweep in (art lands on rows 2-5)
+  lights 2; printf '\n'         # marquee chase strip (row 6)
+  printf '  \033[38;5;220mnow solving: two_sum \xE2\x96\x8B\033[0m\n'
   printf "  ${DIM}one environment for every judge${RST}\n"
   printf "  ${DIM}self-contained: everything lands in ./.pst and ./.venv${RST}\n"
-  printf '\033[9r\033[9;1H'     # scroll region below the pinned banner
+  arrow_intro                   # the arrow flies in, strikes, rebounds
+  printf '\033[?25h'
+  printf '\033[11r\033[11;1H'   # scroll region below the pinned marquee
   start_banner_loop
 }
 
