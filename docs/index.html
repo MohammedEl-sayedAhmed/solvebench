@@ -123,6 +123,20 @@
   @keyframes markblink{50%{opacity:0}}
   @media (prefers-reduced-motion:reduce){ .mark .mark-chev,.mark .mark-cursor{animation:none} }
 
+  /* ---- hero burst (Claude-style boot-up): pop, fan out, spin, breathe ---- */
+  .mark-hero{overflow:visible}
+  .mark-pop{transform-origin:40px 40px; animation:markpop .8s cubic-bezier(.34,1.56,.64,1) both}
+  @keyframes markpop{from{transform:scale(0) rotate(-60deg)}to{transform:scale(1) rotate(0deg)}}
+  .mark-spin{transform-origin:40px 40px; animation:rayspin 18s linear 1.2s infinite}
+  @keyframes rayspin{to{transform:rotate(360deg)}}
+  .mark-rays{transform-origin:40px 40px; animation:raybreathe 3.2s ease-in-out 1.2s infinite alternate}
+  @keyframes raybreathe{from{transform:scale(.93)}to{transform:scale(1.06)}}
+  .mark-rays line{stroke-dasharray:9; animation:raygrow .45s ease-out var(--d,0s) backwards}
+  @keyframes raygrow{from{stroke-dashoffset:9; opacity:0}}
+  @media (prefers-reduced-motion:reduce){
+    .mark-pop,.mark-spin,.mark-rays,.mark-rays line{animation:none}
+  }
+
   /* ---- sections (top-level bands only — .term is a section too) ---- */
   body > section{padding:70px 0}
   .sec-head{margin-bottom:36px; max-width:60ch}
@@ -259,7 +273,7 @@
 <header class="hero">
   <div class="wrap hero-grid">
     <div class="hero-copy">
-      <svg class="mark" viewBox="0 0 64 64" width="52" height="52" aria-hidden="true" style="margin-bottom:14px"><path class="mark-chev" d="M14 16 34 32 14 48" fill="none" stroke="#ff5d73" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/><rect class="mark-cursor" x="38" y="40" width="17" height="8.5" rx="4" fill="#ffc857"/></svg>
+      <svg class="mark mark-hero" viewBox="0 0 80 80" width="72" height="72" aria-hidden="true" style="margin-bottom:16px"><g class="mark-pop"><g class="mark-spin"><g class="mark-rays"><line x1="40.0" y1="13.0" x2="40.0" y2="5.0" stroke="#ffc857" stroke-width="5" stroke-linecap="round" style="--d:550ms"/><line x1="55.9" y1="18.2" x2="60.6" y2="11.7" stroke="#ff5d73" stroke-width="5" stroke-linecap="round" style="--d:595ms"/><line x1="65.7" y1="31.7" x2="73.3" y2="29.2" stroke="#ffc857" stroke-width="5" stroke-linecap="round" style="--d:640ms"/><line x1="65.7" y1="48.3" x2="73.3" y2="50.8" stroke="#ff5d73" stroke-width="5" stroke-linecap="round" style="--d:685ms"/><line x1="55.9" y1="61.8" x2="60.6" y2="68.3" stroke="#ffc857" stroke-width="5" stroke-linecap="round" style="--d:730ms"/><line x1="40.0" y1="67.0" x2="40.0" y2="75.0" stroke="#ff5d73" stroke-width="5" stroke-linecap="round" style="--d:775ms"/><line x1="24.1" y1="61.8" x2="19.4" y2="68.3" stroke="#ffc857" stroke-width="5" stroke-linecap="round" style="--d:820ms"/><line x1="14.3" y1="48.3" x2="6.7" y2="50.8" stroke="#ff5d73" stroke-width="5" stroke-linecap="round" style="--d:865ms"/><line x1="14.3" y1="31.7" x2="6.7" y2="29.2" stroke="#ffc857" stroke-width="5" stroke-linecap="round" style="--d:910ms"/><line x1="24.1" y1="18.2" x2="19.4" y2="11.7" stroke="#ff5d73" stroke-width="5" stroke-linecap="round" style="--d:955ms"/></g></g><g transform="translate(8,8)"><path class="mark-chev" d="M14 16 34 32 14 48" fill="none" stroke="#ff5d73" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/><rect class="mark-cursor" x="38" y="40" width="17" height="8.5" rx="4" fill="#ffc857"/></g></g></svg>
       <p class="eyebrow">track · debug · every platform</p>
       <h1>One environment for every judge — with <span class="hl">free local debugging</span>.</h1>
       <p class="lede">LeetCode, Codewars, Advent of Code — solve them all in a single repo,
