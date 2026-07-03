@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
-# Run the polyglot test runner (and scaffolder) inside a container, so you don't
-# need Python, g++, or a JDK installed on the host.
+# Run the polyglot test runner (and scaffolder). Uses a container on the host so
+# you don't need Python/g++/JDK/etc installed — but runs natively automatically
+# when you're already inside the Dev Container (or any container), or when no
+# container engine is available.
 #
 #   ./run.sh                              # run every solution
 #   ./run.sh leetcode/easy/two_sum        # run one problem, all languages
@@ -9,28 +11,37 @@
 #   ./run.sh new leetcode/easy/foo --lang cpp   # scaffold a new solution
 #   ./run.sh shell                        # open a shell inside the container
 #
-# Runs natively (no container) if you set PST_NATIVE=1 and have the tools.
+# Force native execution with PST_NATIVE=1.
 set -euo pipefail
 
 IMAGE=pst-runner
 cd "$(dirname "$0")"
 
-# Escape hatch: run directly on the host toolchain.
-if [ "${PST_NATIVE:-}" = "1" ]; then
+run_native() {
   case "${1:-}" in
     new)   shift; exec python3 new.py "$@" ;;
     shell) exec "${SHELL:-bash}" ;;
     *)     exec python3 run.py "$@" ;;
   esac
+}
+
+# Already inside the toolchain image / a Dev Container / any container?
+in_container() {
+  [ -n "${PST_IN_CONTAINER:-}" ] || [ -f /.dockerenv ] \
+    || grep -qaE '(docker|containerd|kubepods|/lxc/)' /proc/1/cgroup 2>/dev/null
+}
+
+# Native path: asked for it, already containerized, or the tools are right here.
+if [ "${PST_NATIVE:-}" = "1" ] || in_container; then
+  run_native "$@"
 fi
 
-# Pick a container engine.
+# Otherwise use a container engine; if none, fall back to native (don't error).
 if command -v docker >/dev/null 2>&1; then ENGINE=docker
 elif command -v podman >/dev/null 2>&1; then ENGINE=podman
 else
-  echo "Error: neither docker nor podman is installed." >&2
-  echo "Install one, or run natively with:  PST_NATIVE=1 ./run.sh $*" >&2
-  exit 1
+  echo "note: no docker/podman found — running on the local toolchain." >&2
+  run_native "$@"
 fi
 
 # Build the image on first use (or after the Dockerfile changes).

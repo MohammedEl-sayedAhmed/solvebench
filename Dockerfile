@@ -16,5 +16,9 @@ RUN apt-get update \
 
 WORKDIR /repo
 
+# Marker so run.sh / run.ps1 know they're already inside the toolchain image
+# and should run natively instead of trying to launch another container.
+ENV PST_IN_CONTAINER=1
+
 # Default command runs the whole suite; ./run.sh overrides this as needed.
 CMD ["python3", "run.py"]
