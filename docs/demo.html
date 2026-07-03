@@ -3,12 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>solvebench — polyglot runner</title>
+<meta name="description" content="Every solvebench command, explained — with live terminal demos: run, scaffold from a URL, measure Big-O, ship, track, set up, and tear down.">
+<title>solvebench — command tour</title>
 <style>
   :root{
     /* contest crimson: gold = success (--mint), red = structure (--peri) */
     --ground:#140b10; --surface:#1d1218; --surface-2:#170e13;
-    --border:#3c2531; --text:#ecdfe4; --dim:#937f89;
+    --border:#3c2531; --border-soft:#2a1a22;
+    --text:#ecdfe4; --bright:#faf2f4; --dim:#937f89;
     --mint:#ffc857; --peri:#ff5d73; --fail:#ff5d73;
     --mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,"Liberation Mono",monospace;
     --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
@@ -16,109 +18,87 @@
   *{box-sizing:border-box}
   html,body{margin:0}
   body{
-    background:
-      radial-gradient(1100px 520px at 50% -10%, #26101a12, transparent),
-      var(--ground);
+    background:radial-gradient(1100px 520px at 50% -10%, #26101a12, transparent), var(--ground);
     color:var(--text); font-family:var(--sans);
-    -webkit-font-smoothing:antialiased; line-height:1.5;
-    min-height:100vh; display:flex; align-items:center; justify-content:center;
-    padding:40px 20px;
+    -webkit-font-smoothing:antialiased; line-height:1.55; padding:48px 20px 60px;
   }
-  .wrap{width:100%; max-width:720px}
-  .masthead{text-align:center; margin-bottom:26px}
-  .logo{
-    font-family:var(--mono); font-size:.8rem; letter-spacing:.14em;
-    color:var(--peri); text-transform:uppercase; margin-bottom:14px;
-  }
-  h1{
-    font-size:clamp(1.7rem,5vw,2.5rem); line-height:1.1; margin:0 0 10px;
-    font-weight:680; letter-spacing:-.02em; text-wrap:balance;
-  }
-  .lede{margin:0 auto; max-width:52ch; color:var(--dim); font-size:1.02rem}
+  a{color:var(--peri); text-decoration:none}
+  a:hover{color:var(--mint)}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--peri); outline-offset:2px; border-radius:4px}
+  .wrap{width:100%; max-width:780px; margin:0 auto}
 
-  .term{
-    background:var(--surface); border:1px solid var(--border);
-    border-radius:12px; overflow:hidden;
-    box-shadow:0 24px 60px -30px #000a, 0 2px 0 #ffffff08 inset;
-  }
-  .term-bar{
-    display:flex; align-items:center; gap:14px;
-    padding:10px 14px; border-bottom:1px solid var(--border);
-    background:linear-gradient(var(--surface),var(--surface-2));
-  }
-  .dots{display:flex; gap:7px}
-  .dots i{width:11px; height:11px; border-radius:50%; display:block}
+  .masthead{text-align:center; margin-bottom:14px}
+  .logo{font-family:var(--mono); font-size:.8rem; letter-spacing:.14em; color:var(--peri);
+        text-transform:uppercase; margin-bottom:14px}
+  h1{font-size:clamp(1.7rem,5vw,2.4rem); line-height:1.1; margin:0 0 10px; color:var(--bright);
+     font-weight:700; letter-spacing:-.02em; text-wrap:balance}
+  .lede{margin:0 auto; max-width:56ch; color:var(--dim); font-size:1.02rem}
+  .toc{display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin:26px 0 8px;
+       font-family:var(--mono); font-size:.74rem}
+  .toc a{border:1px solid var(--border-soft); border-radius:999px; padding:4px 12px; color:var(--dim)}
+  .toc a:hover{color:var(--mint); border-color:var(--border)}
+
+  /* ---- command cards ---- */
+  .cmdcard{margin:54px 0}
+  .cmd-eyebrow{font-family:var(--mono); font-size:.7rem; letter-spacing:.16em; text-transform:uppercase;
+               color:var(--peri); margin:0 0 8px}
+  .cmdcard h2{font-family:var(--mono); font-size:clamp(1.05rem,3vw,1.3rem); color:var(--bright);
+              margin:0 0 8px; letter-spacing:-.01em; overflow-wrap:anywhere}
+  .cmdcard h2 b{color:var(--mint); font-weight:700}
+  .cmd-desc{color:var(--dim); margin:0 0 12px; max-width:64ch}
+  .cmd-points{margin:0 0 16px; padding:0; list-style:none; color:var(--dim); font-size:.9rem; max-width:64ch}
+  .cmd-points li{padding:3px 0 3px 20px; position:relative}
+  .cmd-points li::before{content:"·"; position:absolute; left:6px; color:var(--mint); font-weight:700}
+  .cmd-points code{font-family:var(--mono); color:var(--peri); font-size:.85em}
+
+  /* ---- terminal ---- */
+  .term{background:var(--surface); border:1px solid var(--border); border-radius:12px; overflow:hidden;
+        box-shadow:0 24px 60px -30px #000a, 0 2px 0 #ffffff08 inset}
+  .term-bar{display:flex; align-items:center; gap:12px; padding:9px 13px;
+            border-bottom:1px solid var(--border); background:linear-gradient(var(--surface),var(--surface-2))}
+  .dots{display:flex; gap:6px}
+  .dots i{width:10px; height:10px; border-radius:50%; display:block}
   .dots i:nth-child(1){background:#ff5f57}
   .dots i:nth-child(2){background:#febc2e}
   .dots i:nth-child(3){background:#28c840}
-  .tabs{display:flex; gap:2px; flex:1; overflow-x:auto; scrollbar-width:none}
-  .tabs::-webkit-scrollbar{display:none}
-  .tab{
-    font-family:var(--mono); font-size:.82rem; color:var(--dim);
-    background:none; border:0; border-bottom:2px solid transparent;
-    padding:6px 10px 7px; cursor:pointer; white-space:nowrap; letter-spacing:.02em;
-  }
-  .tab:hover{color:var(--text)}
-  .tab.is-active{color:var(--peri); border-bottom-color:var(--peri)}
-  .replay{
-    font-family:var(--mono); font-size:.72rem; letter-spacing:.08em;
-    color:var(--dim); background:#150d12;
-    border:1px solid var(--border); border-radius:6px; padding:5px 9px; cursor:pointer;
-  }
-  .replay:hover{color:var(--mint); border-color:#33406e}
-
-  .term-body{
-    font-family:var(--mono); font-size:.86rem; line-height:1.62;
-    margin:0; padding:20px 20px 22px; min-height:320px;
-    overflow-x:auto; white-space:pre; tab-size:2;
-    font-variant-numeric:tabular-nums;
-    scrollbar-width:thin; scrollbar-color:var(--border) transparent;
-  }
+  .term-title{font-family:var(--mono); font-size:.72rem; color:var(--dim); letter-spacing:.06em;
+              flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .replay{font-family:var(--mono); font-size:.68rem; letter-spacing:.08em; color:var(--dim);
+          background:#150d12; border:1px solid var(--border); border-radius:6px; padding:5px 9px; cursor:pointer}
+  .replay:hover{color:var(--mint); border-color:var(--peri)}
+  .term-body{font-family:var(--mono); font-size:.8rem; line-height:1.6; margin:0; padding:16px 16px 18px;
+             min-height:120px; overflow-x:auto; white-space:pre; tab-size:2;
+             font-variant-numeric:tabular-nums; scrollbar-width:thin; scrollbar-color:var(--border) transparent}
   .term-body::-webkit-scrollbar{height:6px}
   .term-body::-webkit-scrollbar-thumb{background:var(--border); border-radius:3px}
   .term-body::-webkit-scrollbar-track{background:transparent}
-  .line{min-height:1.62em}
-  /* long commands wrap like a real terminal instead of forcing a scrollbar */
+  .line{min-height:1.6em}
   .line.cmd{white-space:pre-wrap; word-break:break-all}
-  .cmd .prompt,.prompt{color:var(--peri); font-weight:600}
-  .ok{color:var(--mint)}
-  .fail{color:var(--fail)}
-  .bold{font-weight:600}
-  .dim{color:var(--dim)}
-  .total{color:var(--text); font-weight:600}
-  .note{color:var(--peri)}
+  .prompt{color:var(--peri); font-weight:600}
+  .ok{color:var(--mint)} .fail{color:var(--fail)} .bold{font-weight:600}
+  .dim{color:var(--dim)} .total{color:var(--text); font-weight:600} .note{color:var(--peri)}
   .cursor{color:var(--mint); animation:blink 1s steps(1) infinite}
   @keyframes blink{50%{opacity:0}}
+  @media (prefers-reduced-motion:reduce){ .cursor{animation:none} }
 
-  .copy{margin-top:22px}
-  .copybox{
-    display:flex; align-items:center; gap:10px;
-    background:var(--surface); border:1px solid var(--border);
-    border-radius:10px; padding:12px 12px 12px 16px; font-family:var(--mono);
-  }
-  .copybox code{flex:1; font-size:.82rem; color:var(--text); overflow-x:auto; white-space:nowrap;
-                scrollbar-width:none}
+  /* ---- fork CTA + footer ---- */
+  .copy{margin:64px 0 0}
+  .copybox{display:flex; align-items:center; gap:10px; background:var(--surface);
+           border:1px solid var(--border); border-radius:10px; padding:12px 12px 12px 16px; font-family:var(--mono)}
+  .copybox code{flex:1; font-size:.8rem; color:var(--text); overflow-x:auto; white-space:nowrap; scrollbar-width:none}
   .copybox code::-webkit-scrollbar{display:none}
   .cmd-prompt{color:var(--mint); font-weight:700}
-  .copybtn{
-    font-family:var(--mono); font-size:.72rem; letter-spacing:.08em; color:var(--ground);
-    background:var(--mint); border:0; border-radius:6px; padding:7px 0; cursor:pointer; font-weight:700;
-    min-width:94px; text-align:center; flex:none;
-  }
+  .copybtn{font-family:var(--mono); font-size:.7rem; letter-spacing:.08em; color:var(--ground);
+           background:var(--mint); border:0; border-radius:6px; padding:7px 0; cursor:pointer; font-weight:700;
+           min-width:94px; text-align:center; flex:none}
   .copybtn:hover{filter:brightness(1.08)}
   .copy-note{color:var(--dim); font-size:.9rem; margin:12px 2px 0}
   .copy-note code{font-family:var(--mono); color:var(--peri); font-size:.85em}
-
-  .foot{
-    display:flex; align-items:center; gap:18px; margin-top:26px;
-    font-family:var(--mono); font-size:.82rem;
-  }
-  .foot a{color:var(--text); text-decoration:none; border-bottom:1px solid transparent}
-  .foot a:hover{color:var(--mint); border-bottom-color:var(--mint)}
+  .foot{display:flex; align-items:center; gap:18px; margin-top:26px; font-family:var(--mono); font-size:.8rem}
+  .foot a{color:var(--text)}
+  .foot a:hover{color:var(--mint)}
   .foot-dim{margin-left:auto; color:var(--dim); letter-spacing:.04em}
-  a:focus-visible,button:focus-visible{outline:2px solid var(--peri); outline-offset:2px; border-radius:4px}
-  @media (prefers-reduced-motion:reduce){.cursor{animation:none}}
-  @media (pointer:coarse){ .tab{padding:9px 13px; font-size:.86rem} .replay{padding:8px 11px} }
+  @media (pointer:coarse){ .replay{padding:8px 11px} .toc a{padding:7px 13px} }
   @media (max-width:520px){ .foot-dim{display:none} .term-body{font-size:.72rem; padding:14px 12px 16px} }
 </style>
 </head>
@@ -126,27 +106,125 @@
   <main class="wrap">
     <header class="masthead">
       <div class="logo">&gt;_ solvebench</div>
-      <h1>One runner. Six languages.</h1>
-      <p class="lede">Solve a problem in Python, C++, Java, JavaScript, Go, or Rust — one command runs and checks them all.</p>
+      <h1>Every command, live.</h1>
+      <p class="lede">The whole toolkit in one tour — each terminal plays as you reach it.
+        <a href="index.html">← back to the site</a></p>
+      <nav class="toc" aria-label="Commands">
+        <a href="#run">run</a><a href="#new">new</a><a href="#complexity">complexity</a>
+        <a href="#ship">ship</a><a href="#stats">stats</a><a href="#bench">bench</a>
+        <a href="#setup">setup</a><a href="#init">init</a><a href="#teardown">teardown</a>
+      </nav>
     </header>
 
-    <section class="term" aria-label="Polyglot runner demo">
-      <div class="term-bar">
-        <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
-        <nav class="tabs" role="tablist" aria-label="Demo scenes">
-          <button class="tab is-active" data-scene="polyglot" role="tab">run</button>
-          <button class="tab" data-scene="scaffold" role="tab">new</button>
-          <button class="tab" data-scene="bigO" role="tab">complexity</button>
-          <button class="tab" data-scene="ship" role="tab">ship</button>
-          <button class="tab" data-scene="stats" role="tab">stats</button>
-          <button class="tab" data-scene="bench" role="tab">bench</button>
-          <button class="tab" data-scene="setup" role="tab">setup</button>
-          <button class="tab" data-scene="init" role="tab">init</button>
-          <button class="tab" data-scene="teardown" role="tab">teardown</button>
-        </nav>
-        <button class="replay" id="replay" title="Replay this scene">REPLAY ↺</button>
-      </div>
-      <pre class="term-body" id="screen" aria-live="polite"></pre>
+    <section class="cmdcard" id="run">
+      <p class="cmd-eyebrow">daily loop · verify</p>
+      <h2><b>./run.sh</b> &lt;problem&gt;</h2>
+      <p class="cmd-desc">One command tests a problem across every language you solved it in —
+        compiling C++, Java, Go, and Rust on the fly.</p>
+      <ul class="cmd-points">
+        <li>Solutions self-test and exit non-zero on a wrong answer — no false greens</li>
+        <li>Uses the toolchain container on your host; runs natively inside a Dev Container</li>
+        <li>Filters are fuzzy: <code>two_sum</code> also matches Java's <code>TwoSum</code></li>
+      </ul>
+      <div class="term" data-scene="run"></div>
+    </section>
+
+    <section class="cmdcard" id="new">
+      <p class="cmd-eyebrow">daily loop · start</p>
+      <h2><b>./run.sh new</b> &lt;url&gt; --lang X</h2>
+      <p class="cmd-desc">Paste the problem link. The number, title, and difficulty are fetched
+        and the file lands in the right folder — in any of the six languages.</p>
+      <ul class="cmd-points">
+        <li>LeetCode URLs are resolved via its API; Codewars/HackerRank/AoC links map by slug</li>
+        <li>Java classes are auto-named in PascalCase with the right <code>package</code></li>
+        <li>Plain paths work too: <code>new leetcode/easy/two_sum --lang py</code></li>
+      </ul>
+      <div class="term" data-scene="new"></div>
+    </section>
+
+    <section class="cmdcard" id="complexity">
+      <p class="cmd-eyebrow">daily loop · measure</p>
+      <h2><b>./run.sh complexity</b> &lt;problem&gt;</h2>
+      <p class="cmd-desc">Empirically measures how your solution scales — runtime and memory across
+        growing inputs, fit to a Big-O class. Works for Python and Java.</p>
+      <ul class="cmd-points">
+        <li>Inputs are generated from your type hints (Python) or parameter types via reflection (Java)</li>
+        <li>Adversarial defaults — palindromic strings, sequential ints — so early-exits don't fake O(1)</li>
+        <li>JIT warm-up on the JVM; slow solutions stop growing before they hang (<code>--max-seconds</code>)</li>
+      </ul>
+      <div class="term" data-scene="complexity"></div>
+    </section>
+
+    <section class="cmdcard" id="ship">
+      <p class="cmd-eyebrow">daily loop · publish</p>
+      <h2><b>./ship.sh</b> "message"</h2>
+      <p class="cmd-desc">Your README maintains itself: stats table, per-platform badges, and the
+        solutions index regenerate from the files on disk — then it commits and pushes.</p>
+      <ul class="cmd-points">
+        <li>Profile links come from <code>profile.json</code>; the index parses each solution's header</li>
+        <li>Refuses to publish if anything private leaks into the tree</li>
+      </ul>
+      <div class="term" data-scene="ship"></div>
+    </section>
+
+    <section class="cmdcard" id="stats">
+      <p class="cmd-eyebrow">tracking</p>
+      <h2><b>./run.sh --stats</b></h2>
+      <p class="cmd-desc">Your progress, grouped by platform × language — the same data that feeds
+        the README badges.</p>
+      <ul class="cmd-points">
+        <li>Sort it your way: <code>--sort platform</code> · <code>language</code> · <code>status</code></li>
+      </ul>
+      <div class="term" data-scene="stats"></div>
+    </section>
+
+    <section class="cmdcard" id="bench">
+      <p class="cmd-eyebrow">tracking</p>
+      <h2><b>./run.sh --time</b> · <b>--changed</b></h2>
+      <p class="cmd-desc">Per-solution timings, and a git-aware mode that runs only what you touched —
+        the same check the pre-commit hook uses.</p>
+      <ul class="cmd-points">
+        <li><code>--changed</code> diffs against HEAD, so doc-only commits stay instant</li>
+      </ul>
+      <div class="term" data-scene="bench"></div>
+    </section>
+
+    <section class="cmdcard" id="setup">
+      <p class="cmd-eyebrow">environment</p>
+      <h2><b>./setup.sh</b></h2>
+      <p class="cmd-desc">Interactive one-time setup that never touches your machine's global config —
+        everything lands inside the repo.</p>
+      <ul class="cmd-points">
+        <li>VS Code extensions into <code>.pst/extensions</code>; open with them via <code>./code.sh</code></li>
+        <li>pytest into <code>.venv/</code> (PEP 668-safe); optional pre-commit hook</li>
+        <li>F5 debugging works per language — real breakpoints, no premium subscription</li>
+      </ul>
+      <div class="term" data-scene="setup"></div>
+    </section>
+
+    <section class="cmdcard" id="init">
+      <p class="cmd-eyebrow">environment · fork</p>
+      <h2><b>./init.sh</b></h2>
+      <p class="cmd-desc">Forked it? One command resets the repo to a clean slate that's yours —
+        and keeps the whole framework.</p>
+      <ul class="cmd-points">
+        <li>Clears the example solutions and inputs; runner, helpers, templates, and CI stay</li>
+        <li>Writes your handles to <code>profile.json</code> and regenerates the README</li>
+        <li>Optional fresh git history for a clean first commit</li>
+      </ul>
+      <div class="term" data-scene="init"></div>
+    </section>
+
+    <section class="cmdcard" id="teardown">
+      <p class="cmd-eyebrow">environment · undo</p>
+      <h2><b>./teardown.sh</b></h2>
+      <p class="cmd-desc">Everything setup created is reversible — remove it all without leaving
+        a trace on your machine.</p>
+      <ul class="cmd-points">
+        <li>Deletes <code>.pst/</code>, <code>.venv/</code>, caches and build files; optionally the toolchain image</li>
+        <li>Tracked repo files are never touched</li>
+      </ul>
+      <div class="term" data-scene="teardown"></div>
     </section>
 
     <section class="copy">
@@ -155,7 +233,7 @@
         <code id="forkcmd">gh repo fork MohammedEl-sayedAhmed/solvebench --clone</code>
         <button class="copybtn" id="copybtn">COPY</button>
       </div>
-      <p class="copy-note">Forks it into your account and clones it locally. Then <code>./init.sh</code> makes it yours — clears the examples, sets your handles, keeps the whole framework.</p>
+      <p class="copy-note">Forks it into your account and clones it locally. Then <code>./init.sh</code> makes it yours.</p>
     </section>
 
     <footer class="foot">
@@ -168,18 +246,18 @@
 
 <script>
   const SCENES = {
-    polyglot: {
+    run: {
       cmd: "./run.sh leetcode/easy/two_sum",
       out: ["✅ [java] leetcode/easy/TwoSum","✅ [py]   leetcode/easy/two_sum","",
         "PLATFORM   LANG   PASS  FAIL  TOTAL","-----------------------------------",
         "leetcode   java     1     0      1","leetcode   py       1     0      1",
         "-----------------------------------","TOTAL               2     0      2","","All solutions passed! 🎉"],
     },
-    scaffold: {
+    new: {
       cmd: "./run.sh new https://leetcode.com/problems/two-sum/ --lang rust",
       out: ["Created rust/leetcode/easy/two_sum.rs","Run it with:  ./run.sh two_sum"],
     },
-    bigO: {
+    complexity: {
       cmd: "./run.sh complexity two_sum --lang java",
       out: ["function: twoSum · inputs: (int[], int)","",
         "     n   time (ms)  alloc (KB)","──────────────────────────────",
@@ -191,15 +269,15 @@
     ship: {
       cmd: "./ship.sh \"solve: two sum\"",
       out: ["==> refreshing README references","README profile block updated from profile.json",
-        "stats updated: 34 solutions · 4 platforms · 2 languages",
+        "stats updated: 35 solutions · 4 platforms · 2 languages",
         "committed: solve: two sum","pushed to main ✅"],
     },
     stats: {
       cmd: "./run.sh --stats",
       out: ["PLATFORM        LANG     COUNT","------------------------------",
         "adventofcode    py           6","codewars        py           7",
-        "leetcode        java         4","leetcode        py          16",
-        "others          py           1","------------------------------","TOTAL                       34"],
+        "leetcode        java         5","leetcode        py          16",
+        "others          py           1","------------------------------","TOTAL                       35"],
     },
     bench: {
       cmd: "./run.sh --lang java --time",
@@ -228,12 +306,9 @@
     },
   };
 
-  const screen = document.getElementById("screen");
-  const tabs = Array.from(document.querySelectorAll(".tab"));
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-  let token = 0;
-  let current = "polyglot";
+  const tokens = {};  // per-scene cancel tokens (REPLAY restarts cleanly)
 
   function lineClass(t) {
     if (/^==>/.test(t)) return "note";
@@ -247,90 +322,96 @@
     if (/^Created|^Run it|committed:|README|stats updated/.test(t)) return "note";
     return "";
   }
-
   function cursor() {
     const c = document.createElement("span");
-    c.className = "cursor";
-    c.textContent = "▋";
-    return c;
+    c.className = "cursor"; c.textContent = "▋"; return c;
   }
 
-  async function play(scene) {
-    const mine = ++token;
-    current = scene;
+  // Build each card's terminal chrome (bar + screen) from its data-scene.
+  document.querySelectorAll(".term[data-scene]").forEach((box) => {
+    const key = box.dataset.scene;
+    const bar = document.createElement("div");
+    bar.className = "term-bar";
+    const dots = document.createElement("span");
+    dots.className = "dots"; dots.setAttribute("aria-hidden", "true");
+    dots.append(...[0, 1, 2].map(() => document.createElement("i")));
+    const title = document.createElement("span");
+    title.className = "term-title"; title.textContent = SCENES[key].cmd;
+    const replay = document.createElement("button");
+    replay.className = "replay"; replay.title = "Replay"; replay.textContent = "REPLAY ↺";
+    replay.addEventListener("click", () => play(key, box));
+    bar.append(dots, title, replay);
+    const screen = document.createElement("pre");
+    screen.className = "term-body";
+    screen.setAttribute("aria-live", "polite");
+    box.append(bar, screen);
+  });
+
+  async function play(key, box) {
+    const mine = (tokens[key] = (tokens[key] || 0) + 1);
+    const s = SCENES[key];
+    const screen = box.querySelector(".term-body");
     screen.replaceChildren();
-    const s = SCENES[scene];
 
     const cmdEl = document.createElement("div");
     cmdEl.className = "line cmd";
     const prompt = document.createElement("span");
-    prompt.className = "prompt";
-    prompt.textContent = "$ ";
+    prompt.className = "prompt"; prompt.textContent = "$ ";
     const typed = document.createElement("span");
     const cur = cursor();
     cmdEl.append(prompt, typed, cur);
     screen.append(cmdEl);
 
-    if (reduce) {
-      typed.textContent = s.cmd;
-    } else {
+    if (reduce) { typed.textContent = s.cmd; }
+    else {
       for (let i = 0; i < s.cmd.length; i++) {
-        if (mine !== token) return;
+        if (tokens[key] !== mine) return;
         typed.textContent += s.cmd[i];
-        await sleep(35);
+        await sleep(30);
       }
     }
-    await sleep(reduce ? 0 : 550);
+    await sleep(reduce ? 0 : 500);
     cur.remove();
 
     for (const t of s.out) {
-      if (mine !== token) return;
+      if (tokens[key] !== mine) return;
       const el = document.createElement("div");
       el.className = "line " + lineClass(t);
-      el.textContent = t === "" ? " " : t;
+      el.textContent = t === "" ? " " : t;
       screen.append(el);
       await sleep(reduce ? 0 : 150);
     }
-
     const done = document.createElement("div");
     done.className = "line";
     const p2 = document.createElement("span");
-    p2.className = "prompt";
-    p2.textContent = "$ ";
+    p2.className = "prompt"; p2.textContent = "$ ";
     done.append(p2, cursor());
     screen.append(done);
+  }
 
-    if (!reduce) {
-      await sleep(6500);
-      if (mine !== token) return;
-      const order = tabs.map((t) => t.dataset.scene);
-      select(order[(order.indexOf(current) + 1) % order.length]);
+  // Play each terminal once, when it scrolls into view.
+  const played = new Set();
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      if (!e.isIntersecting) continue;
+      const key = e.target.dataset.scene;
+      if (played.has(key)) continue;
+      played.add(key);
+      play(key, e.target);
+      io.unobserve(e.target);
     }
-  }
+  }, { threshold: 0.35 });
+  document.querySelectorAll(".term[data-scene]").forEach((el) => io.observe(el));
 
-  function select(scene) {
-    tabs.forEach((t) => {
-      const on = t.dataset.scene === scene;
-      t.classList.toggle("is-active", on);
-      t.setAttribute("aria-selected", on ? "true" : "false");
-    });
-    play(scene);
-  }
-
-  tabs.forEach((t) => t.addEventListener("click", () => select(t.dataset.scene)));
-  document.getElementById("replay").addEventListener("click", () => play(current));
-
+  // Fork copy box
   const copybtn = document.getElementById("copybtn");
   copybtn.addEventListener("click", async () => {
-    try {
-      await navigator.clipboard.writeText(document.getElementById("forkcmd").textContent);
-    } catch (e) { /* clipboard blocked; ignore */ }
+    try { await navigator.clipboard.writeText(document.getElementById("forkcmd").textContent); }
+    catch (e) { /* clipboard blocked */ }
     const old = copybtn.textContent;
     copybtn.textContent = "COPIED ✓";
     setTimeout(() => (copybtn.textContent = old), 1400);
   });
-
-  select("polyglot");
 </script>
 </body>
 </html>
