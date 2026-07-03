@@ -37,6 +37,7 @@
   }
   .nav-in{display:flex; align-items:center; gap:22px; height:56px}
   .brand{font-family:var(--mono); font-size:.9rem; letter-spacing:.1em; color:var(--bright); white-space:nowrap}
+  a.brand:hover{color:var(--mint)}
   .brand b{color:var(--mint)}
   .brand .mark{vertical-align:-4px; margin-right:2px}
   .nav-links{display:flex; gap:18px; margin-left:auto; font-family:var(--mono); font-size:.8rem; letter-spacing:.04em}
@@ -116,6 +117,15 @@
   @keyframes blink{50%{opacity:0}}
   @media (prefers-reduced-motion:reduce){ .cursor{animation:none} }
 
+  /* ---- terminal intro: the arrow's bow-shot at the wordmark ---- */
+  .term-body.intro{font-size:clamp(.4rem,1.15vw,.78rem); line-height:1.18}
+  .aw-a{color:#ff5d73; font-weight:700}
+  .aw-c{color:var(--mint); font-weight:700}
+  .aw-w{color:var(--peri)}
+  .aw-w.flash{color:#fff; text-shadow:0 0 8px #ffc857}
+  .aw-star{color:var(--mint); font-weight:700}
+  .aw-w.dim{color:#5c4a52; text-shadow:none}
+
   /* ---- living mark: chevron draws itself in, cursor blinks like a caret ---- */
   .mark .mark-chev{stroke-dasharray:52; animation:markdraw .9s ease-out .15s both}
   @keyframes markdraw{from{stroke-dashoffset:52}to{stroke-dashoffset:0}}
@@ -125,14 +135,13 @@
 
   /* ---- ascii marquee (retro cinema sign): chase lights, pixel title ---- */
   .marquee{
-    font-family:var(--mono); font-size:.5rem; line-height:1.25; letter-spacing:0;
-    margin:0 0 18px; padding:10px 14px 12px;
-    border:1px dotted #4a2f3c; border-radius:10px;
-    text-align:center; white-space:pre; overflow-x:auto; max-width:100%;
-    scrollbar-width:none;
+    font-family:var(--mono); font-size:.55rem; line-height:1.25; letter-spacing:0;
+    width:100%; max-width:620px; margin:0 0 20px; padding:12px 16px 14px;
+    border:1px dotted #4a2f3c; border-radius:12px;
+    text-align:center; white-space:pre; overflow-x:hidden;
   }
   .marquee::-webkit-scrollbar{display:none}
-  .mq-lights{color:#4a2f3c; letter-spacing:2px}
+  .mq-lights{color:#4a2f3c; letter-spacing:3px}
   .mq-lights .lit{color:var(--mint); text-shadow:0 0 6px #ffc85788}
   .mq-label{
     display:block; font-size:.62rem; letter-spacing:.5em; color:var(--mint);
@@ -141,10 +150,14 @@
   @keyframes mqflicker{
     0%,86%,90%,94%,100%{opacity:1} 88%{opacity:.35} 92%{opacity:.7}
   }
-  .mq-title{display:block; color:var(--peri); text-shadow:0 0 10px #ff5d7344; margin:0 0 9px}
-  .mq-pet{display:block; color:var(--peri); margin-top:8px}
+  .mq-title{display:block; font-size:1.25em; line-height:1.2; color:var(--peri); text-shadow:0 0 10px #ff5d7344; margin:0 0 9px}
+  .mq-pet{display:block; font-size:1.1em; line-height:1.1; color:var(--peri); margin-top:9px}
   .mq-pet .gold{color:var(--mint)}
-  @media (max-width:520px){ .marquee{font-size:.4rem} .mq-label{font-size:.55rem} }
+  @media (max-width:520px){
+    .marquee{font-size:.4rem; padding:9px 8px 10px; border-radius:10px}
+    .mq-label{font-size:.52rem; letter-spacing:.4em}
+    .mq-lights{letter-spacing:1.5px}
+  }
   @media (prefers-reduced-motion:reduce){ .mq-label{animation:none} }
 
   /* ---- sections (top-level bands only — .term is a section too) ---- */
@@ -269,7 +282,7 @@
 
 <nav class="nav">
   <div class="wrap nav-in">
-    <span class="brand"><svg class="mark" viewBox="0 0 64 64" width="18" height="18" aria-hidden="true"><path class="mark-chev" d="M14 16 34 32 14 48" fill="none" stroke="#ff5d73" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/><rect class="mark-cursor" x="38" y="40" width="17" height="8.5" rx="4" fill="#ffc857"/></svg> solvebench</span>
+    <a class="brand" href="#" aria-label="Back to top"><svg class="mark" viewBox="0 0 64 64" width="18" height="18" aria-hidden="true"><path class="mark-chev" d="M14 16 34 32 14 48" fill="none" stroke="#ff5d73" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/><rect class="mark-cursor" x="38" y="40" width="17" height="8.5" rx="4" fill="#ffc857"/></svg> solvebench</a>
     <div class="nav-links">
       <a href="#features">features</a>
       <a href="#workflow">workflow</a>
@@ -306,6 +319,7 @@
           <button class="tab" data-scene="bigO" role="tab">big-O</button>
           <button class="tab" data-scene="scaffold" role="tab">scaffold</button>
           <button class="tab" data-scene="stats" role="tab">stats</button>
+          <button class="tab" data-scene="teardown" role="tab">teardown</button>
         </nav>
         <button class="replay" id="replay" title="Replay this scene">REPLAY ↺</button>
       </div>
@@ -490,6 +504,12 @@
       out: ["Created rust/leetcode/easy/two_sum.rs",
         "Run it with:  ./run.sh two_sum"],
     },
+    teardown: {
+      cmd: "./teardown.sh",
+      out: ["==> Repo-local artifacts","    .pst    142M","    .venv    38M","? Remove these? [Y/n] y",
+        "    ✔ removed .pst","    ✔ removed .venv","==> Container image","    ✔ removed solvebench image","",
+        "Teardown complete. Tracked repo files are untouched."],
+    },
     stats: {
       cmd: "./run.sh --stats",
       out: ["PLATFORM        LANG     COUNT","------------------------------",
@@ -507,23 +527,32 @@
   let current = "polyglot";
 
   function lineClass(t) {
-    if (t.includes("✅")) return "ok";
+    if (/^==>/.test(t)) return "note";
+    if (t.includes("✅") || /^\s*✔/.test(t)) return "ok";
     if (t.includes("❌")) return "fail";
-    if (/passed! 🎉/.test(t)) return "ok bold";
+    if (/passed! 🎉|Teardown complete/.test(t)) return "ok bold";
     if (/^time {2}≈|^space ≈/.test(t)) return "ok bold";
     if (/^TOTAL/.test(t)) return "total";
     if (/^[─-]+$/.test(t) || /PLATFORM|LANG|PASS|time \(ms\)/.test(t)) return "dim";
-    if (/^function:|^Created|^Run it/.test(t)) return "note";
+    if (/^\?|^function:|^Created|^Run it/.test(t)) return "note";
     return "";
   }
   function cursor() {
     const c = document.createElement("span");
     c.className = "cursor"; c.textContent = "▋"; return c;
   }
+  let skipNextQuick = false;  // armed only by the intro's own hand-off below
   async function play(scene) {
     const mine = ++token;
     current = scene;
     screen.replaceChildren();
+    if (scene === "polyglot" && !reduce) {
+      if (skipNextQuick) skipNextQuick = false;
+      else {
+        await quickStrike(() => mine === token);
+        if (mine !== token) return;
+      }
+    }
     const s = SCENES[scene];
     const cmdEl = document.createElement("div");
     cmdEl.className = "line cmd";
@@ -551,6 +580,10 @@
       screen.append(el);
       await sleep(reduce ? 0 : 150);
     }
+    if (scene === "teardown" && !reduce) {
+      await heroFarewell(() => mine === token);
+      if (mine !== token) return;
+    }
     const done = document.createElement("div");
     done.className = "line";
     const p2 = document.createElement("span");
@@ -558,7 +591,7 @@
     done.append(p2, cursor());
     screen.append(done);
     if (!reduce) {
-      await sleep(6500);
+      await sleep(3000);
       if (mine !== token) return;
       const order = tabs.map((t) => t.dataset.scene);
       select(order[(order.indexOf(current) + 1) % order.length]);
@@ -574,7 +607,221 @@
   }
   tabs.forEach((t) => t.addEventListener("click", () => select(t.dataset.scene)));
   document.getElementById("replay").addEventListener("click", () => play(current));
-  select("polyglot");
+  // ---- intro: the arrow rises, vanishes behind the terminal's top edge,
+  // then dives back in fast, strikes the wordmark, recoils, and settles.
+  const ART = [
+    " ___   ___   _    __   __ ___     ___  ___  _  _   ___  _  _ ",
+    "/ __| / _ \\ | |   \\ \\ / /| __|   | _ )| __|| \\| | / __|| || |",
+    "\\__ \\| (_) || |__  \\ V / | _|    | _ \\| _| | .` || (__ | __ |",
+    "|___/ \\___/ |____|  \\_/  |___|   |___/|___||_|\\_| \\___||_||_|",
+  ];
+  const SKY = 4;                       // empty rows above the sign — room to fly
+  const GLYPH_UP = ["  /\\", " /  \\"];
+  const GLYPH_RT = ["  \\", "   \\", "   /", "  /"];
+  const GLYPH_DN = [" \\  /", "  \\/"];
+
+
+
+  // the entrance, replayed whenever the cycle returns to the first tab
+  async function quickStrike(alive) {
+    const SKY = 4;
+    screen.classList.add("intro");
+    const L = Array.from({length: SKY + 4}, () => {
+      const d = document.createElement("div");
+      d.className = "line"; d.textContent = " ";
+      screen.append(d);
+      return d;
+    });
+    const F = (glyph, x, y, wo, fl) => {
+      for (let r = 0; r < L.length; r++) {
+        const el = L[r];
+        el.replaceChildren();
+        let icon = glyph[r - y] || "";
+        let lead = icon && x > 0 ? " ".repeat(x) : "";
+        if (icon && x < 0) icon = icon.slice(-x);
+        let vis = lead.length + icon.length;
+        if (icon) {
+          const a = document.createElement("span");
+          a.className = "aw-a"; a.textContent = lead + icon;
+          el.append(a);
+        }
+        if (r >= SKY) {
+          if (r === SKY + 3) {
+            const p1 = Math.max(0, 6 - vis);
+            el.append(" ".repeat(p1));
+            const c = document.createElement("span");
+            c.className = "aw-c"; c.textContent = "__";
+            el.append(c);
+            vis += p1 + 2;
+          }
+          el.append(" ".repeat(Math.max(0, 11 + wo - vis)));
+          const w = document.createElement("span");
+          w.className = "aw-w" + (fl ? " flash" : "");
+          w.textContent = ART[r - SKY];
+          el.append(w);
+          if (fl && r === SKY + 1) {
+            const st = document.createElement("span");
+            st.className = "aw-star"; st.textContent = " *";
+            el.append(st);
+          }
+        } else if (!icon) {
+          el.textContent = " ";
+        }
+      }
+    };
+    F(GLYPH_UP, 3, SKY, 0, 0); await sleep(430);           // rise into view
+    for (let y = SKY - 1; y >= -2; y--) {                   // fly upward…
+      if (!alive()) return;
+      F(GLYPH_UP, 3, y, 0, 0); await sleep(90);             // …and vanish
+    }
+    await sleep(480);                                       // gone behind the wall
+    for (const [x, y] of [[-3, 0], [0, 1], [3, 2], [5, 3], [7, SKY]]) {
+      if (!alive()) return;
+      F(GLYPH_RT, x, y, 0, 0); await sleep(26);             // dive back, fast
+    }
+    F(GLYPH_RT, 7, SKY, 2, 1); await sleep(120);            // impact!
+    F(GLYPH_RT, 6, SKY, 3, 1); await sleep(95);
+    for (const [x, wo] of [[4,2],[1,1],[-2,1],[-4,0],[-3,0],[-1,0]]) {
+      if (!alive()) return;
+      F(GLYPH_RT, x, SKY, wo, 0); await sleep(75);          // momentum recoil
+    }
+    F(GLYPH_RT, 0, SKY, 0, 0); await sleep(600);            // standing still
+
+    screen.classList.remove("intro");
+    screen.replaceChildren();
+  }
+
+  // the farewell: the arrow bows, sinks below the frame, and the sign dims
+  async function heroFarewell(alive) {
+    screen.classList.add("intro");
+    screen.append(document.createTextNode("\n"));
+    const L = Array.from({length: 4}, () => {
+      const d = document.createElement("div");
+      d.className = "line"; d.textContent = " ";
+      screen.append(d);
+      return d;
+    });
+    const F = (glyph, x, y, dim) => {
+      for (let r = 0; r < 4; r++) {
+        const el = L[r];
+        el.replaceChildren();
+        let icon = glyph[r - y] || "";
+        let lead = icon ? " ".repeat(Math.max(0, x)) : "";
+        if (icon && x < 0) icon = icon.slice(-x);
+        let vis = lead.length + icon.length;
+        if (icon) {
+          const a = document.createElement("span");
+          a.className = "aw-a"; a.textContent = lead + icon;
+          el.append(a);
+        }
+        if (r === 3) {
+          const p1 = Math.max(0, 6 - vis);
+          el.append(" ".repeat(p1));
+          const c = document.createElement("span");
+          c.className = "aw-c"; c.textContent = "__";
+          el.append(c);
+          vis += p1 + 2;
+        }
+        el.append(" ".repeat(Math.max(0, 11 - vis)));
+        const w = document.createElement("span");
+        w.className = "aw-w" + (dim ? " dim" : "");
+        w.textContent = ART[r];
+        el.append(w);
+      }
+    };
+    F(GLYPH_RT, 0, 0, false); await sleep(600);
+    if (!alive()) return;
+    F(GLYPH_DN, 1, 1, false); await sleep(380);
+    for (const y of [2, 3, 4]) { if (!alive()) return; F(GLYPH_DN, 1, y, false); await sleep(150); }
+    await sleep(420);
+    F(GLYPH_DN, 1, -9, true);
+    screen.classList.remove("intro");
+  }
+
+  async function introPlay() {
+    if (reduce) return;
+    const t0 = token;
+    const live = () => token === t0;
+    screen.classList.add("intro");
+    const lines = Array.from({length: SKY + 4}, () => {
+      const d = document.createElement("div");
+      d.className = "line";
+      d.textContent = " ";
+      screen.append(d);
+      return d;
+    });
+    // one frame: arrow glyph at (x, y) in the left margin; word fixed below
+    const frame = (glyph, x, y, wo, flash) => {
+      for (let r = 0; r < SKY + 4; r++) {
+        const el = lines[r];
+        el.replaceChildren();
+        let icon = glyph[r - y] || "";
+        let lead = "";
+        if (icon) {
+          if (x < 0) icon = icon.slice(-x);
+          else lead = " ".repeat(x);
+        }
+        let vis = lead.length + icon.length;
+        if (icon) {
+          const a = document.createElement("span");
+          a.className = "aw-a"; a.textContent = lead + icon;
+          el.append(a);
+        }
+        if (r >= SKY) {
+          if (r === SKY + 3) {                          // parked gold cursor
+            const p1 = Math.max(0, 6 - vis);
+            el.append(" ".repeat(p1));
+            const c = document.createElement("span");
+            c.className = "aw-c"; c.textContent = "__";
+            el.append(c);
+            vis += p1 + 2;
+          }
+          el.append(" ".repeat(Math.max(0, 11 + wo - vis)));
+          const w = document.createElement("span");
+          w.className = "aw-w" + (flash ? " flash" : "");
+          w.textContent = ART[r - SKY];
+          el.append(w);
+          if (flash && r === SKY + 1) {
+            const st = document.createElement("span");
+            st.className = "aw-star"; st.textContent = " *";
+            el.append(st);
+          }
+        } else if (!icon) {
+          el.textContent = " ";
+        }
+      }
+    };
+    frame(GLYPH_UP, 3, SKY, 0, false); await sleep(430);   // rise into view
+    for (let y = SKY - 1; y >= -2; y--) {                  // fly upward…
+      if (!live()) return;
+      frame(GLYPH_UP, 3, y, 0, false); await sleep(90);    // …and vanish
+    }
+    await sleep(480);                                      // gone behind the wall
+    const dive = [[-3, 0], [0, 1], [3, 2], [5, 3], [7, SKY]];
+    for (const [x, y] of dive) {                           // dive back, fast
+      if (!live()) return;
+      frame(GLYPH_RT, x, y, 0, false); await sleep(26);
+    }
+    if (!live()) return;
+    frame(GLYPH_RT, 7, SKY, 2, true); await sleep(120);    // impact!
+    frame(GLYPH_RT, 6, SKY, 3, true); await sleep(95);
+    for (const [x, wo] of [[4,2],[1,1],[-2,1],[-4,0],[-3,0],[-1,0]]) {
+      if (!live()) return;
+      frame(GLYPH_RT, x, SKY, wo, false); await sleep(75); // momentum recoil
+    }
+    if (!live()) return;
+    frame(GLYPH_RT, 0, SKY, 0, false); await sleep(900);   // standing still
+    if (!live()) return;
+    screen.classList.remove("intro");
+    screen.replaceChildren();
+  }
+
+  const t00 = token;
+  introPlay().then(() => {
+    if (token !== t00) return;      // a tab was clicked mid-intro — it owns the screen
+    skipNextQuick = true;           // the intro just showed the entrance
+    select("polyglot");
+  });
 
   // ---- fork copy box ----
   const copybtn = document.getElementById("copybtn");
@@ -610,8 +857,14 @@
       " ":["   ","   ","   ","   ","   "],
     };
     const TITLES = ["TWO SUM", "3SUM", "FIZZ BUZZ", "MIN STACK"];
-    const PET = ["██", "  ██", "    ██", "  ██", "██   {g}▄▄▄{/g}"];
-    const N_LIGHTS = 27;
+    const PET = [
+      "██            ",
+      "  ██          ",
+      "    ██   {g}▄▄▄{/g} ",
+      "  ██          ",
+      "██            ",
+    ];
+    const N_LIGHTS = 33;
 
     const render5 = (word) =>
       Array.from({length: 5}, (_, r) =>
