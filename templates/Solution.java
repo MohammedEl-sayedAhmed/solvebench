@@ -13,6 +13,12 @@ public class Solution {
     // Explain the approach. Time O(?), Space O(?).
     // int solve(...) { }
 
+    // Optional: custom input scaling for `./run.sh complexity <problem>` — only
+    // needed when the input can't be derived from the parameter types.
+    // public static Object[] complexityInput(int n) {
+    //     return new Object[] { /* args for size n */ };
+    // }
+
     public static void main(String[] args) {
         Solution s = new Solution();
         TestFramework t = new TestFramework();

@@ -8,7 +8,8 @@
 #   ./run.sh leetcode/easy/two_sum        # run one problem, all languages
 #   ./run.sh --platform codewars          # restrict to a platform
 #   ./run.sh --stats                      # inventory grouped by platform
-#   ./run.sh new leetcode/easy/foo --lang cpp   # scaffold a new solution
+#   ./run.sh new <url|path> --lang cpp    # scaffold a new solution
+#   ./run.sh complexity <problem>         # estimate a solution's Big-O
 #   ./run.sh shell                        # open a shell inside the container
 #
 # Force native execution with PST_NATIVE=1.

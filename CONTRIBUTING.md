@@ -16,6 +16,8 @@ so contributions fall into two buckets.
    ```
 4. Every solution **self-tests** and must exit non-zero on a wrong answer — that's
    how `run.py` and CI detect failures.
+5. Optional: sanity-check its scaling with `./run.sh complexity <problem>`
+   (Python and Java).
 
 Layout is language-first: `‹lang›/‹platform›/‹group›/‹name›`. Advent of Code
 puzzle inputs go in the shared `inputs/` tree, resolved via a helper (never a

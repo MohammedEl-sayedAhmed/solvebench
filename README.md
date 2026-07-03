@@ -22,7 +22,10 @@ a single containerized test runner (no local toolchain required).
 - 🐳 **Containerized** — `./run.sh` (or `.\run.ps1` on Windows) runs everything
   inside Docker, so you don't need Python/g++/JDK installed.
 - 🪟🐧 **Cross-platform** — works on Ubuntu, KDE/other Linux, macOS, and Windows.
-- 🏗️ **Scaffolder** — `new.py` starts a new solution in any language from a template.
+- 🏗️ **Scaffolder** — paste a LeetCode URL and `new.py` creates the file with the
+  number, title, and difficulty filled in (any of the six languages).
+- 📈 **Complexity estimator** — `./run.sh complexity <problem>` empirically fits a
+  solution's time & space to a Big-O class (Python and Java).
 
 ## Progress
 
@@ -78,12 +81,17 @@ Language first, then platform, then the platform's own grouping (difficulty, yea
 ├── cpp/                    # C++ solutions (mirror the same platform tree)
 │   └── common/             #   test_framework.hpp
 ├── java/                   # Java solutions
-│   └── common/             #   TestFramework.java
+│   └── common/             #   TestFramework.java + ComplexityHarness.java
+├── javascript/             # JavaScript solutions
+│   └── common/             #   test_framework.js
 ├── inputs/                 # shared, language-agnostic puzzle inputs
 │   └── adventofcode/<year>/<day>/input.txt
 ├── templates/              # starter templates per language
+├── scripts/                # generators (stats, index, profile) + build helpers
+├── docs/                   # animated terminal demo (GitHub Pages)
 ├── run.py                  # polyglot test runner
-├── new.py                  # scaffolder for new solutions
+├── new.py                  # scaffolder for new solutions (accepts problem URLs)
+├── complexity.py           # empirical Big-O estimator (py + java)
 ├── setup.sh / setup.ps1    # interactive, repo-local setup (extensions, venv)
 ├── code.sh / code.ps1      # launch VS Code scoped to this repo (uses .pst/)
 ├── teardown.sh / teardown.ps1   # remove everything setup created

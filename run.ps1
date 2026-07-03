@@ -6,7 +6,8 @@
 #   .\run.ps1                            # run every solution
 #   .\run.ps1 leetcode/easy/two_sum      # run one problem, all languages
 #   .\run.ps1 --stats                    # inventory grouped by platform
-#   .\run.ps1 new leetcode/easy/foo --lang cpp   # scaffold a new solution
+#   .\run.ps1 new <url|path> --lang cpp  # scaffold a new solution
+#   .\run.ps1 complexity <problem>       # estimate a solution's Big-O
 #   .\run.ps1 shell                      # open a shell inside the container
 #
 # Force native execution with PST_NATIVE=1.
