@@ -83,6 +83,13 @@
   @keyframes blink{50%{opacity:0}}
   @media (prefers-reduced-motion:reduce){ .cursor{animation:none} }
 
+  /* ---- living mark: chevron draws itself in, cursor blinks like a caret ---- */
+  .mark .mark-chev{stroke-dasharray:52; animation:markdraw .9s ease-out .15s both}
+  @keyframes markdraw{from{stroke-dashoffset:52}to{stroke-dashoffset:0}}
+  .mark .mark-cursor{animation:markblink 1.1s steps(1) .9s infinite}
+  @keyframes markblink{50%{opacity:0}}
+  @media (prefers-reduced-motion:reduce){ .mark .mark-chev,.mark .mark-cursor{animation:none} }
+
   /* ---- fork CTA + footer ---- */
   .copy{margin:64px 0 0}
   .copybox{display:flex; align-items:center; gap:10px; background:var(--surface);
@@ -107,7 +114,7 @@
 <body>
   <main class="wrap">
     <header class="masthead">
-      <div class="logo"><svg class="mark" viewBox="0 0 64 64" width="22" height="22" aria-hidden="true"><path d="M14 16 34 32 14 48" fill="none" stroke="#ff5d73" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/><rect x="38" y="40" width="17" height="8.5" rx="4" fill="#ffc857"/></svg> solvebench</div>
+      <div class="logo"><svg class="mark" viewBox="0 0 64 64" width="22" height="22" aria-hidden="true"><path class="mark-chev" d="M14 16 34 32 14 48" fill="none" stroke="#ff5d73" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/><rect class="mark-cursor" x="38" y="40" width="17" height="8.5" rx="4" fill="#ffc857"/></svg> solvebench</div>
       <h1>Every command, live.</h1>
       <p class="lede">The whole toolkit in one tour — each terminal plays as you reach it.
         <a href="index.html">← back to the site</a></p>
