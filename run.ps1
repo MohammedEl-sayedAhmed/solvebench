@@ -22,9 +22,10 @@ function Invoke-Native {
           elseif (Get-Command python3 -ErrorAction SilentlyContinue) { 'python3' }
           else { 'py' }
     switch ($argv[0]) {
-        'new'   { & $py new.py @rest }
-        'shell' { & $py }
-        default { & $py run.py @argv }
+        'new'        { & $py new.py @rest }
+        'complexity' { & $py complexity.py @rest }
+        'shell'      { & $py }
+        default      { & $py run.py @argv }
     }
     exit $LASTEXITCODE
 }
@@ -63,8 +64,9 @@ function Invoke-Engine {
 }
 
 switch ($argv[0]) {
-    'new'   { Invoke-Engine (@('python3', 'new.py') + $rest) }
-    'shell' { Invoke-Engine @('bash') }
-    default { Invoke-Engine (@('python3', 'run.py') + $argv) }
+    'new'        { Invoke-Engine (@('python3', 'new.py') + $rest) }
+    'complexity' { Invoke-Engine (@('python3', 'complexity.py') + $rest) }
+    'shell'      { Invoke-Engine @('bash') }
+    default      { Invoke-Engine (@('python3', 'run.py') + $argv) }
 }
 exit $LASTEXITCODE

@@ -14,6 +14,12 @@ class Solution:
         raise NotImplementedError
 
 
+# Optional: custom input scaling for `./run.sh complexity <problem>` — only
+# needed when the input can't be derived from the type hints.
+# def complexity_input(n):
+#     return [list(range(n))]   # the argument list for input size n
+
+
 def test_solution():
     solution = Solution()
 

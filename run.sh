@@ -19,9 +19,10 @@ cd "$(dirname "$0")"
 
 run_native() {
   case "${1:-}" in
-    new)   shift; exec python3 new.py "$@" ;;
-    shell) exec "${SHELL:-bash}" ;;
-    *)     exec python3 run.py "$@" ;;
+    new)        shift; exec python3 new.py "$@" ;;
+    complexity) shift; exec python3 complexity.py "$@" ;;
+    shell)      exec "${SHELL:-bash}" ;;
+    *)          exec python3 run.py "$@" ;;
   esac
 }
 
@@ -60,7 +61,8 @@ engine_run() {
 }
 
 case "${1:-}" in
-  new)   shift; engine_run python3 new.py "$@" ;;
-  shell) engine_run bash ;;
-  *)     engine_run python3 run.py "$@" ;;
+  new)        shift; engine_run python3 new.py "$@" ;;
+  complexity) shift; engine_run python3 complexity.py "$@" ;;
+  shell)      engine_run bash ;;
+  *)          engine_run python3 run.py "$@" ;;
 esac

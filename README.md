@@ -116,7 +116,7 @@ Everything lives in the repo root so the commands stay short. On Windows use the
 | `./ship.sh "msg"` | Refresh README stats, then commit & push |
 | `./teardown.sh` | Remove setup artifacts (`.pst/`, `.venv/`, the image) |
 | `./init.sh` | Fork clean-slate: clear examples, set your handles |
-| `python python/common/complexity.py` | Estimate a solution's time/space complexity |
+| `./run.sh complexity <problem>` | Estimate a solution's time/space Big-O empirically |
 
 ## Quick start
 
@@ -222,71 +222,41 @@ if any case fails (this is what the runner keys on):
 
 ### Estimate complexity
 
-Empirically check how a Python solution scales — it measures runtime and peak
-memory across growing inputs and fits the growth to a Big-O class:
+One command per problem — it finds the solution, generates growing inputs from
+the function's type hints, and fits runtime + peak memory to a Big-O class:
 
-```python
-from common.complexity import estimate
-# make_input(n) returns the argument list for input size n
-estimate(Solution().majorityElement, make_input=lambda n: [list(range(n))])
-#  ->  time ≈ O(n) · space ≈ O(1)
+```bash
+./run.sh complexity leetcode/easy/two_sum
+#  function: twoSum · inputs: auto-generated from type hints (nums: list, target: int)
+#  time  ≈ O(n) · space ≈ O(n)
+
+./run.sh complexity three_sum --max-seconds 1   # slow solutions stop growing early
+./run.sh complexity min_stack --method push     # pick the method explicitly
 ```
 
-See it live on known cases: `python python/common/complexity.py`.
+If the input shape can't come from type hints (constraints, in-place mutation),
+add a 2-line hook to the solution file and it takes precedence:
+
+```python
+def complexity_input(n):
+    return [list(range(n)), n]   # the argument list for input size n
+```
+
+Results are **empirical** (a fit, not a proof) — defaults are adversarial where
+possible (e.g. palindromic strings so early-exit checks still scan fully), but
+worst cases with tricky shapes deserve a `complexity_input`. Demo on known
+cases: `python python/common/complexity.py`.
 
 ## Solutions
 
 <!-- solutions:start -->
-##### Advent of Code
+No solutions yet — add one and list it here:
 
-| Problem | Difficulty | Solutions |
-| ------- | ---------- | --------- |
-| [Advent of Code - Day 10: Syntax Scoring](https://adventofcode.com/2021/day/10) | 2021 | [py](python/adventofcode/2021/10/syntax_scoring.py) |
-| [Advent of Code - Day 11: Dumbo Octopus](https://adventofcode.com/2021/day/11) | 2021 | [py](python/adventofcode/2021/11/dumbo_octopus.py) |
-| [Advent of Code - Day 14: Extended Polymerization](https://adventofcode.com/2021/day/14) | 2021 | [py](python/adventofcode/2021/14/extended_polymerization.py) |
-| [Advent of Code - Day 14: Regolith Reservoir](https://adventofcode.com/2022/day/14) | 2022 | [py](python/adventofcode/2022/14/regolith_reservoir.py) |
-| [Advent of Code - Day 24: Blizzard Basin](https://adventofcode.com/2022/day/24) | 2022 | [py](python/adventofcode/2022/24/blizzard_basin.py) |
-| [Advent of Code - Day 7: No Space Left On Device](https://adventofcode.com/2022/day/7) | 2022 | [py](python/adventofcode/2022/7/no_space_left_on_device.py) |
+```bash
+./run.sh new leetcode/easy/two_sum --lang py
+```
 
-##### Codewars
-
-| Problem | Difficulty | Solutions |
-| ------- | ---------- | --------- |
-| [Count IP Addresses](https://www.codewars.com/kata/count-ip-addresses) | — | [py](python/codewars/count_ip_addresses.py) |
-| [Flatten](https://www.codewars.com/kata/flatten) | — | [py](python/codewars/flatten.py) |
-| [Give me a Diamond](https://www.codewars.com/kata/give-me-a-diamond) | — | [py](python/codewars/give_me_diamond.py) |
-| [Luck Check](https://www.codewars.com/kata/luck-check) | — | [py](python/codewars/luck_check.py) |
-| [Pete, the Baker](https://www.codewars.com/kata/pete-the-baker) | — | [py](python/codewars/pete_the_baker.py) |
-| [Weight for Weight](https://www.codewars.com/kata/weight-for-weight) | — | [py](python/codewars/weight_for_weight.py) |
-| [Your Order, Please](https://www.codewars.com/kata/your-order-please) | — | [py](python/codewars/your_order_please.py) |
-
-##### LeetCode
-
-| Problem | Difficulty | Solutions |
-| ------- | ---------- | --------- |
-| [1. Two Sum](https://leetcode.com/problems/two-sum/) | easy | [java](java/leetcode/easy/TwoSum.java) · [py](python/leetcode/easy/two_sum.py) |
-| [11. Container With Most Water](https://leetcode.com/problems/container-with-most-water/) | medium | [py](python/leetcode/medium/container_with_most_water.py) |
-| [1177. Can Make Palindrome from Substring](https://leetcode.com/problems/can-make-palindrome-from-substring/) | medium | [py](python/leetcode/medium/can_make_palindrome_from_substring.py) |
-| [125. Valid Palindrome](https://leetcode.com/problems/valid-palindrome/) | easy | [java](java/leetcode/easy/ValidPalindrome.java) · [py](python/leetcode/easy/valid_palindrome.py) |
-| [15. 3Sum](https://leetcode.com/problems/3sum/) | medium | [py](python/leetcode/medium/three_sum.py) |
-| [150. Evaluate Reverse Polish Notation](https://leetcode.com/problems/evaluate-reverse-polish-notation/) | medium | [py](python/leetcode/medium/reverse_polish_notation.py) |
-| [155. Min Stack](https://leetcode.com/problems/min-stack/) | medium | [py](python/leetcode/medium/min_stack.py) |
-| [167. Two Sum II - Input Array Is Sorted](https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/) | medium | [py](python/leetcode/medium/two_sum_ii.py) |
-| [169. Majority Element](https://leetcode.com/problems/majority-element/) | easy | [py](python/leetcode/easy/majority_element.py) |
-| [20. Valid Parentheses](https://leetcode.com/problems/valid-parentheses/) | easy | [py](python/leetcode/easy/valid_parentheses.py) |
-| [35. Search Insert Position](https://leetcode.com/problems/search-insert-position/) | easy | [py](python/leetcode/easy/search_insert_position.py) |
-| [392. Is Subsequence](https://leetcode.com/problems/is-subsequence/) | easy | [py](python/leetcode/easy/is_subsequence.py) |
-| [412. Fizz Buzz](https://leetcode.com/problems/fizz-buzz/) | easy | [java](java/leetcode/easy/FizzBuzz.java) · [py](python/leetcode/easy/fizz_buzz.py) |
-| [66. Plus One](https://leetcode.com/problems/plus-one/) | easy | [py](python/leetcode/easy/plus_one.py) |
-| [88. Merge Sorted Array](https://leetcode.com/problems/merge-sorted-array/) | easy | [py](python/leetcode/easy/merge_sorted_array.py) |
-| [888. Fair Candy Swap](https://leetcode.com/problems/fair-candy-swap/) | easy | [py](python/leetcode/easy/fair_candy_swap.py) |
-| [9. Palindrome Number](https://leetcode.com/problems/palindrome-number/) | easy | [java](java/leetcode/easy/PalindromeNumber.java) |
-
-##### Others
-
-| Problem | Difficulty | Solutions |
-| ------- | ---------- | --------- |
-| [Rectangle Partition Problem                        #](https://www.codingame.com/ide/puzzle/rectangle-partition) | — | [py](python/others/rectangle_partition.py) |
+_Or skip the manual index and track progress with_ `python run.py --stats`.
 <!-- solutions:end -->
 
 ## License
