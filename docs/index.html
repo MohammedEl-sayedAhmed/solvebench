@@ -123,19 +123,29 @@
   @keyframes markblink{50%{opacity:0}}
   @media (prefers-reduced-motion:reduce){ .mark .mark-chev,.mark .mark-cursor{animation:none} }
 
-  /* ---- hero burst (Claude-style boot-up): pop, fan out, spin, breathe ---- */
-  .mark-hero{overflow:visible}
-  .mark-pop{transform-origin:40px 40px; animation:markpop .8s cubic-bezier(.34,1.56,.64,1) both}
-  @keyframes markpop{from{transform:scale(0) rotate(-60deg)}to{transform:scale(1) rotate(0deg)}}
-  .mark-spin{transform-origin:40px 40px; animation:rayspin 18s linear 1.2s infinite}
-  @keyframes rayspin{to{transform:rotate(360deg)}}
-  .mark-rays{transform-origin:40px 40px; animation:raybreathe 3.2s ease-in-out 1.2s infinite alternate}
-  @keyframes raybreathe{from{transform:scale(.93)}to{transform:scale(1.06)}}
-  .mark-rays line{stroke-dasharray:9; animation:raygrow .45s ease-out var(--d,0s) backwards}
-  @keyframes raygrow{from{stroke-dashoffset:9; opacity:0}}
-  @media (prefers-reduced-motion:reduce){
-    .mark-pop,.mark-spin,.mark-rays,.mark-rays line{animation:none}
+  /* ---- ascii marquee (retro cinema sign): chase lights, pixel title ---- */
+  .marquee{
+    font-family:var(--mono); font-size:.5rem; line-height:1.25; letter-spacing:0;
+    margin:0 0 18px; padding:10px 14px 12px;
+    border:1px dotted #4a2f3c; border-radius:10px;
+    text-align:center; white-space:pre; overflow-x:auto; max-width:100%;
+    scrollbar-width:none;
   }
+  .marquee::-webkit-scrollbar{display:none}
+  .mq-lights{color:#4a2f3c; letter-spacing:2px}
+  .mq-lights .lit{color:var(--mint); text-shadow:0 0 6px #ffc85788}
+  .mq-label{
+    display:block; font-size:.62rem; letter-spacing:.5em; color:var(--mint);
+    margin:7px 0 8px; animation:mqflicker 4.5s linear infinite;
+  }
+  @keyframes mqflicker{
+    0%,86%,90%,94%,100%{opacity:1} 88%{opacity:.35} 92%{opacity:.7}
+  }
+  .mq-title{display:block; color:var(--peri); text-shadow:0 0 10px #ff5d7344; margin:0 0 9px}
+  .mq-pet{display:block; color:var(--peri); margin-top:8px}
+  .mq-pet .gold{color:var(--mint)}
+  @media (max-width:520px){ .marquee{font-size:.4rem} .mq-label{font-size:.55rem} }
+  @media (prefers-reduced-motion:reduce){ .mq-label{animation:none} }
 
   /* ---- sections (top-level bands only — .term is a section too) ---- */
   body > section{padding:70px 0}
@@ -273,7 +283,7 @@
 <header class="hero">
   <div class="wrap hero-grid">
     <div class="hero-copy">
-      <svg class="mark mark-hero" viewBox="0 0 80 80" width="72" height="72" aria-hidden="true" style="margin-bottom:16px"><g class="mark-pop"><g class="mark-spin"><g class="mark-rays"><line x1="40.0" y1="13.0" x2="40.0" y2="5.0" stroke="#ffc857" stroke-width="5" stroke-linecap="round" style="--d:550ms"/><line x1="55.9" y1="18.2" x2="60.6" y2="11.7" stroke="#ff5d73" stroke-width="5" stroke-linecap="round" style="--d:595ms"/><line x1="65.7" y1="31.7" x2="73.3" y2="29.2" stroke="#ffc857" stroke-width="5" stroke-linecap="round" style="--d:640ms"/><line x1="65.7" y1="48.3" x2="73.3" y2="50.8" stroke="#ff5d73" stroke-width="5" stroke-linecap="round" style="--d:685ms"/><line x1="55.9" y1="61.8" x2="60.6" y2="68.3" stroke="#ffc857" stroke-width="5" stroke-linecap="round" style="--d:730ms"/><line x1="40.0" y1="67.0" x2="40.0" y2="75.0" stroke="#ff5d73" stroke-width="5" stroke-linecap="round" style="--d:775ms"/><line x1="24.1" y1="61.8" x2="19.4" y2="68.3" stroke="#ffc857" stroke-width="5" stroke-linecap="round" style="--d:820ms"/><line x1="14.3" y1="48.3" x2="6.7" y2="50.8" stroke="#ff5d73" stroke-width="5" stroke-linecap="round" style="--d:865ms"/><line x1="14.3" y1="31.7" x2="6.7" y2="29.2" stroke="#ffc857" stroke-width="5" stroke-linecap="round" style="--d:910ms"/><line x1="24.1" y1="18.2" x2="19.4" y2="11.7" stroke="#ff5d73" stroke-width="5" stroke-linecap="round" style="--d:955ms"/></g></g><g transform="translate(8,8)"><path class="mark-chev" d="M14 16 34 32 14 48" fill="none" stroke="#ff5d73" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/><rect class="mark-cursor" x="38" y="40" width="17" height="8.5" rx="4" fill="#ffc857"/></g></g></svg>
+      <pre class="marquee" id="marquee" aria-hidden="true"></pre>
       <p class="eyebrow">track · debug · every platform</p>
       <h1>One environment for every judge — with <span class="hl">free local debugging</span>.</h1>
       <p class="lede">LeetCode, Codewars, Advent of Code — solve them all in a single repo,
@@ -575,6 +585,94 @@
     copybtn.textContent = "COPIED ✓";
     setTimeout(() => (copybtn.textContent = old), 1400);
   });
+
+
+  // ---- ascii marquee: chase lights + cycling pixel-font titles ----
+  (() => {
+    const el = document.getElementById("marquee");
+    if (!el) return;
+    const F = {
+      "T":["#####","  #  ","  #  ","  #  ","  #  "],
+      "W":["#   #","#   #","# # #","# # #"," # # "],
+      "O":[" ### ","#   #","#   #","#   #"," ### "],
+      "S":[" ####","#    "," ### ","    #","#### "],
+      "U":["#   #","#   #","#   #","#   #"," ### "],
+      "M":["#   #","## ##","# # #","#   #","#   #"],
+      "3":["#### ","    #"," ### ","    #","#### "],
+      "F":["#####","#    ","#### ","#    ","#    "],
+      "I":["#####","  #  ","  #  ","  #  ","#####"],
+      "Z":["#####","   # ","  #  "," #   ","#####"],
+      "B":["#### ","#   #","#### ","#   #","#### "],
+      "N":["#   #","##  #","# # #","#  ##","#   #"],
+      "A":[" ### ","#   #","#####","#   #","#   #"],
+      "C":[" ####","#    ","#    ","#    "," ####"],
+      "K":["#   #","#  # ","###  ","#  # ","#   #"],
+      " ":["   ","   ","   ","   ","   "],
+    };
+    const TITLES = ["TWO SUM", "3SUM", "FIZZ BUZZ", "MIN STACK"];
+    const PET = ["██", "  ██", "    ██", "  ██", "██   {g}▄▄▄{/g}"];
+    const N_LIGHTS = 27;
+
+    const render5 = (word) =>
+      Array.from({length: 5}, (_, r) =>
+        word.split("").map((ch) => (F[ch] || F[" "])[r]).join(" ")
+          .replace(/#/g, "█")).join("\n");
+
+    // static skeleton
+    const lightsTop = document.createElement("span");
+    const lightsBot = document.createElement("span");
+    lightsTop.className = lightsBot.className = "mq-lights";
+    const label = document.createElement("span");
+    label.className = "mq-label"; label.textContent = "N O W   S O L V I N G";
+    const title = document.createElement("span");
+    title.className = "mq-title";
+    const pet = document.createElement("span");
+    pet.className = "mq-pet";
+    PET.forEach((row, i) => {
+      const parts = row.split(/\{g\}|\{\/g\}/);
+      parts.forEach((t, j) => {
+        const sp = document.createElement("span");
+        if (j === 1) sp.className = "gold";
+        sp.textContent = t;
+        pet.append(sp);
+      });
+      if (i < PET.length - 1) pet.append("\n");
+    });
+    el.append(lightsTop, label, title, lightsBot, pet);
+
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    // chase lights
+    let offset = 0;
+    const drawLights = () => {
+      for (const strip of [lightsTop, lightsBot]) {
+        strip.replaceChildren();
+        for (let i = 0; i < N_LIGHTS; i++) {
+          const d = document.createElement("span");
+          d.textContent = "·";
+          if ((i - offset % 4 + 4) % 4 < 2) d.className = "lit";
+          strip.append(d);
+        }
+      }
+    };
+    drawLights();
+    if (!reduce) setInterval(() => { offset++; drawLights(); }, 160);
+
+    // cycling titles with a brief scramble
+    let idx = 0;
+    const setTitle = (w) => { title.textContent = render5(w); };
+    setTitle(TITLES[0]);
+    if (!reduce) setInterval(() => {
+      idx = (idx + 1) % TITLES.length;
+      const target = TITLES[idx];
+      const shape = render5(target);
+      let frames = 0;
+      const scramble = setInterval(() => {
+        title.textContent = shape.replace(/█/g, () => (Math.random() < 0.5 ? "█" : "░"));
+        if (++frames >= 4) { clearInterval(scramble); setTitle(target); }
+      }, 70);
+    }, 3400);
+  })();
 
   // ---- reveal on scroll ----
   const io = new IntersectionObserver((entries) => {
