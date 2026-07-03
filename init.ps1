@@ -16,10 +16,10 @@ function Ask($q, $def = 'Y') {
 }
 
     Write-Host ''
-    Write-Host ' ___   ___   _    __   __ ___     ___  ___  _  _   ___  _  _ ' -ForegroundColor Yellow
-    Write-Host '/ __| / _ \ | |   \ \ / /| __|   | _ )| __|| \| | / __|| || |' -ForegroundColor DarkYellow
-    Write-Host '\__ \| (_) || |__  \ V / | _|    | _ \| _| | .` || (__ | __ |' -ForegroundColor Red
-    Write-Host '|___/ \___/ |____|  \_/  |___|   |___/|___||_|\_| \___||_||_|' -ForegroundColor DarkRed
+    Write-Host '  \      ' -NoNewline -ForegroundColor Red -BackgroundColor Black; Write-Host '  ' -NoNewline; Write-Host ' ___   ___   _    __   __ ___     ___  ___  _  _   ___  _  _ ' -ForegroundColor Yellow
+    Write-Host '   \     ' -NoNewline -ForegroundColor Red -BackgroundColor Black; Write-Host '  ' -NoNewline; Write-Host '/ __| / _ \ | |   \ \ / /| __|   | _ )| __|| \| | / __|| || |' -ForegroundColor DarkYellow
+    Write-Host '   /     ' -NoNewline -ForegroundColor Red -BackgroundColor Black; Write-Host '  ' -NoNewline; Write-Host '\__ \| (_) || |__  \ V / | _|    | _ \| _| | .` || (__ | __ |' -ForegroundColor Red
+    Write-Host '  /   ' -NoNewline -ForegroundColor Red -BackgroundColor Black; Write-Host '__ ' -NoNewline -ForegroundColor Yellow -BackgroundColor Black; Write-Host '  ' -NoNewline; Write-Host '|___/ \___/ |____|  \_/  |___|   |___/|___||_|\_| \___||_||_|' -ForegroundColor DarkRed
 Write-Host "  init - a clean slate that's yours`n" -ForegroundColor DarkGray
 
 Warn "This clears ALL solutions and puzzle inputs and resets the README index."

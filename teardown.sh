@@ -20,8 +20,8 @@ ask()  {
   ans="${ans:-$def}"; [[ "$ans" =~ ^[Yy] ]]
 }
 
-# Animated SOLVEBENCH wordmark: a left-to-right sweep in a gold->crimson
-# gradient. Plain and instant when piped or NO_COLOR is set.
+# Sweep in the SOLVE BENCH wordmark with the favicon tile at its left.
+# Plain and instant when piped or NO_COLOR is set.
 solvebench_banner() {
   local a1=' ___   ___   _    __   __ ___     ___  ___  _  _   ___  _  _ '
   local a2='/ __| / _ \ | |   \ \ / /| __|   | _ )| __|| \| | / __|| || |'
@@ -31,21 +31,21 @@ solvebench_banner() {
     printf '\n%s\n%s\n%s\n%s\n' "$a1" "$a2" "$a3" "$a4"
     return
   fi
-  local g1=$'\033[38;5;220m' g2=$'\033[38;5;214m' g3=$'\033[38;5;203m' g4=$'\033[38;5;196m' r0=$'\033[0m'
-  local w=${#a1} i
+  local bg=$'\033[48;5;234m' red=$'\033[38;5;203m' gld=$'\033[38;5;220;1m' r0=$'\033[0m'
+  local icons=("${bg}${red}  \\      ${r0}" "${bg}${red}   \\     ${r0}" \
+               "${bg}${red}   /     ${r0}" "${bg}${red}  /   ${gld}__ ${r0}")
+  local rows=("$a1" "$a2" "$a3" "$a4") g=(220 214 203 196) w=${#a1} i r
   printf '\n\033[?25l\n\n\n\n\033[4A'
   for ((i = 2; i <= w; i += 2)); do
-    printf '\r%s%s%s\033[K\n' "$g1" "${a1:0:i}" "$r0"
-    printf '\r%s%s%s\033[K\n' "$g2" "${a2:0:i}" "$r0"
-    printf '\r%s%s%s\033[K\n' "$g3" "${a3:0:i}" "$r0"
-    printf '\r%s%s%s\033[K\n' "$g4" "${a4:0:i}" "$r0"
+    for r in 0 1 2 3; do
+      printf '\r%s  \033[38;5;%sm%s\033[0m\033[K\n' "${icons[r]}" "${g[r]}" "${rows[r]:0:i}"
+    done
     printf '\033[4A'
     sleep 0.004
   done
-  printf '\r%s%s%s\033[K\n' "$g1" "$a1" "$r0"
-  printf '\r%s%s%s\033[K\n' "$g2" "$a2" "$r0"
-  printf '\r%s%s%s\033[K\n' "$g3" "$a3" "$r0"
-  printf '\r%s%s%s\033[K\n' "$g4" "$a4" "$r0"
+  for r in 0 1 2 3; do
+    printf '\r%s  \033[38;5;%sm%s\033[0m\033[K\n' "${icons[r]}" "${g[r]}" "${rows[r]}"
+  done
   printf '\033[?25h'
 }
 solvebench_banner

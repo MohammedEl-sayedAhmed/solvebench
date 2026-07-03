@@ -26,6 +26,13 @@ A2='/ __| / _ \ | |   \ \ / /| __|   | _ )| __|| \| | / __|| || |'
 A3='\__ \| (_) || |__  \ V / | _|    | _ \| _| | .` || (__ | __ |'
 A4='|___/ \___/ |____|  \_/  |___|   |___/|___||_|\_| \___||_||_|'
 
+# The favicon, as ANSI art: dark tile, red chevron, gold cursor (9 cols x 4 rows).
+IBG=$'\033[48;5;234m'; IRED=$'\033[38;5;203m'; IGLD=$'\033[38;5;220;1m'; IRST=$'\033[0m'
+I1="${IBG}${IRED}  \\      ${IRST}"
+I2="${IBG}${IRED}   \\     ${IRST}"
+I3="${IBG}${IRED}   /     ${IRST}"
+I4="${IBG}${IRED}  /   ${IGLD}__ ${IRST}"
+
 # Sweep the wordmark in left-to-right with a gold->crimson gradient.
 # Plain and instant when piped or NO_COLOR is set.
 solvebench_banner() {
@@ -34,17 +41,18 @@ solvebench_banner() {
     return
   fi
   local g=(220 214 203 196) rows=("$A1" "$A2" "$A3" "$A4")
+  local icons=("$I1" "$I2" "$I3" "$I4")
   local w=${#A1} i r
   printf '\n\033[?25l\n\n\n\n\033[4A'
   for ((i = 2; i <= w; i += 2)); do
     for r in 0 1 2 3; do
-      printf '\r\033[38;5;%sm%s\033[0m\033[K\n' "${g[r]}" "${rows[r]:0:i}"
+      printf '\r%s  \033[38;5;%sm%s\033[0m\033[K\n' "${icons[r]}" "${g[r]}" "${rows[r]:0:i}"
     done
     printf '\033[4A'
     sleep 0.004
   done
   for r in 0 1 2 3; do
-    printf '\r\033[38;5;%sm%s\033[0m\033[K\n' "${g[r]}" "${rows[r]}"
+    printf '\r%s  \033[38;5;%sm%s\033[0m\033[K\n' "${icons[r]}" "${g[r]}" "${rows[r]}"
   done
   printf '\033[?25h'
 }
@@ -57,11 +65,12 @@ start_banner_loop() {
   [ -t 1 ] && [ -z "${NO_COLOR:-}" ] || return 0
   (
     g=(220 214 203 196) rows=("$A1" "$A2" "$A3" "$A4") phase=0
+    icons=("$I1" "$I2" "$I3" "$I4")
     while :; do
       frame=$'\0337'
       for r in 0 1 2 3; do
         c=${g[(r + phase) % 4]}
-        frame+=$'\033['$((r + 2))$';1H\033[38;5;'"$c"$'m'"${rows[r]}"$'\033[0m\033[K'
+        frame+=$'\033['$((r + 2))$';1H'"${icons[r]}"'  '$'\033[38;5;'"$c"$'m'"${rows[r]}"$'\033[0m\033[K'
       done
       frame+=$'\0338'
       printf '%s' "$frame"
