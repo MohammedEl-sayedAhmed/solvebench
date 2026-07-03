@@ -6,9 +6,10 @@
 <title>problem-solving-training — polyglot runner</title>
 <style>
   :root{
-    --ground:#0b1020; --surface:#111730; --surface-2:#0e142a;
-    --border:#242c4a; --text:#cdd6ee; --dim:#6c779a;
-    --mint:#5ef2b8; --peri:#7aa2ff; --fail:#ff6b7a;
+    /* contest crimson: gold = success (--mint), red = structure (--peri) */
+    --ground:#140b10; --surface:#1d1218; --surface-2:#170e13;
+    --border:#3c2531; --text:#ecdfe4; --dim:#937f89;
+    --mint:#ffc857; --peri:#ff5d73; --fail:#ff5d73;
     --mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,"Liberation Mono",monospace;
     --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
   }
@@ -16,7 +17,7 @@
   html,body{margin:0}
   body{
     background:
-      radial-gradient(1100px 520px at 50% -10%, #16204012, transparent),
+      radial-gradient(1100px 520px at 50% -10%, #26101a12, transparent),
       var(--ground);
     color:var(--text); font-family:var(--sans);
     -webkit-font-smoothing:antialiased; line-height:1.5;
@@ -61,7 +62,7 @@
   .tab.is-active{color:var(--peri); border-bottom-color:var(--peri)}
   .replay{
     font-family:var(--mono); font-size:.72rem; letter-spacing:.08em;
-    color:var(--dim); background:#0c122a;
+    color:var(--dim); background:#150d12;
     border:1px solid var(--border); border-radius:6px; padding:5px 9px; cursor:pointer;
   }
   .replay:hover{color:var(--mint); border-color:#33406e}
@@ -133,11 +134,15 @@
       <div class="term-bar">
         <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
         <nav class="tabs" role="tablist" aria-label="Demo scenes">
-          <button class="tab is-active" data-scene="polyglot" role="tab">polyglot</button>
+          <button class="tab is-active" data-scene="polyglot" role="tab">run</button>
+          <button class="tab" data-scene="scaffold" role="tab">new</button>
+          <button class="tab" data-scene="bigO" role="tab">complexity</button>
+          <button class="tab" data-scene="ship" role="tab">ship</button>
           <button class="tab" data-scene="stats" role="tab">stats</button>
           <button class="tab" data-scene="bench" role="tab">bench</button>
-          <button class="tab" data-scene="bigO" role="tab">big-O</button>
-          <button class="tab" data-scene="scaffold" role="tab">scaffold</button>
+          <button class="tab" data-scene="setup" role="tab">setup</button>
+          <button class="tab" data-scene="init" role="tab">init</button>
+          <button class="tab" data-scene="teardown" role="tab">teardown</button>
         </nav>
         <button class="replay" id="replay" title="Replay this scene">REPLAY ↺</button>
       </div>
@@ -165,69 +170,61 @@
   const SCENES = {
     polyglot: {
       cmd: "./run.sh leetcode/easy/two_sum",
-      out: [
-        "✅ [java] leetcode/easy/TwoSum",
-        "✅ [py]   leetcode/easy/two_sum",
-        "",
-        "PLATFORM   LANG   PASS  FAIL  TOTAL",
-        "-----------------------------------",
-        "leetcode   java     1     0      1",
-        "leetcode   py       1     0      1",
-        "-----------------------------------",
-        "TOTAL               2     0      2",
-        "",
-        "All solutions passed! 🎉",
-      ],
+      out: ["✅ [java] leetcode/easy/TwoSum","✅ [py]   leetcode/easy/two_sum","",
+        "PLATFORM   LANG   PASS  FAIL  TOTAL","-----------------------------------",
+        "leetcode   java     1     0      1","leetcode   py       1     0      1",
+        "-----------------------------------","TOTAL               2     0      2","","All solutions passed! 🎉"],
     },
-    stats: {
-      cmd: "./run.sh --stats",
-      out: [
-        "PLATFORM        LANG     COUNT",
-        "------------------------------",
-        "adventofcode    py           6",
-        "codewars        py           7",
-        "leetcode        java         3",
-        "leetcode        py          16",
-        "others          py           1",
-        "------------------------------",
-        "TOTAL                       33",
-      ],
-    },
-    bench: {
-      cmd: "./run.sh --lang java --time",
-      out: [
-        "✅ [java] leetcode/easy/FizzBuzz         (0.51s)",
-        "✅ [java] leetcode/easy/TwoSum           (0.48s)",
-        "✅ [java] leetcode/easy/ValidPalindrome  (0.49s)",
-        "",
-        "Total run time: 1.48s",
-        "All solutions passed! 🎉",
-      ],
+    scaffold: {
+      cmd: "./run.sh new https://leetcode.com/problems/two-sum/ --lang rust",
+      out: ["Created rust/leetcode/easy/two_sum.rs","Run it with:  ./run.sh two_sum"],
     },
     bigO: {
       cmd: "./run.sh complexity two_sum --lang java",
-      out: [
-        "solution: java/leetcode/easy/TwoSum.java",
-        "function: twoSum · inputs: generated from parameter types (int[], int)",
-        "",
-        "         n     time (ms)    alloc (KB)",
-        "──────────────────────────────────────",
-        "       500         0.371          19.7",
-        "      1000         0.270          43.3",
-        "      2000         0.550          91.0",
-        "      4000         0.916         184.5",
-        "      8000         1.768         372.8",
-        "──────────────────────────────────────",
-        "time  ≈ O(n)",
-        "space ≈ O(n)",
-      ],
+      out: ["function: twoSum · inputs: (int[], int)","",
+        "     n   time (ms)  alloc (KB)","──────────────────────────────",
+        "   500       0.371        19.7","  1000       0.270        43.3",
+        "  2000       0.550        91.0","  4000       0.916       184.5",
+        "  8000       1.768       372.8","──────────────────────────────",
+        "time  ≈ O(n)","space ≈ O(n)"],
     },
-    scaffold: {
-      cmd: "./run.sh new https://leetcode.com/problems/valid-anagram/ --lang rust",
-      out: [
-        "Created rust/leetcode/easy/valid_anagram.rs",
-        "Run it with:  python run.py leetcode/easy/valid_anagram",
-      ],
+    ship: {
+      cmd: "./ship.sh \"solve: two sum\"",
+      out: ["==> refreshing README references","README profile block updated from profile.json",
+        "stats updated: 34 solutions · 4 platforms · 2 languages",
+        "committed: solve: two sum","pushed to main ✅"],
+    },
+    stats: {
+      cmd: "./run.sh --stats",
+      out: ["PLATFORM        LANG     COUNT","------------------------------",
+        "adventofcode    py           6","codewars        py           7",
+        "leetcode        java         4","leetcode        py          16",
+        "others          py           1","------------------------------","TOTAL                       34"],
+    },
+    bench: {
+      cmd: "./run.sh --lang java --time",
+      out: ["✅ [java] leetcode/easy/FizzBuzz         (0.51s)","✅ [java] leetcode/easy/TwoSum           (0.48s)",
+        "✅ [java] leetcode/easy/ValidPalindrome  (0.49s)","","Total run time: 1.48s","All solutions passed! 🎉"],
+    },
+    setup: {
+      cmd: "./setup.sh",
+      out: ["==> VS Code extensions (6 recommended)","    ✔ ms-python.python","    ✔ redhat.java",
+        "    ✔ cweijan.vscode-office","==> Python dev dependencies","    ✔ pytest ready — .venv/bin/pytest",
+        "==> Git hooks","    ✔ enabled (core.hooksPath=.githooks)","",
+        "Setup complete!  Everything is under ./.pst and ./.venv."],
+    },
+    init: {
+      cmd: "./init.sh",
+      out: ["? Continue? [Y/n] y","==> Clearing example solutions and inputs",
+        "    ✔ removed solutions (kept common/ + templates/)","==> Your profile",
+        "    ✔ wrote profile.json and updated the README","==> Resetting the solutions index",
+        "    ✔ README solutions index cleared","","Clean slate ready!"],
+    },
+    teardown: {
+      cmd: "./teardown.sh",
+      out: ["==> Repo-local artifacts","    .pst    142M","    .venv    38M","? Remove these? [Y/n] y",
+        "    ✔ removed .pst","    ✔ removed .venv","==> Container image","    ✔ removed solvebench image","",
+        "Teardown complete. Tracked repo files are untouched."],
     },
   };
 
@@ -239,14 +236,15 @@
   let current = "polyglot";
 
   function lineClass(t) {
-    if (t.includes("✅")) return "ok";
+    if (/^==>/.test(t)) return "note";
+    if (t.includes("✅") || /^\s*✔/.test(t)) return "ok";
     if (t.includes("❌")) return "fail";
-    if (/passed! 🎉/.test(t)) return "ok bold";
-    if (/^TOTAL/.test(t)) return "total";
-    if (/^─+$/.test(t) || /^-+$/.test(t) || /PLATFORM|LANG|PASS|time \(ms\)/.test(t)) return "dim";
+    if (/passed! 🎉|Setup complete|Clean slate ready|Teardown complete|pushed to main/.test(t)) return "ok bold";
     if (/^time {2}≈|^space ≈/.test(t)) return "ok bold";
-    if (/^solution:|^function:/.test(t)) return "dim";
-    if (/^Created|^Run it|^Total run/.test(t)) return "note";
+    if (/^TOTAL/.test(t)) return "total";
+    if (/^[─-]+$/.test(t) || /PLATFORM|LANG|PASS|time \(ms\)/.test(t)) return "dim";
+    if (/^\?|^solution:|^function:/.test(t)) return "dim";
+    if (/^Created|^Run it|committed:|README|stats updated/.test(t)) return "note";
     return "";
   }
 

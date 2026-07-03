@@ -7,10 +7,11 @@
 <title>problem-solving-training — polyglot practice framework</title>
 <style>
   :root{
-    --ground:#0b1020; --surface:#111730; --surface-2:#0e142a; --raise:#161d3a;
-    --border:#242c4a; --border-soft:#1b2340;
-    --text:#cdd6ee; --bright:#eef2fc; --dim:#6c779a;
-    --mint:#5ef2b8; --peri:#7aa2ff; --fail:#ff6b7a;
+    /* contest crimson: gold = success/CTA (--mint), red = structure/links (--peri) */
+    --ground:#140b10; --surface:#1d1218; --surface-2:#170e13; --raise:#241620;
+    --border:#3c2531; --border-soft:#2a1a22;
+    --text:#ecdfe4; --bright:#faf2f4; --dim:#937f89;
+    --mint:#ffc857; --peri:#ff5d73; --fail:#ff5d73;
     --mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,"Liberation Mono",monospace;
     --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
   }
@@ -30,7 +31,7 @@
   /* ---- nav ---- */
   .nav{
     position:sticky; top:0; z-index:20;
-    background:#0b1020e6; backdrop-filter:blur(8px);
+    background:#140b10e6; backdrop-filter:blur(8px);
     border-bottom:1px solid var(--border-soft);
   }
   .nav-in{display:flex; align-items:center; gap:22px; height:56px}
@@ -47,8 +48,8 @@
 
   /* ---- hero ---- */
   .hero{padding:72px 0 60px;
-    background:radial-gradient(900px 480px at 20% -10%, #17204533, transparent),
-               radial-gradient(700px 400px at 95% 10%, #10306422, transparent);
+    background:radial-gradient(900px 480px at 20% -10%, #2c132040, transparent),
+               radial-gradient(700px 400px at 95% 10%, #58203222, transparent);
   }
   /* centered copy with the terminal full-width below — long commands fit on one line */
   .hero-grid{display:flex; flex-direction:column; align-items:center; gap:46px}
@@ -93,7 +94,7 @@
   .tab:hover{color:var(--text)}
   .tab.is-active{color:var(--peri); border-bottom-color:var(--peri)}
   .replay{font-family:var(--mono); font-size:.68rem; letter-spacing:.08em; color:var(--dim);
-          background:#0c122a; border:1px solid var(--border); border-radius:6px; padding:4px 8px; cursor:pointer}
+          background:#150d12; border:1px solid var(--border); border-radius:6px; padding:4px 8px; cursor:pointer}
   .replay:hover{color:var(--mint); border-color:#33406e}
   .term-body{font-family:var(--mono); font-size:.78rem; line-height:1.6; margin:0; padding:16px 16px 18px;
              min-height:300px; overflow-x:auto; white-space:pre; font-variant-numeric:tabular-nums;
@@ -125,7 +126,7 @@
   .card:hover{border-color:var(--border)}
   .card .key{
     display:inline-block; font-family:var(--mono); font-size:.72rem; color:var(--mint);
-    background:#0c122a; border:1px solid var(--border-soft); border-radius:5px;
+    background:#150d12; border:1px solid var(--border-soft); border-radius:5px;
     padding:3px 8px; letter-spacing:.05em; margin-bottom:12px;
   }
   .card h3{margin:0 0 6px; font-size:.98rem; color:var(--bright)}
@@ -159,7 +160,7 @@
   thead th{border-top:0; font-family:var(--mono); font-size:.72rem; letter-spacing:.1em; text-transform:uppercase; color:var(--dim); background:var(--surface-2)}
   td:first-child{font-family:var(--mono); font-size:.8rem; color:var(--mint); white-space:nowrap}
   td:last-child{color:var(--dim)}
-  tbody tr:hover{background:#111730aa}
+  tbody tr:hover{background:#1d1218aa}
 
   /* fork band */
   .fork{background:var(--surface-2); border-top:1px solid var(--border-soft); border-bottom:1px solid var(--border-soft)}
