@@ -277,10 +277,10 @@
       for (let i = 0; i < s.cmd.length; i++) {
         if (mine !== token) return;
         typed.textContent += s.cmd[i];
-        await sleep(26);
+        await sleep(35);
       }
     }
-    await sleep(reduce ? 0 : 280);
+    await sleep(reduce ? 0 : 550);
     cur.remove();
 
     for (const t of s.out) {
@@ -289,7 +289,7 @@
       el.className = "line " + lineClass(t);
       el.textContent = t === "" ? " " : t;
       screen.append(el);
-      await sleep(reduce ? 0 : 65);
+      await sleep(reduce ? 0 : 150);
     }
 
     const done = document.createElement("div");
@@ -301,7 +301,7 @@
     screen.append(done);
 
     if (!reduce) {
-      await sleep(2800);
+      await sleep(6500);
       if (mine !== token) return;
       const order = tabs.map((t) => t.dataset.scene);
       select(order[(order.indexOf(current) + 1) % order.length]);

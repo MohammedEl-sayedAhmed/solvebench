@@ -234,7 +234,7 @@
 
 <nav class="nav">
   <div class="wrap nav-in">
-    <span class="brand"><b>&gt;_</b> problem&#8209;solving&#8209;training</span>
+    <span class="brand"><b>&gt;_</b> solvebench</span>
     <div class="nav-links">
       <a href="#features">features</a>
       <a href="#workflow">workflow</a>
@@ -502,10 +502,10 @@
       for (let i = 0; i < s.cmd.length; i++) {
         if (mine !== token) return;
         typed.textContent += s.cmd[i];
-        await sleep(24);
+        await sleep(35);
       }
     }
-    await sleep(reduce ? 0 : 260);
+    await sleep(reduce ? 0 : 550);
     cur.remove();
     for (const t of s.out) {
       if (mine !== token) return;
@@ -513,7 +513,7 @@
       el.className = "line " + lineClass(t);
       el.textContent = t === "" ? " " : t;
       screen.append(el);
-      await sleep(reduce ? 0 : 60);
+      await sleep(reduce ? 0 : 150);
     }
     const done = document.createElement("div");
     done.className = "line";
@@ -522,7 +522,7 @@
     done.append(p2, cursor());
     screen.append(done);
     if (!reduce) {
-      await sleep(3000);
+      await sleep(6500);
       if (mine !== token) return;
       const order = tabs.map((t) => t.dataset.scene);
       select(order[(order.indexOf(current) + 1) % order.length]);
