@@ -17,9 +17,21 @@
       "problemMatcher": ["$gcc"]
     },
     {
+      "label": "java: build all",
+      "type": "shell",
+      "command": "python3",
+      "windows": { "command": "python" },
+      "args": ["scripts/build_java.py"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "group": "build",
+      "presentation": { "reveal": "silent" },
+      "problemMatcher": []
+    },
+    {
       "label": "run: current solution (all languages)",
       "type": "shell",
       "command": "python3",
+      "windows": { "command": "python" },
       "args": ["run.py", "${relativeFileDirname}"],
       "options": { "cwd": "${workspaceFolder}" },
       "group": { "kind": "test", "isDefault": true },

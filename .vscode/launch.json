@@ -33,6 +33,16 @@
       "type": "java",
       "request": "launch",
       "mainClass": "${file}",
+      "cwd": "${fileDirname}",
+      "preLaunchTask": "java: build all",
+      "classPaths": ["${workspaceFolder}/.pst/build/java"],
+      "sourcePaths": ["${workspaceFolder}/java"]
+    },
+    {
+      "name": "Debug: Java (via language server project)",
+      "type": "java",
+      "request": "launch",
+      "mainClass": "${file}",
       "cwd": "${fileDirname}"
     }
   ]
