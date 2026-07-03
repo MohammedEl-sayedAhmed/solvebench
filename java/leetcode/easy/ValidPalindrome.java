@@ -9,22 +9,41 @@ import common.TestFramework;
 
 public class ValidPalindrome {
     // Two-pointer approach. Time O(n), Space O(1).
+
+    // Use Character.isLetterOrDigit(c) in the loop 
+
+
     public boolean isPalindrome(String s) {
         int left = 0;
         int right = s.length() - 1;
-        while (left < right) {
-            while (left < right && !Character.isLetterOrDigit(s.charAt(left))) {
+        if (s == " ")
+        {
+            return true;
+        }
+        while(left < right)
+        {
+            char currFirst = s.charAt(left);
+            char currlast = s.charAt(right);
+           while(!Character.isLetterOrDigit(currFirst) && (left < right))
+            {
                 left++;
-            }
-            while (right > left && !Character.isLetterOrDigit(s.charAt(right))) {
+                currFirst = s.charAt(left);
+            } 
+            while(!Character.isLetterOrDigit(currlast) && (left < right))
+            {
                 right--;
-            }
-            if (Character.toLowerCase(s.charAt(left)) != Character.toLowerCase(s.charAt(right))) {
+                currlast = s.charAt(right);
+            } 
+            
+            if(Character.toLowerCase(currFirst) != Character.toLowerCase(currlast))
+            {
                 return false;
             }
+            
             left++;
             right--;
         }
+        
         return true;
     }
 

@@ -13,14 +13,20 @@ import java.util.Map;
 public class TwoSum {
     // Hash map approach. Time O(n), Space O(n).
     public int[] twoSum(int[] nums, int target) {
-        Map<Integer, Integer> seen = new HashMap<>();  // value -> index
-        for (int i = 0; i < nums.length; i++) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for (int i =0; i < nums.length; i++)
+        {
             int complement = target - nums[i];
-            if (seen.containsKey(complement)) {
-                return new int[] {seen.get(complement), i};
+
+            if(map.containsKey(complement))
+            {
+                int[] indices = new int[]{map.get(complement), i};
+                return indices;
             }
-            seen.put(nums[i], i);
+
+            map.put(nums[i], i);
         }
+
         return new int[] {};
     }
 
