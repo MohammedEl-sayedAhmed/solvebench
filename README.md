@@ -31,17 +31,17 @@ containerized runner verifies everything on any OS.
 ## Progress
 
 <!-- stats:start -->
-![adventofcode](https://img.shields.io/badge/adventofcode-6%20solved-brightgreen) ![codewars](https://img.shields.io/badge/codewars-7%20solved-red) ![leetcode](https://img.shields.io/badge/leetcode-24%20solved-orange) ![others](https://img.shields.io/badge/others-1%20solved-lightgrey)
+![adventofcode](https://img.shields.io/badge/adventofcode-6%20solved-brightgreen) ![codewars](https://img.shields.io/badge/codewars-7%20solved-red) ![leetcode](https://img.shields.io/badge/leetcode-25%20solved-orange) ![others](https://img.shields.io/badge/others-1%20solved-lightgrey)
 
-38 solutions · 4 platforms · 2 languages
+39 solutions · 4 platforms · 2 languages
 
 | Platform | java | py | Total |
 | --- | --- | --- | --- |
 | adventofcode | 0 | 6 | 6 |
 | codewars | 0 | 7 | 7 |
-| leetcode | 8 | 16 | 24 |
+| leetcode | 9 | 16 | 25 |
 | others | 0 | 1 | 1 |
-| **Total** | 8 | 30 | **38** |
+| **Total** | 9 | 30 | **39** |
 <!-- stats:end -->
 
 ## Website & demo
