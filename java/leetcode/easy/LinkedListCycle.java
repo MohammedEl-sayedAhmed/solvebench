@@ -49,31 +49,24 @@ import common.TestFramework;
 
 public class LinkedListCycle {
 
-    // Explain the approach. Time O(?), Space O(?).
-    public boolean hasCycle(ListNode head) 
-    {
+    // Floyd's tortoise & hare. slow advances one node, fast two, so fast gains
+    // exactly one node per step: in a cycle the gap keeps shrinking until they
+    // land on the same node; with no cycle, fast reaches the end first. Guarding
+    // fast up front (it's always ahead) covers both pointers — one check, no
+    // mid-loop break, and the empty list falls straight through to false.
+    // Time O(n), Space O(1).
+    public boolean hasCycle(ListNode head) {
         ListNode slow = head;
         ListNode fast = head;
 
-        while(head != null && slow.next != null)
-        {
-            slow = slow.next; // Jump one node
-            
-            // Check that we don't reach the end of the linked list
-            if(fast == null || fast.next == null)
-            {
-                break;
-            }
-
-            // Jump twice
-            fast = fast.next;
-            fast = fast.next;
-            if (slow == fast)
-            {
-                return true;
+        while (fast != null && fast.next != null) {
+            slow = slow.next;         // one node
+            fast = fast.next.next;    // two nodes
+            if (slow == fast) {
+                return true;          // same node object -> cycle
             }
         }
-        return false;
+        return false;                 // fast hit the end -> no cycle
     }
 
     // Test helper — build a list from values and, if pos >= 0, connect the
