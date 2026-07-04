@@ -39,8 +39,9 @@ public class MoveZeroes {
             }
             else
             {
+                int temp = nums[l];
                 nums[l] = nums[r];
-                nums[r] = 0;
+                nums[r] = temp;
                 r++;
                 l++;
             }
@@ -62,6 +63,14 @@ public class MoveZeroes {
         int[] nums2 = {0};
         s.moveZeroes(nums2);
         t.check("Example 2", nums2, new int[]{0});
+
+        int[] nums3 = {1};
+        s.moveZeroes(nums3);
+        t.check("Example 2", nums3, new int[]{1});
+
+        int[] nums4 = {1,0};
+        s.moveZeroes(nums4);
+        t.check("Example 2", nums4, new int[]{1,0});
 
         System.exit(t.summary());
     }
