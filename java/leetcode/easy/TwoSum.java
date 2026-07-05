@@ -13,7 +13,7 @@ import java.util.Map;
 public class TwoSum {
     // Hash map approach. Time O(n), Space O(n).
     public int[] twoSum(int[] nums, int target) {
-        HashMap<Integer, Integer> map = new HashMap<>();
+        Map<Integer, Integer> map = new HashMap<>(); // better to declare variables using the interface (Map) and initialize them using the implementation (HashMap).
         for (int i =0; i < nums.length; i++)
         {
             int complement = target - nums[i];
