@@ -31,3 +31,6 @@ target/
 !.vscode/extensions.json
 .idea/
 .DS_Store
+
+# LinkedIn marketing assets
+linkedin-carousel/
