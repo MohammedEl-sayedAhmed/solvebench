@@ -1,0 +1,10 @@
+# Sources and tooling: the packaged extension only needs out/ and media/.
+.vscode/**
+src/**
+test/**
+preview/**
+node_modules/**
+tsconfig.json
+out/**/*.map
+PLAN.md
+*.vsix

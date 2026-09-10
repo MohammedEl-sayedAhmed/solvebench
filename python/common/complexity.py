@@ -54,7 +54,7 @@ def _best_fit(sizes, values):
 
 
 def estimate(func, make_input, sizes=None, repeat=3, label=None, measure_space=True,
-             max_seconds=None):
+             max_seconds=None, quiet=False):
     """Measure `func` across growing inputs and print an estimated complexity.
 
     :param func: the function under test.
@@ -63,6 +63,8 @@ def estimate(func, make_input, sizes=None, repeat=3, label=None, measure_space=T
     :param repeat: timing repeats per size (the median is used).
     :param max_seconds: stop growing sizes once one run exceeds this (keeps the
         tool responsive for O(n^2)+ solutions); collected points are still fit.
+    :param quiet: measure without printing, for callers that render the numbers
+        themselves (see complexity.py --json).
     :returns: dict with sizes, times, time_class (+ spaces, space_class).
     """
     sizes = list(sizes or (1000, 2000, 4000, 8000, 16000))
@@ -97,20 +99,28 @@ def estimate(func, make_input, sizes=None, repeat=3, label=None, measure_space=T
             # would (linear projection — an underestimate for superlinear
             # solutions, which is exactly when stopping matters most).
             if times[-1] > max_seconds or (nxt and times[-1] * (nxt / n) > max_seconds):
-                print(f"(stopping after n={n}: the next size would exceed the {max_seconds:.2f}s cap)")
+                if not quiet:
+                    print(f"(stopping after n={n}: the next size would exceed the {max_seconds:.2f}s cap)")
                 break
-    return report(used_sizes, times, spaces if measure_space else None, name)
+    return report(used_sizes, times, spaces if measure_space else None, name, quiet=quiet)
 
 
-def report(sizes, times, spaces, label, space_label="peak (KB)"):
-    """Render the measurement table, fit the Big-O classes, and return them.
+def report(sizes, times, spaces, label, space_label="peak (KB)", quiet=False):
+    """Fit the Big-O classes, render the measurement table, and return both.
 
     Shared by estimate() and other measurement front-ends (e.g. the Java
     harness driven by complexity.py) so every language reports identically.
     ``spaces`` may be None (no space data) or shorter than ``sizes`` (probe
-    skipped near the time cap).
+    skipped near the time cap). With ``quiet`` nothing is printed and only the
+    dict comes back, so a caller can render it another way.
     """
     spaces = spaces or []
+    if quiet:
+        result = {"sizes": sizes, "times": times, "time_class": _best_fit(sizes, times)}
+        if spaces:
+            result["spaces"] = spaces
+            result["space_class"] = _best_fit(sizes[:len(spaces)], spaces)
+        return result
     header = f"{'n':>10}{'time (ms)':>14}" + (f"{space_label:>14}" if spaces else "")
     print(f"\n📈  Complexity estimate — {label}")
     print(header)

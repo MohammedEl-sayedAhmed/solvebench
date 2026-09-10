@@ -1,0 +1,114 @@
+# solvebench VS Code extension
+
+Adds editor UI for the tools in this repo. The tools still do the work: this
+calls `run.py`, `new.py`, and `complexity.py` and shows what comes back.
+
+See [PLAN.md](PLAN.md) for what is built, what is left out, and why.
+
+## Preview the chart without installing
+
+```bash
+cd extension
+npm install
+npm run preview        # http://127.0.0.1:5178
+```
+
+This runs the real `complexity.py` and serves the same page the webview shows,
+using the same `media/chart.css` and `media/chart.js`. Edit either and reload.
+Pass a different problem with `npm run preview -- leetcode/medium/three_sum`.
+
+## Tests
+
+```bash
+npm test               # 93 tests, also what CI runs
+npm run test:unit      # the ones that do not need Python
+```
+
+## Build and install
+
+```bash
+cd extension
+npm install
+npm run compile        # writes out/
+npm run package        # writes solvebench-0.1.0.vsix
+```
+
+Then install the `.vsix`: in VS Code, Extensions → `...` menu → **Install from
+VSIX**, or:
+
+```bash
+code --install-extension solvebench-0.1.0.vsix
+```
+
+To try it without packaging, open the `extension/` folder in VS Code and press
+F5. That opens a second window with the extension loaded.
+
+## What you get
+
+**Test panel.** Every solution shows up in the Testing view, grouped platform →
+difficulty → problem → language. Run one, run a group, or run all. Failures show
+the output from the solution's own test helper. There is also a Debug profile,
+for one solution at a time.
+
+**Debug Current Solution.** Builds the debug config from the open file, so you
+do not add one to `.vscode/launch.json` for every new solution. Works for
+Python, Java, JavaScript, and C++. For Go and Rust it tells you which extension
+is missing instead of failing quietly.
+
+**Buttons in the editor.** Every solution file gets `Run`, `Debug` and
+`Complexity` links above the code, so you do not need the command palette.
+Complexity only shows for Python and Java, since that is all `complexity.py`
+measures. Turn the links off with `solvebench.showCodeLens`.
+
+**Solve count in the status bar.** Counts problems rather than files, so one
+problem solved in two languages counts once. Click it for the breakdown.
+
+**Complexity chart.** The Complexity command opens a panel showing the measured
+points, the Big-O class that fitted best, and that class's neighbours scaled the
+same way. Drag to pan, `Ctrl`+scroll or the `-` `+` buttons to zoom, `Fit` to go
+back. The `Log` scale is the quickest check: every growth class is a straight
+line on log axes, so the one your points lie along is the real answer. Colours
+are picked in the panel and remembered.
+
+Hover a curve and it tells you which class it is, with its value at that point,
+and dims the others so there is no doubt which line you are reading. The legend
+rows do the same. Hovering elsewhere reports the nearest measured point. If the points track a neighbour more closely than the winner, the
+verdict deserves suspicion. The y axis follows your measurements, so a
+neighbour that runs off the top simply does not fit.
+
+Light and dark each get their own colours, picked for colour-vision-deficiency
+separation and contrast rather than by eye. Line style carries the same
+information as colour, so the chart still reads without it. Override the two
+series colours with `solvebench.chartMeasuredColor` and
+`solvebench.chartFittedColor`.
+
+**Commands** (all start with `solvebench:` in the command palette):
+
+| Command | Calls |
+| --- | --- |
+| New Solution | `new.py`, asks for a language and a URL or path, then opens the file |
+| Run Current Solution | `run.py <folder>` — every language the problem is solved in |
+| Debug Current Solution | starts a debug session for the open file |
+| Run All Solutions | `run.py` |
+| Estimate Complexity of Current Solution | `complexity.py`, drawn as a chart (Python and Java only) |
+| Show Stats | `run.py --stats` |
+| Refresh Solution List | lists the solutions again |
+
+## Settings
+
+| Setting | Default | What it does |
+| --- | --- | --- |
+| `solvebench.pythonPath` | `""` | Which Python to use. Empty means find one: `.venv`, then the interpreter the Python extension has picked, then `python3` on PATH. |
+| `solvebench.runInContainer` | `false` | Use `./run.sh` (Docker or Podman) for Run All and Run Current. The test panel always runs natively, because starting a container for every run is too slow. |
+| `solvebench.showCodeLens` | `true` | Show the Run / Debug / Complexity links above the code. |
+| `solvebench.chartMeasuredColor` | `""` | Colour of the measured line in the complexity chart. A hex (`#2a78d6`) or `var(--vscode-charts-blue)`. Empty uses the validated palette. |
+| `solvebench.chartFittedColor` | `""` | Colour of the fitted Big-O curve. Same accepted values. |
+
+## Notes
+
+The extension only starts in a folder that has `run.py` in it, so it stays off
+in your other projects.
+
+It does not install the language extensions for you. Requiring all six would
+install five useless ones for someone who only writes Python. Each debug config
+checks for the one it needs and offers to install it then.

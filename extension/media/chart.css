@@ -1,0 +1,243 @@
+/*
+ * Styles for the complexity view. Loaded by both the VS Code webview and the
+ * localhost preview, so it must not assume either one.
+ *
+ * Colours: light values are the default; dark is applied by the class VS Code
+ * puts on the webview body, by an explicit data-theme on the preview, and by
+ * the OS setting as a fallback. The explicit choices win both ways.
+ */
+
+:root {
+  --sb-measured: #2a78d6;
+  --sb-fitted: #eb6834;
+  --sb-reference: #9a9a94;
+
+  /* The preview supplies these; in VS Code the --vscode-* values win below. */
+  --sb-bg: #fcfcfb;
+  --sb-fg: #1a1a19;
+  --sb-muted: #6a6a66;
+  --sb-border: #d8d8d4;
+  --sb-panel: #f2f2ef;
+  --sb-font: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --sb-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --sb-warn: #8a6100;
+}
+
+@media (prefers-color-scheme: dark) {
+  body:not(.vscode-light):not(.vscode-high-contrast-light):not([data-theme="light"]) {
+    --sb-measured: #3987e5;
+    --sb-fitted: #d95926;
+    --sb-reference: #7a7a74;
+    --sb-bg: #1a1a19;
+    --sb-fg: #e6e6e1;
+    --sb-muted: #9d9d97;
+    --sb-border: #3c3c3a;
+    --sb-panel: #242423;
+    --sb-warn: #cca700;
+  }
+}
+
+body.vscode-dark,
+body.vscode-high-contrast,
+body[data-theme="dark"] {
+  --sb-measured: #3987e5;
+  --sb-fitted: #d95926;
+  --sb-reference: #7a7a74;
+  --sb-bg: #1a1a19;
+  --sb-fg: #e6e6e1;
+  --sb-muted: #9d9d97;
+  --sb-border: #3c3c3a;
+  --sb-panel: #242423;
+  --sb-warn: #cca700;
+}
+
+/* Inside VS Code the editor's own colours take over the surface and text. */
+body.vscode-light,
+body.vscode-dark,
+body.vscode-high-contrast,
+body.vscode-high-contrast-light {
+  --sb-bg: var(--vscode-editor-background);
+  --sb-fg: var(--vscode-editor-foreground);
+  --sb-muted: var(--vscode-descriptionForeground);
+  --sb-border: var(--vscode-panel-border);
+  --sb-panel: var(--vscode-editorWidget-background);
+  --sb-font: var(--vscode-font-family);
+  --sb-mono: var(--vscode-editor-font-family);
+  --sb-warn: var(--vscode-editorWarning-foreground);
+}
+
+body {
+  margin: 0;
+  padding: 16px 20px 28px;
+  font-family: var(--sb-font);
+  color: var(--sb-fg);
+  background: var(--sb-bg);
+}
+
+h1 { font-size: 1.25rem; margin: 0 0 2px; }
+h2 { font-size: 1rem; margin: 0; font-weight: 600; }
+code { font-family: var(--sb-mono); }
+.sub { color: var(--sb-muted); font-size: .85rem; margin: 0 0 4px; }
+.verdict { font-size: 1.05rem; margin: 12px 0 2px; }
+.verdict b { font-weight: 600; }
+
+.swatch {
+  display: inline-block; width: 9px; height: 9px; border-radius: 2px;
+  margin-right: 5px;
+}
+.swatch.m { background: var(--sb-measured); }
+.swatch.f { background: var(--sb-fitted); }
+
+/* ---- controls -------------------------------------------------------- */
+
+.controls {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 10px 22px;
+  background: var(--sb-panel);
+  border: 1px solid var(--sb-border);
+  border-radius: 6px;
+  padding: 9px 12px;
+  margin: 14px 0 4px;
+  font-size: .8rem;
+}
+.controls .group { display: flex; align-items: center; gap: 7px; }
+.ctlLabel {
+  color: var(--sb-muted); font-size: .7rem; text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+/* A pair of buttons where the active one is filled: the state is the look,
+   so there is nothing to guess about which mode is on. */
+.segmented { display: inline-flex; border: 1px solid var(--sb-border); border-radius: 5px; overflow: hidden; }
+.segmented button {
+  font: inherit; font-size: .8rem; line-height: 1.6;
+  color: var(--sb-fg); background: transparent;
+  border: 0; border-right: 1px solid var(--sb-border);
+  padding: 1px 12px; cursor: pointer;
+}
+.segmented button:last-child { border-right: 0; }
+.segmented button:hover { background: color-mix(in srgb, var(--sb-fg) 8%, transparent); }
+.segmented button[aria-pressed="true"] {
+  background: var(--sb-measured); color: #fff;
+}
+
+.colorPick {
+  display: inline-flex; align-items: center; gap: 5px;
+  cursor: pointer; color: var(--sb-muted);
+}
+.colorPick input[type="color"] {
+  width: 24px; height: 18px; padding: 0; border: 1px solid var(--sb-border);
+  border-radius: 3px; background: none; cursor: pointer;
+}
+
+.controls button:not(.segmented button) {
+  font: inherit; font-size: .8rem;
+  color: var(--sb-fg); background: transparent;
+  border: 1px solid var(--sb-border); border-radius: 4px;
+  padding: 2px 10px; cursor: pointer;
+}
+.controls button:not(.segmented button):hover { border-color: var(--sb-measured); }
+.controls .spacer, .chartHead .spacer { flex: 1 1 auto; }
+
+/* ---- chart ----------------------------------------------------------- */
+
+.chartHead {
+  display: flex; align-items: center; gap: 10px;
+  margin: 26px 0 4px; max-width: 940px;
+}
+.chartHead .zoomState { font-size: .75rem; color: var(--sb-muted); }
+
+/* Zoom is a visible control, not only a scroll gesture. */
+.zoomBar { display: inline-flex; border: 1px solid var(--sb-border); border-radius: 5px; overflow: hidden; }
+.zoomBar button {
+  font: inherit; font-size: .8rem; line-height: 1.5;
+  min-width: 28px;
+  color: var(--sb-fg); background: transparent;
+  border: 0; border-right: 1px solid var(--sb-border);
+  padding: 1px 8px; cursor: pointer;
+}
+.zoomBar button:last-child { border-right: 0; }
+.zoomBar button:hover { background: color-mix(in srgb, var(--sb-fg) 10%, transparent); }
+.zoomBar button:disabled { color: var(--sb-muted); opacity: .45; cursor: default; background: none; }
+
+.chartBox { position: relative; max-width: 940px; }
+.chart {
+  width: 100%; height: auto; display: block;
+  touch-action: none;
+  /* Dragging pans the chart; without this it also selects the page text. */
+  user-select: none; -webkit-user-select: none;
+  cursor: grab;
+}
+.chart.panning { cursor: grabbing; }
+
+.chartHint {
+  font-size: .72rem; color: var(--sb-muted);
+  margin: 4px 0 0; max-width: 940px;
+}
+.chartHint kbd {
+  font-family: var(--sb-mono); font-size: .95em;
+  border: 1px solid var(--sb-border); border-bottom-width: 2px;
+  border-radius: 3px; padding: 0 4px;
+}
+
+.grid line { stroke: var(--sb-border); stroke-width: 1; }
+.axis { stroke: var(--sb-fg); stroke-width: 1; opacity: .55; }
+.measured { fill: none; stroke: var(--sb-measured); stroke-width: 2; stroke-linejoin: round; }
+/* A ring in the surface colour keeps dots readable where a curve crosses. */
+.dot { fill: var(--sb-measured); stroke: var(--sb-bg); stroke-width: 2; }
+.fit { fill: none; stroke: var(--sb-fitted); stroke-width: 2; stroke-dasharray: 7 4; }
+.ref { fill: none; stroke: var(--sb-reference); stroke-width: 1.25; stroke-dasharray: 2 4; }
+.hitTarget { fill: transparent; }
+
+/* A 1px dotted curve is impossible to hover, so each one also gets a wide
+   invisible path. pointer-events: stroke means only the band around the line
+   catches the cursor, not the whole bounding box. */
+.hit {
+  fill: none; stroke: transparent; stroke-width: 14;
+  pointer-events: stroke;
+}
+.legendHit { fill: transparent; }
+.legendItem { cursor: pointer; }
+.chart.curveHover { cursor: pointer; }
+
+/* Hovering one curve brings it forward and pushes the others back, so there is
+   no doubt which line the tooltip is describing. */
+.curveOn {
+  stroke-width: 3;
+  stroke-dasharray: none;
+  opacity: 1;
+}
+text.curveOn { stroke: none; fill: var(--sb-fg); font-weight: 600; }
+.curveOff { opacity: .22; }
+text.curveOff { opacity: .35; }
+
+text { fill: var(--sb-fg); }
+/* Text keeps text colours; the coloured mark beside it carries identity. */
+.tick, .legend { font-size: 10px; fill: var(--sb-muted); }
+.axisLabel { font-size: 11px; fill: var(--sb-muted); }
+
+.tooltip {
+  position: absolute; pointer-events: none; opacity: 0;
+  transform: translate(-50%, -100%);
+  background: var(--sb-panel);
+  border: 1px solid var(--sb-border);
+  border-radius: 4px; padding: 5px 8px;
+  font-size: .75rem; white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .28);
+  transition: opacity .08s linear;
+}
+.tooltip.on { opacity: 1; }
+.tooltip .k { color: var(--sb-muted); }
+.tooltip b { font-weight: 600; }
+.tooltip .tipMeasured { color: var(--sb-measured); }
+.tooltip .tipFit { color: var(--sb-fitted); }
+.tooltip .tipRef { color: var(--sb-fg); }
+
+/* ---- table & notes --------------------------------------------------- */
+
+table { border-collapse: collapse; margin-top: 8px; font-size: .85rem; }
+th, td { padding: 3px 16px 3px 0; text-align: right; }
+th { color: var(--sb-muted); font-weight: 600; }
+td { font-variant-numeric: tabular-nums; }
+
+.note, .warn { font-size: .8rem; color: var(--sb-muted); margin-top: 18px; max-width: 74ch; line-height: 1.5; }
+.warn { color: var(--sb-warn); }
