@@ -56,7 +56,7 @@ export function registerCommands(
     root: vscode.Uri,
     tests: SolutionTests
 ): void {
-    const complexityView = new ComplexityView();
+    const complexityView = new ComplexityView(context.extensionUri);
     context.subscriptions.push(complexityView);
 
     const register = (id: string, run: (...args: any[]) => any) => {

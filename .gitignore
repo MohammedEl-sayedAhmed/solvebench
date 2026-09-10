@@ -39,3 +39,6 @@ extension/*.vsix
 
 # LinkedIn marketing assets
 linkedin-carousel/
+
+# Playwright MCP scratch output
+.playwright-mcp/

@@ -109,7 +109,10 @@
   "scripts": {
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
-    "package": "npx --yes @vscode/vsce package --no-dependencies"
+    "package": "npx --yes @vscode/vsce package --no-dependencies",
+    "preview": "npm run compile && node preview/serve.js",
+    "test": "npm run compile && node --test \"test/**/*.test.js\"",
+    "test:unit": "node --test \"test/{debug,tests,page,chart}.test.js\""
   },
   "devDependencies": {
     "@types/node": "^20.11.0",

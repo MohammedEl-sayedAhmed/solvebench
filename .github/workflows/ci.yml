@@ -39,3 +39,53 @@ jobs:
 
       - name: Run all solutions
         run: python run.py
+
+      - name: Check the JSON contract the extension relies on
+        run: python scripts/check_json_contract.py
+
+  extension:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install extension dev dependencies
+        working-directory: extension
+        run: npm ci
+
+      - name: Type-check
+        working-directory: extension
+        run: npx tsc -p ./ --noEmit
+
+      # Covers the extension's own logic plus the contract it has with run.py
+      # and complexity.py, which is what the test panel depends on. Java is set
+      # up above because two_sum is solved in Java as well as Python.
+      - name: Test
+        working-directory: extension
+        run: npm test
+
+      - name: Package the extension
+        working-directory: extension
+        run: npm run package
+
+      - name: Upload the vsix
+        uses: actions/upload-artifact@v4
+        with:
+          name: solvebench-vsix
+          path: extension/*.vsix
+          if-no-files-found: error

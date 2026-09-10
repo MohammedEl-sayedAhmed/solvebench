@@ -5,6 +5,25 @@ calls `run.py`, `new.py`, and `complexity.py` and shows what comes back.
 
 See [PLAN.md](PLAN.md) for what is built, what is left out, and why.
 
+## Preview the chart without installing
+
+```bash
+cd extension
+npm install
+npm run preview        # http://127.0.0.1:5178
+```
+
+This runs the real `complexity.py` and serves the same page the webview shows,
+using the same `media/chart.css` and `media/chart.js`. Edit either and reload.
+Pass a different problem with `npm run preview -- leetcode/medium/three_sum`.
+
+## Tests
+
+```bash
+npm test               # 77 tests, also what CI runs
+npm run test:unit      # the ones that do not need Python
+```
+
 ## Build and install
 
 ```bash
@@ -46,7 +65,10 @@ problem solved in two languages counts once. Click it for the breakdown.
 
 **Complexity chart.** The Complexity command opens a panel showing the measured
 points, the Big-O class that fitted best, and that class's neighbours scaled the
-same way. If the points track a neighbour more closely than the winner, the
+same way. Drag to pan, `Ctrl`+scroll or the `-` `+` buttons to zoom, `Fit` to go
+back. The `Log` scale is the quickest check: every growth class is a straight
+line on log axes, so the one your points lie along is the real answer. Colours
+are picked in the panel and remembered. If the points track a neighbour more closely than the winner, the
 verdict deserves suspicion. The y axis follows your measurements, so a
 neighbour that runs off the top simply does not fit.
 
