@@ -239,6 +239,7 @@
     };
 
     Chart.prototype.render = function () {
+        var self = this;
         var s = this.spec;
         var b = this.bounds();
         var sc = this.scales(b);
@@ -289,13 +290,22 @@
         }
 
         var clipped = ['<g clip-path="url(#clip-' + s.id + ')">'];
+        var hitPaths = [];
+        // Remember each curve's scale factor: the hover tooltip reads the
+        // curve's value at the cursor from it.
+        this.curves = {};
         drawn.forEach(function (name, idx) {
             var model = MODELS.find(function (m) { return m.name === name; });
             var c = fitScale(s.sizes, s.values, model.f);
+            self.curves[name] = { model: model, c: c };
             var d = samples.map(function (n, j) {
                 return (j ? 'L' : 'M') + sc.x(n).toFixed(1) + ',' + sc.y(c * model.f(n)).toFixed(1);
             }).join(' ');
-            clipped.push('<path class="' + (idx === 0 ? 'fit' : 'ref') + '" d="' + d + '"/>');
+            clipped.push('<path class="' + (idx === 0 ? 'fit' : 'ref') +
+                '" data-curve="' + name + '" d="' + d + '"/>');
+            // A 1px dotted line is far too thin to hover, so each curve also
+            // gets a wide invisible path that only its stroke catches.
+            hitPaths.push('<path class="hit" data-hit="' + name + '" d="' + d + '"/>');
         });
 
         clipped.push('<path class="measured" d="' + s.sizes.map(function (n, i) {
@@ -307,6 +317,7 @@
         });
         clipped.push('</g>');
         out.push(clipped.join(''));
+        self.hitPaths = hitPaths;
 
         // legend
         var lx = PLOT.left + sc.innerW + 12;
@@ -314,9 +325,15 @@
         out.push('<text class="legend" x="' + (lx + 24) + '" y="' + (PLOT.top + 14) + '">measured</text>');
         drawn.forEach(function (name, idx) {
             var ly = PLOT.top + 30 + idx * 18;
-            out.push('<line class="' + (idx === 0 ? 'fit' : 'ref') + '" x1="' + lx +
-                '" y1="' + (ly - 4) + '" x2="' + (lx + 18) + '" y2="' + (ly - 4) + '"/>');
-            out.push('<text class="legend" x="' + (lx + 24) + '" y="' + ly + '">' + name + '</text>');
+            out.push('<g class="legendItem" data-hit="' + name + '">');
+            // A box behind each entry, so the whole row is hoverable.
+            out.push('<rect class="legendHit" x="' + (lx - 2) + '" y="' + (ly - 13) +
+                '" width="112" height="17"/>');
+            out.push('<line class="' + (idx === 0 ? 'fit' : 'ref') + '" data-curve="' + name +
+                '" x1="' + lx + '" y1="' + (ly - 4) + '" x2="' + (lx + 18) + '" y2="' + (ly - 4) + '"/>');
+            out.push('<text class="legend" data-curve="' + name + '" x="' + (lx + 24) +
+                '" y="' + ly + '">' + name + '</text>');
+            out.push('</g>');
         });
 
         out.push('<text class="axisLabel" x="' + (PLOT.left + sc.innerW / 2) + '" y="' +
@@ -326,16 +343,70 @@
             (PLOT.top + sc.innerH / 2) + ') rotate(-90)" text-anchor="middle">' +
             s.yLabel + (log ? ' — log scale' : '') + '</text>');
 
-        // one transparent rect on top, so pointer events have a target
+        // one transparent rect, so pointer events have a target anywhere in the plot
         out.push('<rect class="hitTarget" x="' + PLOT.left + '" y="' + PLOT.top +
             '" width="' + sc.innerW + '" height="' + sc.innerH + '"/>');
+        // ...and the curve hit paths above it, so a curve wins over the rect
+        out.push('<g clip-path="url(#clip-' + s.id + ')">' + hitPaths.join('') + '</g>');
 
         this.svg.innerHTML = out.join('');
+        this.hovered = null;
         this.sc = sc;
         this.b = b;
         this.zoomState.textContent = this.view ? 'zoomed' : '';
         var bar = document.querySelector('.zoomBar [data-zoom="' + s.id + '"][data-act="fit"]');
         if (bar) { bar.disabled = !this.view; }
+    };
+
+    /** Position the tooltip from svg coordinates. */
+    Chart.prototype.placeTooltip = function (svgX, svgY) {
+        var r = this.svg.getBoundingClientRect();
+        this.tooltip.style.left = (svgX / PLOT.w) * r.width + 'px';
+        this.tooltip.style.top = ((svgY / PLOT.h) * r.height - 10) + 'px';
+        this.tooltip.classList.add('on');
+    };
+
+    /** Hovering a curve: say which growth class it is, and its value here. */
+    Chart.prototype.showCurve = function (name, p) {
+        var entry = this.curves[name];
+        if (!entry) { return; }
+        this.highlight(name);
+
+        var isFit = name === this.spec.fitted;
+        var inPlot = p.x >= PLOT.left && p.x <= PLOT.w - PLOT.right;
+        var n = inPlot ? this.sc.xInv(p.x) : this.spec.sizes[this.spec.sizes.length - 1];
+        var value = entry.c * entry.model.f(n);
+
+        this.tooltip.innerHTML =
+            '<b class="' + (isFit ? 'tipFit' : 'tipRef') + '">' + name + '</b>' +
+            (isFit ? ' <span class="k">best fit</span>' : '') +
+            '<br><span class="k">at n</span> ' + Math.round(n).toLocaleString('en-US') +
+            '<br><span class="k">' + this.spec.yLabel + '</span> ' + shortNum(value);
+
+        this.placeTooltip(inPlot ? p.x : PLOT.left + this.sc.innerW, this.sc.y(value));
+    };
+
+    /** Hovering the plot: the nearest measured point. */
+    Chart.prototype.showPoint = function (p) {
+        var s = this.spec;
+        var i = this.nearest(this.sc.xInv(p.x));
+        this.tooltip.innerHTML =
+            '<b class="tipMeasured">measured</b>' +
+            '<br><span class="k">n</span> ' + s.sizes[i].toLocaleString('en-US') +
+            '<br><span class="k">' + s.yLabel + '</span> ' + shortNum(s.values[i]);
+        this.placeTooltip(this.sc.x(s.sizes[i]), this.sc.y(s.values[i]));
+    };
+
+    /** Pull one curve forward and push the rest back. null clears it. */
+    Chart.prototype.highlight = function (name) {
+        if (this.hovered === name) { return; }
+        this.hovered = name;
+        this.svg.querySelectorAll('[data-curve]').forEach(function (el) {
+            var mine = el.getAttribute('data-curve') === name;
+            el.classList.toggle('curveOn', Boolean(name) && mine);
+            el.classList.toggle('curveOff', Boolean(name) && !mine);
+        });
+        this.svg.classList.toggle('curveHover', Boolean(name));
     };
 
     Chart.prototype.nearest = function (valueX) {
@@ -364,25 +435,30 @@
         }
 
         svg.addEventListener('pointermove', function (evt) {
+            if (dragging) {
+                return;                      // panning, not inspecting
+            }
             var p = toSvg(evt);
+            // A curve (or its legend row) under the cursor names itself. This
+            // is the only way to tell the faint neighbour lines apart.
+            var over = evt.target && evt.target.closest
+                ? evt.target.closest('[data-hit]')
+                : null;
+            if (over) {
+                self.showCurve(over.getAttribute('data-hit'), p);
+                return;
+            }
+            self.highlight(null);
             if (p.x < PLOT.left || p.x > PLOT.w - PLOT.right) {
                 self.tooltip.classList.remove('on');
                 return;
             }
-            var i = self.nearest(self.sc.xInv(p.x));
-            var s = self.spec;
-            self.tooltip.innerHTML =
-                '<span class="k">n</span> <b>' + s.sizes[i].toLocaleString('en-US') +
-                '</b><br><span class="k">' + s.yLabel + '</span> <b>' +
-                shortNum(s.values[i]) + '</b>';
-            var r = svg.getBoundingClientRect();
-            self.tooltip.style.left = (self.sc.x(s.sizes[i]) / PLOT.w) * r.width + 'px';
-            self.tooltip.style.top = ((self.sc.y(s.values[i]) / PLOT.h) * r.height - 10) + 'px';
-            self.tooltip.classList.add('on');
+            self.showPoint(p);
         });
 
         svg.addEventListener('pointerleave', function () {
             self.tooltip.classList.remove('on');
+            self.highlight(null);
         });
 
         // Wheel zoom needs Ctrl (or Cmd). A bare wheel keeps scrolling the

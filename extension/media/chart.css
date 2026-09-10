@@ -186,8 +186,29 @@ code { font-family: var(--sb-mono); }
 .dot { fill: var(--sb-measured); stroke: var(--sb-bg); stroke-width: 2; }
 .fit { fill: none; stroke: var(--sb-fitted); stroke-width: 2; stroke-dasharray: 7 4; }
 .ref { fill: none; stroke: var(--sb-reference); stroke-width: 1.25; stroke-dasharray: 2 4; }
-.crosshair { stroke: var(--sb-muted); stroke-width: 1; stroke-dasharray: 3 3; }
 .hitTarget { fill: transparent; }
+
+/* A 1px dotted curve is impossible to hover, so each one also gets a wide
+   invisible path. pointer-events: stroke means only the band around the line
+   catches the cursor, not the whole bounding box. */
+.hit {
+  fill: none; stroke: transparent; stroke-width: 14;
+  pointer-events: stroke;
+}
+.legendHit { fill: transparent; }
+.legendItem { cursor: pointer; }
+.chart.curveHover { cursor: pointer; }
+
+/* Hovering one curve brings it forward and pushes the others back, so there is
+   no doubt which line the tooltip is describing. */
+.curveOn {
+  stroke-width: 3;
+  stroke-dasharray: none;
+  opacity: 1;
+}
+text.curveOn { stroke: none; fill: var(--sb-fg); font-weight: 600; }
+.curveOff { opacity: .22; }
+text.curveOff { opacity: .35; }
 
 text { fill: var(--sb-fg); }
 /* Text keeps text colours; the coloured mark beside it carries identity. */
@@ -207,6 +228,9 @@ text { fill: var(--sb-fg); }
 .tooltip.on { opacity: 1; }
 .tooltip .k { color: var(--sb-muted); }
 .tooltip b { font-weight: 600; }
+.tooltip .tipMeasured { color: var(--sb-measured); }
+.tooltip .tipFit { color: var(--sb-fitted); }
+.tooltip .tipRef { color: var(--sb-fg); }
 
 /* ---- table & notes --------------------------------------------------- */
 

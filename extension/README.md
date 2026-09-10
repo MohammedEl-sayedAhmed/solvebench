@@ -20,7 +20,7 @@ Pass a different problem with `npm run preview -- leetcode/medium/three_sum`.
 ## Tests
 
 ```bash
-npm test               # 77 tests, also what CI runs
+npm test               # 93 tests, also what CI runs
 npm run test:unit      # the ones that do not need Python
 ```
 
@@ -68,7 +68,11 @@ points, the Big-O class that fitted best, and that class's neighbours scaled the
 same way. Drag to pan, `Ctrl`+scroll or the `-` `+` buttons to zoom, `Fit` to go
 back. The `Log` scale is the quickest check: every growth class is a straight
 line on log axes, so the one your points lie along is the real answer. Colours
-are picked in the panel and remembered. If the points track a neighbour more closely than the winner, the
+are picked in the panel and remembered.
+
+Hover a curve and it tells you which class it is, with its value at that point,
+and dims the others so there is no doubt which line you are reading. The legend
+rows do the same. Hovering elsewhere reports the nearest measured point. If the points track a neighbour more closely than the winner, the
 verdict deserves suspicion. The y axis follows your measurements, so a
 neighbour that runs off the top simply does not fit.
 
