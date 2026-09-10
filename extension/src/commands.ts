@@ -2,6 +2,7 @@
 // exists in the repo.
 
 import * as vscode from 'vscode';
+import { ComplexityView, measure } from './complexity';
 import { problemId, solutionRef, startDebugging } from './debug';
 import { ProcessError, spawnCollect } from './exec';
 import { requirePython } from './python';
@@ -55,6 +56,9 @@ export function registerCommands(
     root: vscode.Uri,
     tests: SolutionTests
 ): void {
+    const complexityView = new ComplexityView();
+    context.subscriptions.push(complexityView);
+
     const register = (id: string, run: (...args: any[]) => any) => {
         context.subscriptions.push(vscode.commands.registerCommand(id, run));
     };
@@ -106,15 +110,10 @@ export function registerCommands(
             );
             return;
         }
-        const python = await requirePython(root);
-        if (!python) {
-            return;
+        const result = await measure(root, ref);
+        if (result) {
+            complexityView.show(result);
         }
-        const args = [python, 'complexity.py', problemId(ref)];
-        if (ref.language === 'java') {
-            args.push('--lang', 'java');
-        }
-        sendToTerminal(root, args);
     });
 
     register('solvebench.newSolution', () => newSolution(root, tests));

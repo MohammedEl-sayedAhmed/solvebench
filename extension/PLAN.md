@@ -70,11 +70,7 @@ folder. We can still publish later if we want to.
   extension works fine with the solutions where they are. It would also mean
   deleting working solutions, and that is not our call to make while changing
   tooling.
-- **Complexity chart.** `complexity.py --json` is done (Phase 6), so the
-  numbers are available now. Drawing them in a webview is still to do; the
-  complexity command prints to a terminal for the moment.
-- **Publishing to the Marketplace.** No account, icon, or release setup until we
-  have used the extension for a while.
+- **Publishing to the Marketplace.** Still not doing this yet. See below.
 - **Deleting `setup.sh`, `code.sh`, `teardown.sh`.** The extension makes the
   `.pst` folder unnecessary, but these scripts also help people who never open
   VS Code. Deleting them is a separate choice.
@@ -212,9 +208,23 @@ Done:
   java" hint to stdout, which corrupted the JSON. It is a hint, not data, so it
   goes to stderr now.
 
+- **Complexity chart.** The Complexity command opens a panel instead of
+  printing to a terminal. It draws the measured points, the class that fitted
+  best, and that class's neighbours, each scaled to the data the same way. That
+  answers the question the text output cannot: the estimator says O(n log n),
+  but do the points actually track O(n) more closely?
+
+  The chart is inline SVG with no scripts, so the webview runs with
+  `enableScripts: false` and a `default-src 'none'` policy. Colours come from
+  the `--vscode-*` theme variables, so it follows the editor theme.
+
+  `MODELS` and the log-space scale fit are mirrored from
+  `python/common/complexity.py`. That duplication is deliberate: the drawn curve
+  has to be the curve that actually won, not an approximation of it. A check
+  compares the TypeScript fit against Python's on real solutions.
+
 Still to do:
 
-- Complexity chart in a webview, drawing the points `--json` now returns
 - Offer to make a file when you paste a problem URL
 - Go and Rust debugging
 
@@ -231,12 +241,41 @@ This was there before the extension and is not related to it. It only showed up
 in VS Code, because running `pytest` from a terminal uses `testpaths` and is
 fine.
 
+## Publishing
+
+Still not doing it. No account, icon, or release setup until the extension has
+been used for a while.
+
 ## How we check it
 
 `run.py --json` and `--stats --json` have to be valid JSON, match the counts in
 the text output, and keep the same exit codes. The extension has to compile with
 `tsc` in strict mode.
 
-How it acts once loaded in VS Code needs a person to press F5 and look. That
-cannot be done from a terminal. So it is a manual step here, not something we
-say is tested.
+The parts that do not need VS Code are checked by loading the compiled code with
+a stub for the `vscode` module and feeding it real files from this repo:
+
+- Java class names match what `run.py` computes, for all 12 Java solutions.
+- Every solution's problem id selects its own solution in `run.py`, all 42.
+- `problemTitle` gives one label for both `two_sum` and `TwoSum`.
+- `solutionRef` skips `common/` helpers, root files and wrong extensions.
+- CodeLens anchors on `class Solution:` and `public class TwoSum {`.
+- The chart's Big-O fit agrees with `_best_fit` in Python, and its curves land
+  within about 1.2x of every measured point.
+- The chart's SVG has nothing clipped or off-canvas.
+
+What needs a person to look at it, and has been confirmed that way: the test
+panel tree, running a test, the CodeLens links, and the Complexity command.
+
+F5 does not work on a snap-installed VS Code: snap stops the app launching a
+second copy of itself, so the Extension Development Host window never opens and
+the debug session just sits there. Build the `.vsix` and install it into
+`.pst/extensions` instead:
+
+```bash
+cd extension && npm run compile && npm run package && cd ..
+code --extensions-dir "$PWD/.pst/extensions" \
+  --install-extension extension/solvebench-0.1.0.vsix --force
+```
+
+Then reload the window. `./code.sh` picks it up from there.

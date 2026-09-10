@@ -44,6 +44,11 @@ measures. Turn the links off with `solvebench.showCodeLens`.
 **Solve count in the status bar.** Counts problems rather than files, so one
 problem solved in two languages counts once. Click it for the breakdown.
 
+**Complexity chart.** The Complexity command opens a panel showing the measured
+points, the Big-O class that fitted best, and that class's neighbours scaled the
+same way. If the points track a neighbour more closely than the winner, the
+verdict deserves suspicion. It follows your editor theme.
+
 **Commands** (all start with `solvebench:` in the command palette):
 
 | Command | Calls |
@@ -52,7 +57,7 @@ problem solved in two languages counts once. Click it for the breakdown.
 | Run Current Solution | `run.py <folder>` — every language the problem is solved in |
 | Debug Current Solution | starts a debug session for the open file |
 | Run All Solutions | `run.py` |
-| Estimate Complexity of Current Solution | `complexity.py` (Python and Java only) |
+| Estimate Complexity of Current Solution | `complexity.py`, drawn as a chart (Python and Java only) |
 | Show Stats | `run.py --stats` |
 | Refresh Solution List | lists the solutions again |
 
