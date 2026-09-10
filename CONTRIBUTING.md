@@ -27,9 +27,39 @@ path relative to the solution).
 
 Runner, scaffolder, language helpers, setup/teardown, CI — PRs welcome. Please:
 
-- Keep it dependency-free where possible (the runner uses only the stdlib).
+- Keep it dependency-free where possible (the runner uses only the stdlib, and
+  the extension's tests use only `node --test`).
 - Run `python run.py` (or `./run.sh`) before pushing; CI runs the whole suite.
+- If you touched `extension/`, run `npm test` there too.
 - Match the existing style of nearby code.
+
+## Working on the VS Code extension
+
+[extension/](extension/) is a TypeScript companion that calls the Python tools.
+It has its own tests, and CI runs them as a second job.
+
+```bash
+cd extension
+npm install
+npm run preview     # serve the complexity chart on 127.0.0.1:5178 and iterate
+npm test            # unit tests + the contract with run.py / complexity.py
+npm run package     # build the .vsix
+```
+
+- `media/chart.js` and `media/chart.css` are loaded by both the webview and the
+  preview, so there is one renderer. Edit either and reload the preview page.
+- The Big-O models in `media/chart.js` mirror `MODELS` in
+  [python/common/complexity.py](python/common/complexity.py). If you change one,
+  change both — a test compares them.
+- Anything that must run outside VS Code (the preview, the tests) belongs in a
+  module with no `vscode` import, like `src/complexityPage.ts`.
+- `scripts/check_json_contract.py` guards the JSON that `run.py --json` and
+  `complexity.py --json` promise the extension. Changing either shape means
+  updating that script and `extension/test/cli.test.js`.
+
+`F5` does not work on a snap-installed VS Code — snap blocks the app from
+launching a second copy of itself, so the Extension Development Host never
+opens. Build the `.vsix` and install it into `.pst/extensions` instead.
 
 ## Adding a language
 

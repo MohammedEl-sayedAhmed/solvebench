@@ -27,6 +27,9 @@ containerized runner verifies everything on any OS.
   number, title, and difficulty filled in (any of the six languages).
 - 📈 **Complexity estimator** — `./run.sh complexity <problem>` empirically fits a
   solution's time & space to a Big-O class (Python and Java).
+- 🧩 **VS Code extension** — an optional companion in [extension/](extension/):
+  every solution in the Testing panel, Run/Debug/Complexity buttons above your
+  code, and the complexity fit as an interactive chart.
 
 ## Progress
 
@@ -90,6 +93,7 @@ Language first, then platform, then the platform's own grouping (difficulty, yea
 │   └── adventofcode/<year>/<day>/input.txt
 ├── templates/              # starter templates per language
 ├── scripts/                # generators (stats, index, profile) + build helpers
+├── extension/              # optional VS Code companion (see extension/README.md)
 ├── docs/                   # animated terminal demo (GitHub Pages)
 ├── run.py                  # polyglot test runner
 ├── new.py                  # scaffolder for new solutions (accepts problem URLs)
@@ -127,6 +131,8 @@ Everything lives in the repo root so the commands stay short. On Windows use the
 | `./teardown.sh` | Remove setup artifacts (`.pst/`, `.venv/`, the image) |
 | `./init.sh` | Fork clean-slate: clear examples, set your handles |
 | `./run.sh complexity <problem>` | Estimate a solution's time/space Big-O empirically |
+| `cd extension && npm run preview` | Preview the complexity chart in a browser |
+| `cd extension && npm test` | Run the extension's tests |
 
 ## Quick start
 
@@ -266,6 +272,45 @@ Results are **empirical** (a fit, not a proof) — defaults are adversarial wher
 possible (e.g. palindromic strings so early-exit checks still scan fully), but
 worst cases with tricky shapes deserve a `complexity_input`. Demo on known
 cases: `python python/common/complexity.py`.
+
+## VS Code extension (optional)
+
+[extension/](extension/) is a companion for this repo. The Python tools still do
+the work — it calls `run.py`, `new.py`, and `complexity.py` and shows the results
+in the editor.
+
+- **Testing panel** — every solution, grouped platform → difficulty → problem →
+  language. One problem solved in Python and Java shows both under one label.
+- **Buttons above your code** — Run, Debug, and Complexity on each solution, so
+  you don't need the command palette.
+- **Debug any solution** — the config is built from the open file, so nothing has
+  to be added to `.vscode/launch.json` per solution. Python, Java, JavaScript,
+  and C++.
+- **Complexity as a chart** — your measured points against the Big-O class that
+  fits best and its neighbours. Hover a line to see which class it is. Log scale
+  makes every class a straight line, so the one your points follow is the answer.
+
+```bash
+cd extension
+npm install
+npm run preview        # look at the chart in a browser, no install needed
+npm test               # 93 tests, also what CI runs
+npm run package        # build solvebench-0.1.0.vsix
+```
+
+Install the `.vsix` into the repo-local extension folder that
+[code.sh](code.sh) already uses, so it never touches your global VS Code:
+
+```bash
+code --extensions-dir "$PWD/.pst/extensions" \
+  --install-extension extension/solvebench-0.1.0.vsix --force
+./code.sh
+```
+
+`./teardown.sh` removes it with everything else under `.pst/`.
+
+See [extension/README.md](extension/README.md) for the settings and
+[extension/PLAN.md](extension/PLAN.md) for what was built and what was left out.
 
 ## Solutions
 
