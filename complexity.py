@@ -5,6 +5,7 @@
     ./run.sh complexity leetcode/easy/two_sum          # same, via the wrapper
     python complexity.py three_sum --max-seconds 1     # cap slow runs sooner
     python complexity.py min_stack --method getMin     # pick the method yourself
+    python complexity.py two_sum --json                # measurements as JSON
 
 How it works
 ------------
@@ -29,6 +30,7 @@ from __future__ import annotations
 
 import argparse
 import importlib.util
+import json
 import inspect
 import random
 import re
@@ -83,7 +85,9 @@ def find_solution_file(fragment: str, lang: str | None) -> tuple[Path, str]:
     jv = _search("java", fragment)
     if py is not None:
         if jv is not None:
-            print(f"(also solved in java — measure it with:  --lang java)")
+            # stderr: it's a hint, not data, so it can't corrupt --json output.
+            print("(also solved in java — measure it with:  --lang java)",
+                  file=sys.stderr)
         return py, "py"
     if jv is not None:
         return jv, "java"
@@ -235,10 +239,13 @@ def run_java(path: Path, args) -> int:
         die(err or "harness failed")
 
     sizes_out, times, spaces = [], [], []
+    inputs_desc = ""
     for ln in meas.stdout.splitlines():
         parts = ln.split()
         if parts[0] == "INPUTS":
-            print(f"function: {name}  ·  inputs: {ln[7:]}")
+            inputs_desc = ln[7:]
+            if not args.json:
+                print(f"function: {name}  ·  inputs: {inputs_desc}")
         elif parts[0] == "DATA":
             n, t_ns, alloc = int(parts[1]), int(parts[2]), int(parts[3])
             sizes_out.append(n)
@@ -246,17 +253,20 @@ def run_java(path: Path, args) -> int:
             if alloc >= 0:
                 spaces.append(float(alloc))
         elif parts[0] == "STOP":
-            print(f"(stopping after n={parts[1]}: the next size would exceed the "
-                  f"{args.max_seconds:.2f}s cap)")
-    report(sizes_out, times, spaces or None, name, space_label="alloc (KB)")
-    return 0
+            if not args.json:
+                print(f"(stopping after n={parts[1]}: the next size would exceed the "
+                      f"{args.max_seconds:.2f}s cap)")
+    result = report(sizes_out, times, spaces or None, name,
+                    space_label="alloc (KB)", quiet=args.json)
+    return {"function": name, "inputs": inputs_desc, **result}
 
 
-def run_python(path: Path, args) -> int:
+def run_python(path: Path, args) -> dict:
     mod = load_module(path)
     name, fn = pick_callable(mod, path.stem, args.method)
     builder, how = make_input_builder(mod, fn)
-    print(f"function: {name}  ·  inputs: {how}")
+    if not args.json:
+        print(f"function: {name}  ·  inputs: {how}")
 
     sizes = [int(s) for s in args.sizes.split(",")] if args.sizes else None
 
@@ -269,9 +279,10 @@ def run_python(path: Path, args) -> int:
             f"Its input probably has constraints the generator doesn't know — add a\n"
             f"complexity_input(n) function to {path.name} returning valid args for size n.")
 
-    estimate(fn, builder, sizes=sizes or (500, 1000, 2000, 4000, 8000),
-             repeat=args.repeat, label=name, max_seconds=args.max_seconds)
-    return 0
+    result = estimate(fn, builder, sizes=sizes or (500, 1000, 2000, 4000, 8000),
+                      repeat=args.repeat, label=name, max_seconds=args.max_seconds,
+                      quiet=args.json)
+    return {"function": name, "inputs": how, **result}
 
 
 def main() -> int:
@@ -285,12 +296,27 @@ def main() -> int:
     ap.add_argument("--repeat", type=int, default=3, help="timing repeats per size (default 3)")
     ap.add_argument("--max-seconds", type=float, default=2.0,
                     help="stop growing sizes once one run exceeds this (default 2.0)")
+    ap.add_argument("--json", action="store_true",
+                    help="emit the measurements as JSON on stdout instead of a table")
     args = ap.parse_args()
 
     lang = {"python": "py"}.get(args.lang, args.lang)
     path, lang = find_solution_file(args.problem, lang)
-    print(f"solution: {path.relative_to(REPO)}")
-    return run_java(path, args) if lang == "java" else run_python(path, args)
+    if not args.json:
+        print(f"solution: {path.relative_to(REPO)}")
+
+    result = run_java(path, args) if lang == "java" else run_python(path, args)
+
+    if args.json:
+        # stdout stays pure JSON so a caller can parse it (the VS Code
+        # extension plots these points).
+        print(json.dumps({
+            "schema": 1,
+            "solution": path.relative_to(REPO).as_posix(),
+            "lang": lang,
+            **result,
+        }, indent=2))
+    return 0
 
 
 if __name__ == "__main__":
