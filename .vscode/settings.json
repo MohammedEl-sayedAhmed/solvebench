@@ -1,7 +1,8 @@
 {
   "python.analysis.extraPaths": ["python"],
   "python.testing.pytestEnabled": true,
-  "python.testing.pytestArgs": ["."],
+  "//pytest": "Must match testpaths in pyproject.toml. With [\".\"] pytest collects scripts/ too, and python_files=[\"*.py\"] makes it import build_java.py, whose module-level sys.exit(0) crashes collection with INTERNALERROR.",
+  "python.testing.pytestArgs": ["python"],
   "java.project.sourcePaths": ["java"],
   "java.server.launchMode": "Standard",
   "//": "pom.xml gives the language server a real Maven project (sourceDirectory=java), so it compiles all of java/ together — common.TestFramework resolves and the Run|Debug CodeLens over main() launches with -cp target/classes. If the CodeLens misbehaves after a pull, run 'Java: Clean Java Language Server Workspace' + reload. F5 ('Debug: Java solution (current file)') is the build-all fallback.",
