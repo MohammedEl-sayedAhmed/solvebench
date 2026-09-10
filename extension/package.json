@@ -78,6 +78,16 @@
           "type": "boolean",
           "default": true,
           "description": "Show Run / Debug / Complexity links above the code in a solution file."
+        },
+        "solvebench.chartMeasuredColor": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Colour of the measured data line in the complexity chart. A hex value (`#2a78d6`) or a theme variable (`var(--vscode-charts-blue)`). Empty uses the built-in palette, which is checked for colour-vision-deficiency separation and contrast in both light and dark themes. Anything that is not a hex or `var(--name)` is ignored."
+        },
+        "solvebench.chartFittedColor": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Colour of the fitted Big-O curve in the complexity chart. Same accepted values as `#solvebench.chartMeasuredColor#`."
         }
       }
     },

@@ -215,8 +215,29 @@ Done:
   but do the points actually track O(n) more closely?
 
   The chart is inline SVG with no scripts, so the webview runs with
-  `enableScripts: false` and a `default-src 'none'` policy. Colours come from
-  the `--vscode-*` theme variables, so it follows the editor theme.
+  `enableScripts: false` and a `default-src 'none'` policy. That rules out a
+  hover tooltip; the measurements table below the charts is what stands in for
+  it, which is fine at five or six points.
+
+  **Colours.** Blue for the measured data, orange for the fitted class, a
+  recessive neutral for the reference curves. Explicit hex, not
+  `--vscode-charts-*`, because those vary a lot between themes and some leave
+  them muddy. Each mode gets its own steps rather than a flip, and both were
+  validated for colour-vision-deficiency separation, chroma, lightness band and
+  3:1 contrast against their surface: worst pair CVD dE 24.7 light / 26.8 dark,
+  against a target of 8. Line style carries the same information as hue (solid
+  with dots / dashed / dotted) plus a legend, so nothing depends on colour
+  alone. `solvebench.chartMeasuredColor` and `solvebench.chartFittedColor`
+  override them; only a hex or `var(--name)` is accepted, since the value goes
+  into a `<style>` block.
+
+  **Scale.** The y axis follows the measured data, not the curves. Scaling to
+  include the curves let a steep neighbour like O(n^2) flatten the real
+  measurements into the bottom quarter of the plot -- the memory chart topped out
+  at 1,120 KB for data that peaked at 293. Curves are clipped to the plot box
+  instead, so one running off the top reads as "does not fit", which is the
+  useful signal. X labels are dropped when they would collide, because the sizes
+  grow geometrically on a linear axis.
 
   `MODELS` and the log-space scale fit are mirrored from
   `python/common/complexity.py`. That duplication is deliberate: the drawn curve

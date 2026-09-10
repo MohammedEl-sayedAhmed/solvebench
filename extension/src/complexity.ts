@@ -124,7 +124,8 @@ function svgChart(
     values: number[],
     fitted: string,
     yLabel: string,
-    toDisplay: (v: number) => number
+    toDisplay: (v: number) => number,
+    chartId: string
 ): string {
     if (sizes.length === 0) {
         return '<p class="muted">no data points</p>';
@@ -142,7 +143,12 @@ function svgChart(
     });
 
     const xMax = Math.max(...sizes);
-    const yMax = Math.max(...shown, ...curves.flatMap((c) => c.points)) * 1.08 || 1;
+    // Scale to the measured data, NOT to the curves. A steep neighbour such as
+    // O(n^2) can sit far above the data, and including it would flatten the
+    // measurements into a corner. Curves are clipped to the box instead: one
+    // running off the top is itself the useful signal.
+    const yMax = Math.max(...shown) * 1.15 || 1;
+    const decimals = yMax < 1 ? 3 : yMax < 10 ? 2 : yMax < 100 ? 1 : 0;
     const x = (n: number) => PLOT.left + (n / xMax) * innerW;
     const y = (v: number) => PLOT.top + innerH - (v / yMax) * innerH;
 
@@ -153,14 +159,22 @@ function svgChart(
         const value = (yMax * (4 - i)) / 4;
         grid.push(`<line x1="${PLOT.left}" y1="${gy}" x2="${PLOT.left + innerW}" y2="${gy}"/>`);
         labels.push(
-            `<text class="tick" x="${PLOT.left - 8}" y="${gy + 4}" text-anchor="end">${fmt(value)}</text>`
+            `<text class="tick" x="${PLOT.left - 8}" y="${gy + 4}" text-anchor="end">${tick(value, decimals)}</text>`
         );
     }
-    for (const n of sizes) {
+    // Sizes grow geometrically but the axis is linear, so the small ones bunch
+    // up on the left. Drop any label that would collide, keeping the last.
+    let lastLabelX = -Infinity;
+    sizes.forEach((n, i) => {
+        const px = x(n);
+        if (i !== sizes.length - 1 && px - lastLabelX < 34) {
+            return;
+        }
+        lastLabelX = px;
         labels.push(
-            `<text class="tick" x="${x(n)}" y="${PLOT.top + innerH + 18}" text-anchor="middle">${n}</text>`
+            `<text class="tick" x="${px}" y="${PLOT.top + innerH + 18}" text-anchor="middle">${n}</text>`
         );
-    }
+    });
 
     // The fitted class is first, so it gets the strong colour.
     const curveSvg = curves
@@ -192,12 +206,19 @@ function svgChart(
     return `
 <svg viewBox="0 0 ${PLOT.w} ${PLOT.h}" class="chart" role="img"
      aria-label="${esc(yLabel)} against input size, fitted ${esc(fitted)}">
+  <defs>
+    <clipPath id="plot-${chartId}">
+      <rect x="${PLOT.left}" y="${PLOT.top}" width="${innerW}" height="${innerH}"/>
+    </clipPath>
+  </defs>
   <g class="grid">${grid.join('')}</g>
   <line class="axis" x1="${PLOT.left}" y1="${PLOT.top}" x2="${PLOT.left}" y2="${PLOT.top + innerH}"/>
   <line class="axis" x1="${PLOT.left}" y1="${PLOT.top + innerH}" x2="${PLOT.left + innerW}" y2="${PLOT.top + innerH}"/>
-  ${curveSvg}
-  <path class="measured" d="${measuredLine}"/>
-  ${dots}
+  <g clip-path="url(#plot-${chartId})">
+    ${curveSvg}
+    <path class="measured" d="${measuredLine}"/>
+    ${dots}
+  </g>
   <circle class="dot" cx="${PLOT.left + innerW + 21}" cy="${PLOT.top + innerH - 6}" r="4"/>
   <text class="legend" x="${PLOT.left + innerW + 36}" y="${PLOT.top + innerH - 2}">measured</text>
   ${legend}
@@ -205,6 +226,14 @@ function svgChart(
   <text class="axisLabel" x="${PLOT.left + innerW / 2}" y="${PLOT.h - 4}" text-anchor="middle">input size (n)</text>
   <text class="axisLabel" transform="translate(14,${PLOT.top + innerH / 2}) rotate(-90)" text-anchor="middle">${esc(yLabel)}</text>
 </svg>`;
+}
+
+/** Axis ticks: one decimal count for the whole axis. */
+function tick(v: number, decimals: number): string {
+    return v.toLocaleString('en-US', {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals,
+    });
 }
 
 function fmt(v: number): string {
@@ -221,6 +250,59 @@ function fmt(v: number): string {
         return v.toFixed(1);
     }
     return v.toFixed(3);
+}
+
+/**
+ * Chart palette. Explicit hex rather than --vscode-charts-*, because those vary
+ * a lot between themes and some themes leave them muddy.
+ *
+ * Blue carries the measured data, orange the fitted class. Both modes are
+ * chosen for their own surface, not flipped: validated for colour-vision
+ * deficiency separation, chroma, lightness band and 3:1 contrast against the
+ * light (#fcfcfb) and dark (#1a1a19) surfaces. Worst-pair CVD dE 24.7 light /
+ * 26.8 dark, well past the >=8 target.
+ *
+ * Reference curves are a recessive neutral on purpose: they are context, below
+ * the data in the hierarchy, and are told apart by dash pattern and legend
+ * rather than by hue.
+ */
+const PALETTE = {
+    light: { measured: '#2a78d6', fitted: '#eb6834', reference: '#9a9a94' },
+    dark: { measured: '#3987e5', fitted: '#d95926', reference: '#7a7a74' },
+};
+
+/**
+ * Only a hex colour or a var(--name) reference gets through. These values land
+ * inside a <style> block, so anything else could close the rule and inject CSS.
+ */
+function safeColor(value: string): string | undefined {
+    const v = value.trim();
+    if (/^#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/.test(v)) {
+        return v;
+    }
+    if (/^var\(--[A-Za-z0-9-]+\)$/.test(v)) {
+        return v;
+    }
+    return undefined;
+}
+
+/** The palette, with any valid user overrides applied to both modes. */
+function palette(): typeof PALETTE {
+    const config = vscode.workspace.getConfiguration('solvebench');
+    const measured = safeColor(config.get<string>('chartMeasuredColor', ''));
+    const fitted = safeColor(config.get<string>('chartFittedColor', ''));
+    return {
+        light: {
+            measured: measured ?? PALETTE.light.measured,
+            fitted: fitted ?? PALETTE.light.fitted,
+            reference: PALETTE.light.reference,
+        },
+        dark: {
+            measured: measured ?? PALETTE.dark.measured,
+            fitted: fitted ?? PALETTE.dark.fitted,
+            reference: PALETTE.dark.reference,
+        },
+    };
 }
 
 function esc(s: string): string {
@@ -251,6 +333,7 @@ function table(result: ComplexityResult): string {
 }
 
 export function page(result: ComplexityResult): string {
+    const colors = palette();
     const spaceSection =
         result.spaces && result.space_class
             ? `<h2>Memory — ${esc(result.space_class)}</h2>` +
@@ -259,13 +342,14 @@ export function page(result: ComplexityResult): string {
                   result.spaces,
                   result.space_class,
                   'memory (KB)',
-                  (v) => v / 1024
+                  (v) => v / 1024,
+                  'space'
               )
             : '';
 
     const thin =
         result.sizes.length < 3
-            ? '<p class="warn">Fewer than 3 data points — the fit is unreliable. Try smaller --sizes.</p>'
+            ? '<p class="warn">Only a few data points, so the answer is not reliable. Try smaller sizes with <code>--sizes</code>.</p>'
             : '';
 
     return `<!DOCTYPE html>
@@ -276,6 +360,30 @@ export function page(result: ComplexityResult): string {
       content="default-src 'none'; style-src 'unsafe-inline';">
 <title>Complexity — ${esc(result.function)}</title>
 <style>
+  /*
+   * Light values are the default. Dark is applied two ways: the class VS Code
+   * puts on the webview body, and the OS setting as a fallback -- guarded so an
+   * explicit light theme still wins.
+   */
+  :root {
+    --sb-measured: ${colors.light.measured};
+    --sb-fitted: ${colors.light.fitted};
+    --sb-reference: ${colors.light.reference};
+  }
+  @media (prefers-color-scheme: dark) {
+    body:not(.vscode-light):not(.vscode-high-contrast-light) {
+      --sb-measured: ${colors.dark.measured};
+      --sb-fitted: ${colors.dark.fitted};
+      --sb-reference: ${colors.dark.reference};
+    }
+  }
+  body.vscode-dark,
+  body.vscode-high-contrast {
+    --sb-measured: ${colors.dark.measured};
+    --sb-fitted: ${colors.dark.fitted};
+    --sb-reference: ${colors.dark.reference};
+  }
+
   body {
     font-family: var(--vscode-font-family);
     color: var(--vscode-editor-foreground);
@@ -288,17 +396,24 @@ export function page(result: ComplexityResult): string {
   .sub { color: var(--vscode-descriptionForeground); font-size: .85rem; margin: 0 0 4px; }
   code { font-family: var(--vscode-editor-font-family); }
   .verdict { font-size: 1.05rem; margin: 12px 0 0; }
-  .verdict b { color: var(--vscode-charts-blue); }
+  .verdict b { color: var(--vscode-editor-foreground); font-weight: 600; }
+  .swatch {
+    display: inline-block; width: 9px; height: 9px; border-radius: 2px;
+    margin-right: 5px; vertical-align: baseline;
+  }
+  .swatch.m { background: var(--sb-measured); }
+  .swatch.f { background: var(--sb-fitted); }
   .chart { width: 100%; max-width: 680px; height: auto; display: block; margin: 4px 0 0; }
   .grid line { stroke: var(--vscode-panel-border); stroke-width: 1; }
   .axis { stroke: var(--vscode-editor-foreground); stroke-width: 1; opacity: .6; }
-  .measured { fill: none; stroke: var(--vscode-charts-blue); stroke-width: 2; }
-  .dot { fill: var(--vscode-charts-blue); }
-  .fit { fill: none; stroke: var(--vscode-charts-orange); stroke-width: 2; stroke-dasharray: 6 3; }
-  .ref { fill: none; stroke: var(--vscode-descriptionForeground); stroke-width: 1; stroke-dasharray: 2 3; opacity: .8; }
+  .measured { fill: none; stroke: var(--sb-measured); stroke-width: 2; stroke-linejoin: round; }
+  /* A ring in the surface colour keeps the dots readable where a curve crosses. */
+  .dot { fill: var(--sb-measured); stroke: var(--vscode-editor-background); stroke-width: 2; }
+  .fit { fill: none; stroke: var(--sb-fitted); stroke-width: 2; stroke-dasharray: 7 4; }
+  .ref { fill: none; stroke: var(--sb-reference); stroke-width: 1.25; stroke-dasharray: 2 4; }
   text { fill: var(--vscode-editor-foreground); }
+  /* Text keeps text tokens; the coloured mark beside it carries identity. */
   .tick, .legend { font-size: 10px; fill: var(--vscode-descriptionForeground); }
-  .fitText { fill: var(--vscode-charts-orange); }
   .axisLabel { font-size: 11px; fill: var(--vscode-descriptionForeground); }
   table { border-collapse: collapse; margin-top: 8px; font-size: .85rem; }
   th, td { padding: 3px 14px 3px 0; text-align: right; }
@@ -314,20 +429,24 @@ export function page(result: ComplexityResult): string {
   <p class="verdict">time <b>${esc(result.time_class)}</b>${
       result.space_class ? ` · space <b>${esc(result.space_class)}</b>` : ''
   }</p>
+  <p class="sub"><span class="swatch m"></span>measured
+     <span class="swatch f" style="margin-left:12px"></span>fitted class</p>
   ${thin}
 
   <h2>Time — ${esc(result.time_class)}</h2>
-  ${svgChart(result.sizes, result.times, result.time_class, 'time (ms)', (v) => v * 1e3)}
+  ${svgChart(result.sizes, result.times, result.time_class, 'time (ms)', (v) => v * 1e3, 'time')}
   ${spaceSection}
 
   <h2>Measurements</h2>
   ${table(result)}
 
   <p class="note">
-    The dashed orange line is the class that fitted best; the faint lines are its
-    neighbours, each scaled to the data the same way. If the points track a faint
-    line more closely than the orange one, treat the verdict with suspicion.
-    This is measured growth fitted to common classes, not a proof.
+    The orange dashed line is the class that fits your data best. The faint
+    lines are the classes just above and below it, drawn the same way. If your
+    points follow a faint line more closely than the orange one, do not trust
+    the answer. The chart is sized to your measurements, so a faint line that
+    runs off the top simply does not fit. All of this comes from timing real
+    runs, so treat it as a good guess, not a proof.
   </p>
 </body>
 </html>`;

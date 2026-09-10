@@ -47,7 +47,14 @@ problem solved in two languages counts once. Click it for the breakdown.
 **Complexity chart.** The Complexity command opens a panel showing the measured
 points, the Big-O class that fitted best, and that class's neighbours scaled the
 same way. If the points track a neighbour more closely than the winner, the
-verdict deserves suspicion. It follows your editor theme.
+verdict deserves suspicion. The y axis follows your measurements, so a
+neighbour that runs off the top simply does not fit.
+
+Light and dark each get their own colours, picked for colour-vision-deficiency
+separation and contrast rather than by eye. Line style carries the same
+information as colour, so the chart still reads without it. Override the two
+series colours with `solvebench.chartMeasuredColor` and
+`solvebench.chartFittedColor`.
 
 **Commands** (all start with `solvebench:` in the command palette):
 
@@ -68,6 +75,8 @@ verdict deserves suspicion. It follows your editor theme.
 | `solvebench.pythonPath` | `""` | Which Python to use. Empty means find one: `.venv`, then the interpreter the Python extension has picked, then `python3` on PATH. |
 | `solvebench.runInContainer` | `false` | Use `./run.sh` (Docker or Podman) for Run All and Run Current. The test panel always runs natively, because starting a container for every run is too slow. |
 | `solvebench.showCodeLens` | `true` | Show the Run / Debug / Complexity links above the code. |
+| `solvebench.chartMeasuredColor` | `""` | Colour of the measured line in the complexity chart. A hex (`#2a78d6`) or `var(--vscode-charts-blue)`. Empty uses the validated palette. |
+| `solvebench.chartFittedColor` | `""` | Colour of the fitted Big-O curve. Same accepted values. |
 
 ## Notes
 
