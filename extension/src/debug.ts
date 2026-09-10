@@ -64,6 +64,19 @@ export function solutionRef(uri: vscode.Uri, root: vscode.Uri): SolutionRef | un
     return { language, relPath: parts.join('/'), fsPath: uri.fsPath };
 }
 
+/**
+ * The problem id: platform/group/name, with no language folder and no
+ * extension. python/leetcode/easy/two_sum.py -> leetcode/easy/two_sum
+ *
+ * This is the form run.py and complexity.py both take, and it is what the
+ * README uses. run.py matches it against the path without the language folder,
+ * so it selects this one problem in every language it is solved in -- unlike
+ * the containing folder, which would select every problem of that difficulty.
+ */
+export function problemId(ref: SolutionRef): string {
+    return ref.relPath.replace(/^[^/]+\//, '').replace(/\.[^./]+$/, '');
+}
+
 /** Build the debug config for a solution, or say what is in the way. */
 export function debugTargetFor(ref: SolutionRef, root: vscode.Uri): DebugTarget {
     if (!SUPPORTED.has(ref.language)) {

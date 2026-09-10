@@ -1,9 +1,8 @@
 // The commands in the command palette. Each one calls a script that already
 // exists in the repo.
 
-import * as path from 'path';
 import * as vscode from 'vscode';
-import { solutionRef, startDebugging } from './debug';
+import { problemId, solutionRef, startDebugging } from './debug';
 import { ProcessError, spawnCollect } from './exec';
 import { requirePython } from './python';
 import { sendToTerminal } from './terminal';
@@ -83,8 +82,9 @@ export function registerCommands(
         }
         const command = await runnerCommand(root);
         if (command) {
-            // The folder, not the file, so every language it is solved in runs.
-            sendToTerminal(root, [...command, path.posix.dirname(ref.relPath)]);
+            // problemId, not the folder: the folder would run every problem of
+            // that difficulty, not this one in each language.
+            sendToTerminal(root, [...command, problemId(ref)]);
         }
     });
 
@@ -110,7 +110,7 @@ export function registerCommands(
         if (!python) {
             return;
         }
-        const args = [python, 'complexity.py', ref.relPath];
+        const args = [python, 'complexity.py', problemId(ref)];
         if (ref.language === 'java') {
             args.push('--lang', 'java');
         }
