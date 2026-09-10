@@ -20,6 +20,11 @@ target/
 *.o
 *.out
 
+# VS Code extension build output (see extension/PLAN.md)
+extension/node_modules/
+extension/out/
+extension/*.vsix
+
 # Tooling leftovers
 .serverless/
 

@@ -1,0 +1,99 @@
+{
+  "name": "solvebench",
+  "displayName": "solvebench",
+  "description": "Run, debug, and scaffold solvebench solutions across six languages.",
+  "version": "0.1.0",
+  "publisher": "solvebench",
+  "license": "MIT",
+  "private": true,
+  "engines": {
+    "vscode": "^1.88.0"
+  },
+  "categories": [
+    "Testing",
+    "Debuggers",
+    "Other"
+  ],
+  "activationEvents": [
+    "workspaceContains:run.py"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "solvebench.newSolution",
+        "title": "New Solution",
+        "category": "solvebench"
+      },
+      {
+        "command": "solvebench.runCurrent",
+        "title": "Run Current Solution",
+        "category": "solvebench"
+      },
+      {
+        "command": "solvebench.debugCurrent",
+        "title": "Debug Current Solution",
+        "category": "solvebench"
+      },
+      {
+        "command": "solvebench.runAll",
+        "title": "Run All Solutions",
+        "category": "solvebench"
+      },
+      {
+        "command": "solvebench.complexity",
+        "title": "Estimate Complexity of Current Solution",
+        "category": "solvebench"
+      },
+      {
+        "command": "solvebench.stats",
+        "title": "Show Stats",
+        "category": "solvebench"
+      },
+      {
+        "command": "solvebench.refreshTests",
+        "title": "Refresh Solution List",
+        "category": "solvebench"
+      }
+    ],
+    "configuration": {
+      "title": "solvebench",
+      "properties": {
+        "solvebench.pythonPath": {
+          "type": "string",
+          "default": "",
+          "description": "Python interpreter to run run.py, new.py and complexity.py. Leave empty to detect one automatically (.venv, then the interpreter selected by the Python extension, then python3 on PATH)."
+        },
+        "solvebench.runInContainer": {
+          "type": "boolean",
+          "default": false,
+          "description": "Use ./run.sh (Docker or Podman) for the Run All and Run Current commands. The test panel always runs natively, because starting a container for each run is too slow to work with."
+        }
+      }
+    },
+    "menus": {
+      "editor/title/run": [
+        {
+          "command": "solvebench.runCurrent",
+          "when": "solvebench.isSolution",
+          "group": "solvebench@1"
+        },
+        {
+          "command": "solvebench.debugCurrent",
+          "when": "solvebench.isSolution",
+          "group": "solvebench@2"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "npx --yes @vscode/vsce package --no-dependencies"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.88.0",
+    "typescript": "^5.4.0"
+  }
+}
