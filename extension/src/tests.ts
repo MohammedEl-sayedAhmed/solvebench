@@ -26,10 +26,13 @@ export class SolutionTests implements vscode.Disposable {
     /** Leaf test item id (the repo-relative path) -> its solution. */
     private readonly byPath = new Map<string, SolutionJson>();
     private readonly disposables: vscode.Disposable[] = [];
+    private readonly refreshed = new vscode.EventEmitter<SolutionJson[]>();
+    /** Fires after each discovery, with what was found. */
+    readonly onDidRefresh = this.refreshed.event;
 
     constructor(private readonly root: vscode.Uri) {
         this.controller = vscode.tests.createTestController('solvebench', 'solvebench');
-        this.disposables.push(this.controller);
+        this.disposables.push(this.controller, this.refreshed);
 
         this.controller.refreshHandler = async () => {
             await this.refresh();
@@ -75,6 +78,8 @@ export class SolutionTests implements vscode.Disposable {
             this.byPath.set(sol.path, sol);
             this.place(sol);
         }
+
+        this.refreshed.fire(solutions);
     }
 
     /** Put one solution in the tree: platform -> group -> problem -> language. */

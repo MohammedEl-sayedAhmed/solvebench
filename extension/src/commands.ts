@@ -31,14 +31,17 @@ async function runnerCommand(root: vscode.Uri): Promise<string[] | undefined> {
     return python ? [python, 'run.py'] : undefined;
 }
 
-/** The open file, if it is a solution. Complains if it is not. */
-function currentSolution(root: vscode.Uri) {
-    const editor = vscode.window.activeTextEditor;
-    if (!editor) {
+/**
+ * The solution to act on: the uri a CodeLens passed, else the open file.
+ * Complains if neither is a solution.
+ */
+function currentSolution(root: vscode.Uri, uri?: vscode.Uri) {
+    const target = uri ?? vscode.window.activeTextEditor?.document.uri;
+    if (!target) {
         void vscode.window.showWarningMessage('solvebench: no file is open.');
         return undefined;
     }
-    const ref = solutionRef(editor.document.uri, root);
+    const ref = solutionRef(target, root);
     if (!ref) {
         void vscode.window.showWarningMessage(
             'solvebench: this file is not a solution. Open one under python/, java/, cpp/, javascript/, go/ or rust/.'
@@ -73,8 +76,8 @@ export function registerCommands(
         }
     });
 
-    register('solvebench.runCurrent', async () => {
-        const ref = currentSolution(root);
+    register('solvebench.runCurrent', async (uri?: vscode.Uri) => {
+        const ref = currentSolution(root, uri);
         if (!ref) {
             return;
         }
@@ -85,15 +88,15 @@ export function registerCommands(
         }
     });
 
-    register('solvebench.debugCurrent', async () => {
-        const ref = currentSolution(root);
+    register('solvebench.debugCurrent', async (uri?: vscode.Uri) => {
+        const ref = currentSolution(root, uri);
         if (ref) {
             await startDebugging(ref, root);
         }
     });
 
-    register('solvebench.complexity', async () => {
-        const ref = currentSolution(root);
+    register('solvebench.complexity', async (uri?: vscode.Uri) => {
+        const ref = currentSolution(root, uri);
         if (!ref) {
             return;
         }

@@ -36,6 +36,14 @@ do not add one to `.vscode/launch.json` for every new solution. Works for
 Python, Java, JavaScript, and C++. For Go and Rust it tells you which extension
 is missing instead of failing quietly.
 
+**Buttons in the editor.** Every solution file gets `Run`, `Debug` and
+`Complexity` links above the code, so you do not need the command palette.
+Complexity only shows for Python and Java, since that is all `complexity.py`
+measures. Turn the links off with `solvebench.showCodeLens`.
+
+**Solve count in the status bar.** Counts problems rather than files, so one
+problem solved in two languages counts once. Click it for the breakdown.
+
 **Commands** (all start with `solvebench:` in the command palette):
 
 | Command | Calls |
@@ -54,6 +62,7 @@ is missing instead of failing quietly.
 | --- | --- | --- |
 | `solvebench.pythonPath` | `""` | Which Python to use. Empty means find one: `.venv`, then the interpreter the Python extension has picked, then `python3` on PATH. |
 | `solvebench.runInContainer` | `false` | Use `./run.sh` (Docker or Podman) for Run All and Run Current. The test panel always runs natively, because starting a container for every run is too slow. |
+| `solvebench.showCodeLens` | `true` | Show the Run / Debug / Complexity links above the code. |
 
 ## Notes
 

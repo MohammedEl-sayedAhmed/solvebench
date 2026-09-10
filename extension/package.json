@@ -73,6 +73,11 @@
           "type": "boolean",
           "default": false,
           "description": "Use ./run.sh (Docker or Podman) for the Run All and Run Current commands. The test panel always runs natively, because starting a container for each run is too slow to work with."
+        },
+        "solvebench.showCodeLens": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show Run / Debug / Complexity links above the code in a solution file."
         }
       }
     },

@@ -62,6 +62,7 @@ folder. We can still publish later if we want to.
 | 3 | Test panel (`TestController`) | The biggest gain |
 | 4 | Debug configs (`DebugConfigurationProvider`) | No hand-written config per solution |
 | 5 | Commands | Shell scripts become editor commands |
+| 6 | CodeLens, status bar, `complexity.py --json` | Buttons instead of the command palette |
 
 ## What we left out, on purpose
 
@@ -69,9 +70,9 @@ folder. We can still publish later if we want to.
   extension works fine with the solutions where they are. It would also mean
   deleting working solutions, and that is not our call to make while changing
   tooling.
-- **Complexity chart.** A good idea, but `complexity.py` would need to output
-  the numbers it measures, not just a text table. That is Phase 6. For now the
-  complexity command prints to a terminal like it does today.
+- **Complexity chart.** `complexity.py --json` is done (Phase 6), so the
+  numbers are available now. Drawing them in a webview is still to do; the
+  complexity command prints to a terminal for the moment.
 - **Publishing to the Marketplace.** No account, icon, or release setup until we
   have used the extension for a while.
 - **Deleting `setup.sh`, `code.sh`, `teardown.sh`.** The extension makes the
@@ -190,12 +191,45 @@ are local and git does not record them, and the committed version is already jus
 the 4 generic configs. Those stay as the fallback for anyone without the
 extension installed.
 
-## Phase 6 — Later
+## Phase 6 — Buttons instead of the command palette
 
-- Complexity chart (needs `complexity.py --json` first)
-- Run and Debug buttons above each solution in the editor
-- Solve count in the status bar
+Done:
+
+- **CodeLens.** `Run`, `Debug` and `Complexity` links above the code in every
+  solution file. They sit on the first `class`/`def`/`func` line, falling back
+  to the top of the file. Complexity only appears for Python and Java, because
+  that is all `complexity.py` measures. The clicked file's uri is passed to the
+  command, so a click acts on that file even if focus moved. Turn it off with
+  `solvebench.showCodeLens`.
+- **Solve count in the status bar.** Counts problems, not files, so a problem
+  solved in Python and Java counts once. Click it for the breakdown.
+- **`complexity.py --json`.** `report()` in `python/common/complexity.py` took a
+  `quiet` flag, since it already returned the sizes, times and fitted classes
+  and only needed to stop printing them. Both the Python and Java paths return
+  the numbers now.
+
+  One bug came out of this: `find_solution_file` printed its "also solved in
+  java" hint to stdout, which corrupted the JSON. It is a hint, not data, so it
+  goes to stderr now.
+
+Still to do:
+
+- Complexity chart in a webview, drawing the points `--json` now returns
 - Offer to make a file when you paste a problem URL
+- Go and Rust debugging
+
+## Fixed along the way
+
+`.vscode/settings.json` set `python.testing.pytestArgs` to `["."]`, which
+overrode `testpaths = ["python"]` in `pyproject.toml`. Together with
+`python_files = ["*.py"]` that made pytest import `scripts/build_java.py`, whose
+module-level `sys.exit(0)` crashed collection with `INTERNALERROR`. The Testing
+view showed "pytest Discovery Error" because of it. Set to `["python"]` now, so
+it matches the repo config: 30 tests collected, 30 passed.
+
+This was there before the extension and is not related to it. It only showed up
+in VS Code, because running `pytest` from a terminal uses `testpaths` and is
+fine.
 
 ## How we check it
 

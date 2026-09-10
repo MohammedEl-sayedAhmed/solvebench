@@ -4,11 +4,20 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as vscode from 'vscode';
+import { SolutionCodeLens } from './codelens';
 import { registerCommands } from './commands';
 import { solutionRef } from './debug';
 import { resetPythonCache } from './python';
+import { SolveCount } from './statusbar';
 import { disposeTerminal, onTerminalClosed } from './terminal';
 import { SolutionTests } from './tests';
+
+/**
+ * VS Code language ids for the CodeLens provider. These are the editor's ids,
+ * not our folder names: cpp/ files are 'cpp', javascript/ files are
+ * 'javascript', rust/ files are 'rust'.
+ */
+const SOLUTION_LANGUAGE_IDS = ['python', 'java', 'cpp', 'javascript', 'go', 'rust'];
 
 /** The workspace folder that holds run.py. */
 function findRepoRoot(): vscode.Uri | undefined {
@@ -30,6 +39,19 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     context.subscriptions.push(tests);
     registerCommands(context, root, tests);
 
+    // Run / Debug / Complexity links above the code.
+    const codeLens = new SolutionCodeLens(root);
+    context.subscriptions.push(
+        vscode.languages.registerCodeLensProvider(
+            SOLUTION_LANGUAGE_IDS.map((language) => ({ language, scheme: 'file' })),
+            codeLens
+        )
+    );
+
+    // Solve count in the status bar, kept in step with discovery.
+    const solveCount = new SolveCount();
+    context.subscriptions.push(solveCount, tests.onDidRefresh((s) => solveCount.update(s)));
+
     // Drives the "when" clause on the editor title buttons.
     const updateContext = (editor: vscode.TextEditor | undefined) => {
         const isSolution = Boolean(editor && solutionRef(editor.document.uri, root));
@@ -46,6 +68,9 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
             if (e.affectsConfiguration('solvebench.pythonPath')) {
                 resetPythonCache();
                 void tests.refresh();
+            }
+            if (e.affectsConfiguration('solvebench.showCodeLens')) {
+                codeLens.refresh();
             }
         })
     );
