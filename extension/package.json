@@ -5,6 +5,11 @@
   "version": "0.1.0",
   "publisher": "solvebench",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MohammedEl-sayedAhmed/solvebench.git"
+  },
+  "directory": "extension",
   "private": true,
   "engines": {
     "vscode": "^1.88.0"
