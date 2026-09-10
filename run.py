@@ -17,10 +17,13 @@ Examples
     python run.py --time                # print each solution's runtime
     python run.py --stats               # inventory grouped by platform
     python run.py --sort status         # failures first in the summary
+    python run.py --json                # machine-readable results on stdout
+    python run.py --stats --json        # machine-readable inventory, no runs
 """
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import re
 import shutil
@@ -59,7 +62,9 @@ class Solution:
 
     @property
     def label(self) -> str:
-        return str(self.path.relative_to(REPO))
+        # POSIX form: git reports forward slashes (--changed) and the --json
+        # path is an identity the extension round-trips back as a filter.
+        return self.path.relative_to(REPO).as_posix()
 
 
 # --------------------------------------------------------------------------- #
@@ -105,7 +110,7 @@ def matches(sol, filters, langs, platform) -> bool:
         return False
     if filters:
         rel = sol.label
-        rel_no_lang = str(sol.path.relative_to(REPO / sol.language))
+        rel_no_lang = sol.path.relative_to(REPO / sol.language).as_posix()
         # Normalized match so "two_sum" also matches Java's "TwoSum", etc.
         norm = lambda s: re.sub(r"[^a-z0-9/]", "", s.lower())
         nrl = norm(rel_no_lang)
@@ -191,6 +196,60 @@ def execute(sol, build) -> tuple[bool, str, float]:
 # --------------------------------------------------------------------------- #
 # Reporting
 # --------------------------------------------------------------------------- #
+def sol_payload(sol) -> dict:
+    return {
+        "language": sol.language,
+        "lang": sol.short_lang,
+        "platform": sol.platform,
+        "group": sol.group,
+        "name": sol.name,
+        "path": sol.label,
+    }
+
+
+def emit_json(sols, results=None) -> int:
+    """Write one JSON object to stdout and return the process exit code.
+
+    Discovery only (results=None) mirrors --stats. With results, each entry
+    carries status/seconds/output. stdout stays pure JSON so the VS Code
+    extension can parse it; warnings go to stderr.
+    """
+    if results is None:
+        payload = {"schema": 1, "solutions": [sol_payload(s) for s in sols]}
+        print(json.dumps(payload, indent=2))
+        return 0
+
+    entries = []
+    passed_n = failed_n = 0
+    total_s = 0.0
+    for sol, passed, skipped, secs, output in results:
+        if skipped:
+            continue
+        entry = sol_payload(sol)
+        entry["status"] = "pass" if passed else "fail"
+        entry["seconds"] = round(secs, 4)
+        entry["output"] = (output or "").strip()
+        entries.append(entry)
+        total_s += secs
+        if passed:
+            passed_n += 1
+        else:
+            failed_n += 1
+
+    payload = {
+        "schema": 1,
+        "solutions": entries,
+        "summary": {
+            "pass": passed_n,
+            "fail": failed_n,
+            "total": len(entries),
+            "seconds": round(total_s, 4),
+        },
+    }
+    print(json.dumps(payload, indent=2))
+    return 1 if failed_n else 0
+
+
 def print_stats(sols, sort_key):
     from collections import defaultdict
     counts = defaultdict(int)
@@ -215,7 +274,7 @@ def print_summary(results, sort_key, show_time):
     from collections import defaultdict
     agg = defaultdict(lambda: [0, 0, 0])
     failed = []
-    for sol, passed, skipped, secs in results:
+    for sol, passed, skipped, secs, _output in results:
         key = (sol.platform, sol.short_lang)
         agg[key][2] += 1
         if skipped:
@@ -245,7 +304,7 @@ def print_summary(results, sort_key, show_time):
     print("-" * 43)
     print(f"{'TOTAL':<16}{'':<8}{tp:>6}{tf:>6}{tt:>7}")
     if show_time:
-        total_s = sum(secs for _, _, sk, secs in results if not sk)
+        total_s = sum(secs for _, _, sk, secs, _ in results if not sk)
         print(f"\nTotal run time: {total_s:.2f}s")
     if failed:
         print(f"\n{tf} failure(s):")
@@ -268,6 +327,7 @@ def main() -> int:
     p.add_argument("--time", action="store_true", help="print each solution's runtime")
     p.add_argument("--sort", default="platform", choices=["platform", "language", "status", "name"])
     p.add_argument("--stats", action="store_true", help="show inventory grouped by platform and exit")
+    p.add_argument("--json", action="store_true", help="emit machine-readable JSON on stdout")
     p.add_argument("-q", "--quiet", action="store_true", help="only print the summary")
     args = p.parse_args()
 
@@ -283,24 +343,31 @@ def main() -> int:
     if args.changed:
         cp = changed_paths()
         if cp is None:
-            print("warning: could not read git changes; running all matched solutions")
+            print("warning: could not read git changes; running all matched solutions",
+                  file=sys.stderr)
         else:
             sols = [s for s in sols if s.label in cp]
 
     sols.sort(key=lambda s: (s.platform, s.short_lang, s.group, s.name))
 
     if not sols:
+        matched_nothing = bool(args.filters or langs or args.platform)
+        if args.json:
+            emit_json([], None if args.stats else [])
+            return 1 if matched_nothing and not args.changed else 0
         if args.changed:
             # No changed solutions to run (e.g. a docs/config-only commit) — fine.
             print("No changed solutions to run.")
             return 0
-        if args.filters or langs or args.platform:
+        if matched_nothing:
             print("No solutions matched the given filters.")
             return 1
         print("No solutions yet — add one with:  python new.py <platform>/<name> --lang py")
         return 0
 
     if args.stats:
+        if args.json:
+            return emit_json(sols)
         print_stats(sols, args.sort)
         return 0
 
@@ -309,17 +376,20 @@ def main() -> int:
     try:
         for sol in sols:
             passed, output, secs = execute(sol, build)
-            icon = "✅" if passed else "❌"
-            grp = f"{sol.group}/" if sol.group else ""
-            tstr = f"  ({secs:.2f}s)" if args.time else ""
-            print(f"{icon} [{sol.short_lang}] {sol.platform}/{grp}{sol.name}{tstr}")
-            if not args.quiet and not passed:
-                for line in output.strip().splitlines():
-                    print(f"      {line}")
-            results.append((sol, passed, False, secs))
+            if not args.json:
+                icon = "✅" if passed else "❌"
+                grp = f"{sol.group}/" if sol.group else ""
+                tstr = f"  ({secs:.2f}s)" if args.time else ""
+                print(f"{icon} [{sol.short_lang}] {sol.platform}/{grp}{sol.name}{tstr}")
+                if not args.quiet and not passed:
+                    for line in output.strip().splitlines():
+                        print(f"      {line}")
+            results.append((sol, passed, False, secs, output))
     finally:
         shutil.rmtree(build, ignore_errors=True)
 
+    if args.json:
+        return emit_json(sols, results)
     return print_summary(results, args.sort, args.time)
 
 
